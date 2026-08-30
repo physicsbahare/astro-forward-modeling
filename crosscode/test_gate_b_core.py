@@ -1,4 +1,4 @@
-"""First executable Gate-B cross-code checks.
+"""Executable Gate-B cross-code checks.
 
 These tests compare the independent reference harness against maintained astronomy
 packages. They are intentionally separate from the future production package.
@@ -111,6 +111,65 @@ def test_reproject_exact_preserves_constant_surface_brightness():
     assert max_abs < 2.0e-10
 
 
+def test_reproject_adaptive_distinguishes_surface_brightness_from_flux_per_pixel():
+    """Verify the documented unit semantic, not merely numerical interpolation.
+
+    Reproject's default adaptive mode treats pixel values as surface brightness.
+    With an output grid having half the pixel scale in each dimension, blindly
+    summing such values should increase the numerical sum by roughly four.  The
+    explicit ``conserve_flux=True`` mode instead treats values as flux per pixel
+    and should retain the integrated source flux to the accuracy expected for
+    this well-sampled smooth test source.
+    """
+
+    from reproject import reproject_adaptive
+
+    n_in = 101
+    n_out = 201
+    y, x = np.indices((n_in, n_in), dtype=float)
+    c = (n_in - 1) / 2.0
+    source = np.exp(-0.5 * (((x - c) / 12.0) ** 2 + ((y - c) / 12.0) ** 2))
+    source *= 1000.0 / source.sum()
+
+    w_in = _simple_tan_wcs(n_in, n_in, pixel_arcsec=0.10)
+    w_out = _simple_tan_wcs(n_out, n_out, pixel_arcsec=0.05)
+
+    sb_out, sb_footprint = reproject_adaptive(
+        (source, w_in),
+        w_out,
+        shape_out=(n_out, n_out),
+        conserve_flux=False,
+        kernel="gaussian",
+        boundary_mode="ignore",
+        bad_value_mode="ignore",
+    )
+    flux_out, flux_footprint = reproject_adaptive(
+        (source, w_in),
+        w_out,
+        shape_out=(n_out, n_out),
+        conserve_flux=True,
+        kernel="gaussian",
+        boundary_mode="ignore",
+        bad_value_mode="ignore",
+    )
+
+    sb_sum = float(np.nansum(sb_out[sb_footprint > 0]))
+    flux_sum = float(np.nansum(flux_out[flux_footprint > 0]))
+    input_sum = float(source.sum())
+
+    # The factor-four behavior is the expected consequence of treating a
+    # flux-per-input-pixel array as if it were surface brightness when the
+    # linear output pixel scale is halved. This is a safety/semantics check,
+    # not a recommended photometric pathway.
+    assert 3.95 < sb_sum / input_sum < 4.05
+
+    # For this smooth, well-contained, well-sampled source, adaptive flux mode
+    # should preserve integrated flux at substantially better than percent level.
+    # This tolerance is benchmark-specific and is NOT a future package-wide
+    # science tolerance.
+    assert abs(flux_sum / input_sum - 1.0) < 3.0e-3
+
+
 def test_galsim_chromatic_gaussian_second_moment_matches_photon_weighted_truth():
     import galsim
 
@@ -138,9 +197,6 @@ def test_galsim_chromatic_gaussian_second_moment_matches_photon_weighted_truth()
         red_limit=4000.0,
     )
 
-    # GalSim 2.8.4 requires the quadrature rule explicitly. Use trapezoidal
-    # integration here because the independent analytic reference below also
-    # uses dense trapezoidal quadrature.
     integrator = galsim.integ.ContinuousIntegrator(
         rule=galsim.integ.trapzRule,
         N=700,
