@@ -1,0 +1,48 @@
+name: gate-c-zhuang-data-inspect
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "scripts/fetch_zhuang_shen_benchmark.py"
+      - ".github/workflows/gate-c-zhuang-inspect.yml"
+
+jobs:
+  inspect-public-mock-tables:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install table reader
+        run: python -m pip install "astropy==8.0.1" "numpy>=2.0"
+      - name: Retrieve immutable public benchmark subset
+        run: python scripts/fetch_zhuang_shen_benchmark.py
+      - name: Inspect IPAC schemas only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from astropy.table import Table
+
+          root = Path("external_data/zhuang_shen_2024/mock_AGN_results")
+          names = [
+              "mock_AGN_input_values.ipac",
+              "mock_AGN_results_F115W_fiducial_PSF.ipac",
+              "mock_AGN_results_F115W_broader_PSF.ipac",
+              "mock_AGN_results_F115W_narrower_PSF.ipac",
+              "mock_AGN_results_F115W_fiducial_PSF_center_not_tied.ipac",
+          ]
+          for name in names:
+              table = Table.read(root / name, format="ascii.ipac")
+              print(f"SCHEMA {name}")
+              print(f"NROWS {len(table)}")
+              print("COLUMNS", list(table.colnames))
+              print("DTYPES", [str(table[c].dtype) for c in table.colnames])
+              print()
+          PY
