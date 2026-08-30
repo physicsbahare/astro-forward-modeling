@@ -16,6 +16,7 @@ from astropy import units as u
 from astropy.modeling import models
 from gwcs import coordinate_frames as cf
 from gwcs import wcs
+from stcal.alignment.util import compute_s_region_imaging
 
 
 def _simple_tan_wcs(shape, pixel_scale_arcsec=0.063, ra_ref=150.0, dec_ref=2.0):
@@ -86,7 +87,25 @@ def _analytic_nircam_model(shape=(64, 64), pixel_scale_arcsec=0.063):
     model.meta.photometry.pixelarea_arcsecsq = pixel_area_arcsec2
     model.meta.photometry.pixelarea_steradians = pixel_area_sr.to_value(u.sr)
 
-    model.meta.wcs = _simple_tan_wcs(shape, pixel_scale_arcsec=pixel_scale_arcsec)
+    ra_ref = 150.0
+    dec_ref = 2.0
+    model.meta.wcs = _simple_tan_wcs(
+        shape,
+        pixel_scale_arcsec=pixel_scale_arcsec,
+        ra_ref=ra_ref,
+        dec_ref=dec_ref,
+    )
+
+    # ``ResampleStep`` does not consume only the GWCS object.  The maintained
+    # JWST pipeline also reads the imaging footprint and reference-orientation
+    # metadata from WCSINFO when it constructs the output drizzle WCS.  Keep
+    # these values self-consistent with the simple tangent-plane WCS above.
+    model.meta.wcsinfo.ra_ref = ra_ref
+    model.meta.wcsinfo.dec_ref = dec_ref
+    model.meta.wcsinfo.roll_ref = 0.0
+    model.meta.wcsinfo.v3yangle = 0.0
+    model.meta.wcsinfo.vparity = -1
+    model.meta.wcsinfo.s_region = compute_s_region_imaging(model.meta.wcs, shape=shape)
     return model
 
 
