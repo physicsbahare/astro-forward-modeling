@@ -4,7 +4,16 @@ This protocol closes the JWST-specific part of Gate B and prepares Gate D. It is
 
 ## 1. STPSF reference-data reproducibility
 
-STPSF requires external telescope/instrument reference data in addition to the Python package. Current STPSF installation documentation supports versioned data bundles (including version 2.2.0) and a `STPSF_PATH` override. For scientific reproducibility we will **not** rely on an unversioned `LATEST` dataset in acceptance tests.
+STPSF requires external telescope/instrument reference data in addition to the Python package. Current STPSF installation documentation supports versioned data bundles and a `STPSF_PATH` override. For scientific reproducibility we do **not** rely on an unversioned `LATEST` dataset in acceptance tests.
+
+The current reproducibility lock is:
+
+- STPSF software: `2.2.0`;
+- STPSF data: `2.2.0`;
+- version-specific upstream archive URL: `https://stsci.box.com/shared/static/mjst9j056ibf2uph4gxy8qxmi89tjzwk.gz`;
+- archive SHA-256: `bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98`.
+
+The first CI run with this exact bundle passed all four initial NIRCam semantic tests. The checksum is now verified before extraction in every subsequent run.
 
 Every benchmark must record:
 
@@ -29,6 +38,8 @@ Therefore the future PSF object must expose machine-readable flags such as:
 
 A renderer that is also configured to simulate one of these effects must reject double application.
 
+The executable Gate-B suite now verifies that the four documented STPSF products exist, that detector-effect toggling changes the detector PSF in the expected broadening direction, and that their integrated flux scales remain mutually consistent for a compact well-contained test PSF.
+
 ## 3. Required NIRCam PSF tests
 
 For each of F115W, F150W, F277W and F444W initially:
@@ -43,6 +54,8 @@ For each of F115W, F150W, F277W and F444W initially:
 8. encircled-energy radii, centroid, second moments and normalized image residuals;
 9. comparison of a global-source-spectrum PSF against component-specific chromatic rendering for a two-color galaxy;
 10. repeat with an unresolved AGN spectrum plus host spectrum.
+
+The initial CI suite already covers a controlled F444W blue-versus-red photon distribution and a center-versus-corner field-dependence check. The broader filter grid, convergence study and component-specific chromatic tests remain to be run before numerical defaults are frozen.
 
 The objective is not to declare STPSF 'correct by definition'. The objective is to understand exactly which operator it supplies to our framework and what effects remain external.
 
@@ -59,6 +72,8 @@ For NIRCam imaging:
 5. verify `PIXAR_SR`/`PIXAR_A2` semantics and surface-brightness ↔ pixel-flux conversions;
 6. ensure variance/error products are transformed in the same calibration convention as the SCI array;
 7. save the full calibration metadata needed to reproduce the conversion later.
+
+This is the next active JWST sub-gate after the STPSF checks.
 
 ## 5. Drizzle/resampling test
 
@@ -80,7 +95,7 @@ Measure:
 - `ERR`, `VAR_POISSON`, `VAR_RNOISE`, and `VAR_FLAT` behavior;
 - context/coverage image behavior.
 
-Current JWST 3.0.0 documentation exposes `pixfrac`, kernel, output pixel scale and error/variance reporting controls. The purpose of the benchmark is to quantify, not assume, the distinction between L1 mosaic injection and L2 exposure-level injection.
+JWST 3.0.0 documentation exposes `pixfrac`, kernel, output pixel scale and error/variance reporting controls. The purpose of the benchmark is to quantify, not assume, the distinction between L1 mosaic injection and L2 exposure-level injection.
 
 ## 6. COSMOS-Web adapter-specific validation
 
