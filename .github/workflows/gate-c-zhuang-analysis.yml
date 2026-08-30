@@ -1,0 +1,43 @@
+name: gate-c-zhuang-public-table-analysis
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "scripts/fetch_zhuang_shen_benchmark.py"
+      - "benchmarks/zhuang_shen_2024/analyze_public_tables.py"
+      - ".github/workflows/gate-c-zhuang-analysis.yml"
+
+jobs:
+  analyze-public-mock-tables:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pinned table-analysis dependencies
+        run: python -m pip install "astropy==8.0.1" "numpy>=2.0"
+      - name: Retrieve immutable F150W benchmark subset
+        run: >-
+          python scripts/fetch_zhuang_shen_benchmark.py
+          --keys info input f150w_fiducial f150w_broader f150w_narrower f150w_center_free
+      - name: Analyze public tables
+        run: python benchmarks/zhuang_shen_2024/analyze_public_tables.py
+      - name: Show machine-readable summary
+        run: |
+          cat benchmark_output/zhuang_shen_2024/summary_f150w.json
+          echo
+          cat benchmark_output/zhuang_shen_2024/figure11_like_mhost24.csv
+      - name: Upload benchmark outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: zhuang-shen-f150w-public-table-analysis
+          path: benchmark_output/zhuang_shen_2024/
+          if-no-files-found: error
+          retention-days: 30
