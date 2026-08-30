@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 """Quantify noise covariance introduced by JWST imaging drizzle/resampling.
 
-This is a Gate-B diagnostic, not a production implementation.  It pushes a
+This is a Gate-B diagnostic, not a production implementation. It pushes a
 stationary white-noise field with known input variance through the maintained
-``jwst.resample.ResampleStep`` and records the output pixel covariance and the
-impact on aperture-sum uncertainties.  The purpose is to make explicit what is
-and is not represented by the propagated diagonal variance arrays.
+``jwst.resample.ResampleStep`` and records output pixel covariance, empirical
+aperture variance, and the pipeline's approximate propagated variance products.
+
+The JWST/stcal documentation explicitly notes that drizzle does not propagate a
+full covariance matrix and that the resampled variance approximation generally
+overestimates the true per-pixel error.  We therefore keep two effects separate:
+(1) covariance amplification relative to the *empirical* output-pixel variance,
+and (2) the ratio of the measured aperture variance to the sum of the pipeline's
+diagonal variance plane.
 """
 
 from __future__ import annotations
@@ -136,20 +142,38 @@ def _lag_correlation(array: np.ndarray, dy: int, dx: int) -> float:
     return float(np.mean(p * q) / denom)
 
 
-def _aperture_covariance_factor(data: np.ndarray, diagonal_variance: np.ndarray, width: int = 5) -> float:
+def _aperture_variance_metrics(
+    data: np.ndarray,
+    diagonal_variance: np.ndarray,
+    empirical_pixel_variance: float,
+    width: int = 5,
+) -> dict[str, float]:
     if width < 1 or width % 2 == 0:
         raise ValueError("Aperture width must be a positive odd integer.")
     kernel = np.ones((width, width), dtype=float)
     aperture_sums = convolve2d(data, kernel, mode="valid")
-    diagonal_prediction = convolve2d(diagonal_variance, kernel, mode="valid")
-    empirical = float(np.var(aperture_sums, ddof=1))
-    predicted = float(np.mean(diagonal_prediction))
-    if predicted <= 0:
-        raise RuntimeError("Non-positive propagated diagonal aperture variance.")
-    return empirical / predicted
+    pipeline_diagonal_sum = convolve2d(diagonal_variance, kernel, mode="valid")
+
+    empirical_aperture_variance = float(np.var(aperture_sums, ddof=1))
+    mean_pipeline_diagonal_aperture_variance = float(np.mean(pipeline_diagonal_sum))
+    independent_empirical_prediction = float(width * width * empirical_pixel_variance)
+    if mean_pipeline_diagonal_aperture_variance <= 0 or independent_empirical_prediction <= 0:
+        raise RuntimeError("Non-positive aperture-variance prediction.")
+
+    return {
+        "empirical_aperture_variance": empirical_aperture_variance,
+        "independent_empirical_pixel_prediction": independent_empirical_prediction,
+        "covariance_amplification_relative_to_empirical_pixel_variance": (
+            empirical_aperture_variance / independent_empirical_prediction
+        ),
+        "mean_pipeline_diagonal_aperture_variance": mean_pipeline_diagonal_aperture_variance,
+        "empirical_aperture_to_pipeline_diagonal_ratio": (
+            empirical_aperture_variance / mean_pipeline_diagonal_aperture_variance
+        ),
+    }
 
 
-def _metrics(model, pixel_scale_ratio: float) -> dict[str, float | int | list[int]]:
+def _metrics(model, pixel_scale_ratio: float) -> dict[str, object]:
     from jwst.resample import ResampleStep
 
     result = ResampleStep.call(
@@ -167,7 +191,7 @@ def _metrics(model, pixel_scale_ratio: float) -> dict[str, float | int | list[in
     if propagated_pixel_variance <= 0:
         raise RuntimeError("Non-positive mean propagated read-noise variance.")
 
-    metrics: dict[str, float | int | list[int]] = {
+    metrics: dict[str, object] = {
         "pixel_scale_ratio": float(pixel_scale_ratio),
         "output_shape": list(result.data.shape),
         "output_pixelarea_arcsec2": float(result.meta.photometry.pixelarea_arcsecsq),
@@ -177,9 +201,15 @@ def _metrics(model, pixel_scale_ratio: float) -> dict[str, float | int | list[in
         "lag5_rho_y": _lag_correlation(data, 5, 0),
         "empirical_pixel_variance": empirical_pixel_variance,
         "mean_propagated_var_rnoise": propagated_pixel_variance,
-        "empirical_to_diagonal_pixel_variance_ratio": empirical_pixel_variance
-        / propagated_pixel_variance,
-        "aperture_5x5_covariance_factor": _aperture_covariance_factor(data, var_rnoise, width=5),
+        "pipeline_diagonal_to_empirical_pixel_variance_ratio": (
+            propagated_pixel_variance / empirical_pixel_variance
+        ),
+        "aperture_5x5": _aperture_variance_metrics(
+            data,
+            var_rnoise,
+            empirical_pixel_variance,
+            width=5,
+        ),
     }
     result.close()
     return metrics
@@ -202,9 +232,32 @@ def main() -> None:
     fine = _metrics(base, 0.5)
     base.close()
 
+    checks = {
+        "input_is_effectively_white": bool(
+            abs(input_metrics["adjacent_rho_x"]) < 0.03
+            and abs(input_metrics["adjacent_rho_y"]) < 0.03
+        ),
+        "native_scale_remains_effectively_uncorrelated": bool(
+            abs(native["adjacent_rho_x"]) < 0.03 and abs(native["adjacent_rho_y"]) < 0.03
+        ),
+        "half_scale_has_strong_nearest_neighbor_covariance": bool(
+            fine["adjacent_rho_x"] > 0.5 and fine["adjacent_rho_y"] > 0.5
+        ),
+        "half_scale_correlation_is_short_range": bool(
+            abs(fine["lag5_rho_x"]) < 0.03 and abs(fine["lag5_rho_y"]) < 0.03
+        ),
+        "half_scale_apertures_show_covariance_amplification": bool(
+            fine["aperture_5x5"]["covariance_amplification_relative_to_empirical_pixel_variance"]
+            > 3.0
+        ),
+        "pipeline_diagonal_variance_is_conservative_for_this_case": bool(
+            fine["aperture_5x5"]["empirical_aperture_to_pipeline_diagonal_ratio"] < 1.0
+        ),
+    }
+
     payload = {
         "purpose": "Quantify covariance introduced by JWST ResampleStep for a white-noise field.",
-        "software_target": "jwst==3.0.0",
+        "software_target": "jwst==3.0.0 / stcal==1.20.0",
         "configuration": {
             "instrument": "NIRCam",
             "filter": "F444W",
@@ -218,10 +271,13 @@ def main() -> None:
         "input": input_metrics,
         "output_native_scale": native,
         "output_half_scale": fine,
+        "checks": checks,
         "interpretation": (
-            "The propagated variance planes are diagonal per-pixel products. "
-            "Non-zero adjacent-pixel correlation and an aperture covariance factor above unity "
-            "measure information that is not captured by summing those diagonal variances alone."
+            "Drizzling to half the native linear pixel scale introduces strong short-range "
+            "pixel covariance. The covariance amplification must be evaluated relative to the "
+            "empirical output-pixel variance. Separately, the JWST pipeline's resampled variance "
+            "planes are approximate diagonal products and are conservative for this controlled "
+            "configuration, consistent with the stcal resample error-propagation documentation."
         ),
     }
 
@@ -230,6 +286,10 @@ def main() -> None:
     path = out / "jwst_resample_white_noise_covariance.json"
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(json.dumps(payload, indent=2, sort_keys=True))
+
+    failed = [name for name, passed in checks.items() if not passed]
+    if failed:
+        raise RuntimeError(f"JWST drizzle covariance regression checks failed: {failed}")
 
 
 if __name__ == "__main__":
