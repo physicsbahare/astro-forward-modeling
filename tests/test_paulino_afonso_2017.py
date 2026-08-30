@@ -68,9 +68,10 @@ def test_published_structural_bias_direction_matches_figures_4_5_and_table2() ->
 
     # The paper's average size ratios remain close to unity and show no
     # monotonic redshift trend.  This checks the literal published numbers,
-    # not a framework acceptance tolerance.
+    # not a framework acceptance tolerance.  The tiny atol only absorbs binary
+    # representation of the decimal 0.033; it is not a scientific tolerance.
     re_avg = PUBLISHED_TABLE2_AVERAGE[:, 0]
-    assert np.max(np.abs(re_avg - 1.0)) == np.float64(0.03300000000000003)
+    assert np.isclose(np.max(np.abs(re_avg - 1.0)), 0.033, rtol=0.0, atol=1e-15)
     assert not (np.all(np.diff(re_avg) >= 0) or np.all(np.diff(re_avg) <= 0))
 
     # The average n ratios correspond to a 16.3--18.5% under-recovery.
