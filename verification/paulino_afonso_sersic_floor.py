@@ -1,19 +1,29 @@
 """Controlled image-level C2 experiment for Paulino-Afonso et al. (2017).
 
 This is a *measurement-floor* experiment, not a claim to reproduce the paper's
-full artificial-redshifting result.  Paulino-Afonso et al. redshift real SDSS
+full artificial-redshifting result. Paulino-Afonso et al. redshift real local
 galaxies, transform the source PSF, and insert the degraded galaxies into real
-COSMOS/ACS backgrounds before fitting them with GALFIT.  Here we deliberately
+COSMOS/ACS backgrounds before fitting them with GALFIT. Here we deliberately
 start from exact single-Sersic latent truth and use a Gaussian approximation to
-the quoted ACS/F814W PSF.  The purpose is diagnostic: determine how much bias is
+the quoted ACS/F814W PSF. The purpose is diagnostic: determine how much bias is
 created by target sampling, PSF convolution and survey-depth noise *when the
 fitted model family is exactly correct*.
 
-If this controlled experiment does not reproduce the paper's ~16--19 per cent
-median n under-recovery, that is scientifically informative rather than a test
-failure: it implies that source complexity, source-PSF preparation, real-sky
-structure, fitting freedom/selection, or some combination is required before
-we should expect the published bias.
+Two design errors in the first exploratory version are intentionally corrected
+here rather than hidden with looser fitting tolerances:
+
+1. target apparent magnitude is now derived from an explicit local-source
+   magnitude at z_source=0.03 using the paper's luminosity-distance scaling and
+   its separately applied luminosity-evolution law; and
+2. the fitting footprint is adaptive, with a declared minimum radial extent in
+   units of target Re plus a PSF margin. The old fixed 81x81 stamp truncated the
+   large low-z test cases and generated catastrophic Re/n/sky degeneracies.
+
+If the corrected exact-model experiment does not reproduce the paper's
+~16--19 per cent median n under-recovery, that is scientifically informative:
+it implies that source complexity, source-PSF preparation, real-sky structure,
+fitting freedom/selection, or a combination is required before the published
+bias should be expected.
 
 Published target anchors used here
 ----------------------------------
@@ -21,13 +31,13 @@ Paulino-Afonso et al. (2017), Sections 3--5 and Appendix B:
 * target redshifts: 0.40, 0.84, 1.47, 2.23;
 * COSMOS ACS/F814W pixel scale: 0.03 arcsec/pixel;
 * typical F814W PSF FWHM: ~0.09 arcsec;
-* F814W point-source depth: AB=27.2 at 5 sigma.
+* F814W point-source depth: AB=27.2 at 5 sigma;
+* luminosity evolution: log10 L*(z)=0.45 z + 41.87.
 
 The depth is converted into a white-Gaussian pixel-noise level using the exact
-matched-filter variance of the normalized Gaussian PSF.  This makes the depth
-normalization reproducible without inventing an instrumental zeropoint.  Real
-ACS backgrounds are correlated/non-Gaussian, so this remains a controlled floor
-rather than the final C2 reproduction.
+matched-filter variance of the normalized Gaussian PSF. Real ACS backgrounds
+are correlated/non-Gaussian, so this remains a controlled floor rather than the
+final C2 reproduction.
 """
 
 from __future__ import annotations
@@ -39,41 +49,55 @@ from scipy.ndimage import gaussian_filter
 from scipy.optimize import least_squares
 from scipy.special import gammaincinv, gamma
 
-from .paulino_afonso_2017 import TARGET_REDSHIFTS
+from .paulino_afonso_2017 import TARGET_REDSHIFTS, luminosity_evolution_ratio
 from .reference import FlatLCDMReference
 
 PIXEL_SCALE_ARCSEC = 0.03
 PSF_FWHM_ARCSEC = 0.09
 POINT_DEPTH_AB_5SIGMA = 27.2
+SOURCE_REDSHIFT = 0.03
 FWHM_TO_SIGMA = 1.0 / 2.354_820_045_030_9493
 ARCSEC_TO_RAD = np.deg2rad(1.0 / 3600.0)
 KPC_M = 3.085_677_581_491_367e19
 
-# A compact, pre-declared diagnostic set.  These are not fitted to the paper's
-# output.  They span disk-like through concentrated profiles, sizes below the
-# paper's ~10-kpc reliable-size regime, and brightnesses around the quoted ACS
-# depth.  Changing this grid requires review because it changes the experiment.
+# Footprint semantics are numerical experiment design, not morphology pass
+# thresholds. Three Re encloses enough of disk-like profiles to break the gross
+# truncation/sky degeneracy seen in the first 81-pixel experiment, while a PSF
+# margin makes convolution edge loss explicit. Both quantities are archived.
+MIN_HALF_WIDTH_RE = 3.0
+PSF_MARGIN_SIGMA = 7.0
+MIN_STAMP_SIZE = 81
+
+# Pre-declared source-side diagnostic cases. Source magnitudes are deliberately
+# specified at z_source rather than tuned at each target redshift. They span
+# disk-like through concentrated profiles and sizes below the paper's ~10-kpc
+# reliable-size regime. These are controlled synthetic cases, not a claim to
+# match the original CALIFA/SAMI/MaNGA/NYU-VAGC magnitude distribution.
 TRUTH_CASES = (
-    {"case": "disk_bright", "re_kpc": 3.0, "n": 1.0, "q": 0.70, "mag_ab": 23.5},
-    {"case": "disk_faint", "re_kpc": 3.0, "n": 1.0, "q": 0.70, "mag_ab": 26.0},
-    {"case": "mixed_bright", "re_kpc": 5.0, "n": 2.0, "q": 0.65, "mag_ab": 24.5},
-    {"case": "concentrated", "re_kpc": 5.0, "n": 4.0, "q": 0.75, "mag_ab": 24.5},
-    {"case": "large_disk", "re_kpc": 9.0, "n": 1.0, "q": 0.60, "mag_ab": 24.5},
+    {"case": "disk_bright", "re_kpc": 3.0, "n": 1.0, "q": 0.70, "source_mag_ab": 16.5},
+    {"case": "disk_fainter", "re_kpc": 3.0, "n": 1.0, "q": 0.70, "source_mag_ab": 18.0},
+    {"case": "mixed", "re_kpc": 5.0, "n": 2.0, "q": 0.65, "source_mag_ab": 17.0},
+    {"case": "concentrated", "re_kpc": 5.0, "n": 4.0, "q": 0.75, "source_mag_ab": 17.0},
+    {"case": "large_disk", "re_kpc": 9.0, "n": 1.0, "q": 0.60, "source_mag_ab": 17.0},
 )
 
 
 @dataclass(frozen=True)
 class RecoveryRow:
     case: str
+    z_source: float
     z_target: float
     realization: int
     seed: int
     input_re_kpc: float
     input_n: float
     input_q: float
-    input_mag_ab: float
+    source_mag_ab: float
+    target_mag_ab: float
     target_re_arcsec: float
     target_re_pixels: float
+    stamp_size: int
+    half_width_over_re: float
     psf_fwhm_pixels: float
     point_source_depth_ab_5sigma: float
     total_flux_depth_units: float
@@ -81,6 +105,10 @@ class RecoveryRow:
     fit_success: bool
     fit_status: int
     fit_cost: float
+    hit_re_lower_bound: bool
+    hit_re_upper_bound: bool
+    hit_n_lower_bound: bool
+    hit_n_upper_bound: bool
     recovered_re_kpc: float
     recovered_n: float
     recovered_q: float
@@ -95,10 +123,36 @@ class RecoveryRow:
         return asdict(self)
 
 
+def _cosmology() -> FlatLCDMReference:
+    return FlatLCDMReference(H0_km_s_Mpc=70.0, Om0=0.3)
+
+
 def _kpc_per_arcsec(z: float, cosmology: FlatLCDMReference | None = None) -> float:
     if cosmology is None:
-        cosmology = FlatLCDMReference(H0_km_s_Mpc=70.0, Om0=0.3)
+        cosmology = _cosmology()
     return cosmology.angular_diameter_distance_m(float(z)) * ARCSEC_TO_RAD / KPC_M
+
+
+def target_flux_ratio_from_source(z_source: float, z_target: float) -> float:
+    """Paper-matched total-flux mapping with luminosity evolution kept separate.
+
+    For a fixed intrinsic source before the paper's imposed evolution,
+
+        F_t/F_s = [D_L(z_s)/D_L(z_t)]^2 * L*(z_t)/L*(z_s).
+
+    No Tolman factor is applied here: angular area changes are handled by the
+    target Re in pixels, so applying another (1+z)^-4 factor would double-count
+    cosmological surface-brightness dimming.
+    """
+    cosmology = _cosmology()
+    dl_s = cosmology.luminosity_distance_m(float(z_source))
+    dl_t = cosmology.luminosity_distance_m(float(z_target))
+    return float((dl_s / dl_t) ** 2 * luminosity_evolution_ratio(z_source, z_target))
+
+
+def target_mag_from_source_mag(source_mag_ab: float, z_target: float) -> float:
+    ratio = target_flux_ratio_from_source(SOURCE_REDSHIFT, float(z_target))
+    return float(source_mag_ab - 2.5 * np.log10(ratio))
 
 
 def _bn(n: float) -> float:
@@ -109,7 +163,6 @@ def _bn(n: float) -> float:
 
 
 def _sersic_total_normalization(re_pix: float, n: float, q: float) -> float:
-    """Continuous integral for a profile with I_e=1."""
     b = _bn(n)
     return float(2.0 * np.pi * q * re_pix**2 * n * np.exp(b) * gamma(2.0 * n) / b ** (2.0 * n))
 
@@ -143,6 +196,17 @@ def _psf_sigma_pix() -> float:
     return PSF_FWHM_ARCSEC * FWHM_TO_SIGMA / PIXEL_SCALE_ARCSEC
 
 
+def adaptive_stamp_size(re_pix: float) -> int:
+    """Return odd stamp size with >=3 Re radial extent plus PSF margin."""
+    if re_pix <= 0:
+        raise ValueError("re_pix must be positive")
+    half = int(np.ceil(MIN_HALF_WIDTH_RE * re_pix + PSF_MARGIN_SIGMA * _psf_sigma_pix()))
+    size = max(MIN_STAMP_SIZE, 2 * half + 1)
+    if size % 2 == 0:
+        size += 1
+    return int(size)
+
+
 def _convolved_model(
     shape: tuple[int, int],
     total_flux: float,
@@ -168,13 +232,7 @@ def _normalized_psf_stamp(size: int = 41) -> np.ndarray:
 
 
 def pixel_noise_from_point_depth() -> float:
-    """White-pixel sigma when an AB=27.2 point source has matched-filter S/N=5.
-
-    Flux units are defined so that an AB=27.2 source has total flux one.
-    For normalized PSF P and independent equal-variance pixels,
-
-        S/N = F * sqrt(sum(P^2)) / sigma_pix.
-    """
+    """White-pixel sigma when an AB=27.2 point source has matched-filter S/N=5."""
     psf = _normalized_psf_stamp()
     return float(np.sqrt(np.sum(psf**2)) / 5.0)
 
@@ -197,21 +255,14 @@ def _fit_single_sersic(
     initial_q: float,
     initial_flux: float,
 ) -> tuple[np.ndarray, object]:
-    """Fit flux, Re, n, q, centroid and constant sky with the exact render model.
-
-    Log parameters are used for positive quantities.  Bounds are numerical
-    safeguards, not scientific acceptance cuts.  They are intentionally wider
-    than the truth grid and the returned status is archived for every fit.
-    """
+    """Fit flux, Re, n, q, centroid and constant sky with the exact render model."""
     ny, nx = image.shape
     xmid = 0.5 * (nx - 1)
     ymid = 0.5 * (ny - 1)
 
-    # [lnF, lnRe, lnN, logit_q, dx, dy, sky]
     def q_to_u(q: float) -> float:
         qmin, qmax = 0.15, 1.0
-        t = (q - qmin) / (qmax - qmin)
-        t = np.clip(t, 1e-8, 1 - 1e-8)
+        t = np.clip((q - qmin) / (qmax - qmin), 1e-8, 1 - 1e-8)
         return float(np.log(t / (1 - t)))
 
     def u_to_q(u: float) -> float:
@@ -219,64 +270,50 @@ def _fit_single_sersic(
         t = 1.0 / (1.0 + np.exp(-u))
         return float(qmin + (qmax - qmin) * t)
 
-    p0 = np.array(
-        [
-            np.log(max(initial_flux, 1e-12)),
-            np.log(max(initial_re_pix, 0.2)),
-            np.log(max(initial_n, 0.2)),
-            q_to_u(initial_q),
-            0.0,
-            0.0,
-            0.0,
-        ],
-        dtype=float,
-    )
-
-    lower = np.array([np.log(1e-8), np.log(0.15), np.log(0.2), -12.0, -2.0, -2.0, -5*sigma_pix_noise])
-    upper = np.array([np.log(1e8), np.log(80.0), np.log(8.0), 12.0, 2.0, 2.0, 5*sigma_pix_noise])
+    p0 = np.array([
+        np.log(max(initial_flux, 1e-12)),
+        np.log(max(initial_re_pix, 0.2)),
+        np.log(max(initial_n, 0.2)),
+        q_to_u(initial_q), 0.0, 0.0, 0.0,
+    ])
+    lower = np.array([
+        np.log(1e-8), np.log(0.15), np.log(0.2), -12.0, -2.0, -2.0, -5*sigma_pix_noise
+    ])
+    upper = np.array([
+        np.log(1e8), np.log(120.0), np.log(8.0), 12.0, 2.0, 2.0, 5*sigma_pix_noise
+    ])
 
     def decode(p: np.ndarray) -> tuple[float, float, float, float, float, float, float]:
         return (
-            float(np.exp(p[0])),
-            float(np.exp(p[1])),
-            float(np.exp(p[2])),
-            u_to_q(float(p[3])),
-            xmid + float(p[4]),
-            ymid + float(p[5]),
-            float(p[6]),
+            float(np.exp(p[0])), float(np.exp(p[1])), float(np.exp(p[2])),
+            u_to_q(float(p[3])), xmid + float(p[4]), ymid + float(p[5]), float(p[6]),
         )
 
     def residual(p: np.ndarray) -> np.ndarray:
-        model = _convolved_model(image.shape, *decode(p))
-        return ((model - image) / sigma_pix_noise).ravel()
+        return ((_convolved_model(image.shape, *decode(p)) - image) / sigma_pix_noise).ravel()
 
     result = least_squares(
-        residual,
-        p0,
-        bounds=(lower, upper),
-        method="trf",
-        x_scale="jac",
-        ftol=1e-9,
-        xtol=1e-9,
-        gtol=1e-9,
-        max_nfev=450,
+        residual, p0, bounds=(lower, upper), method="trf", x_scale="jac",
+        ftol=1e-9, xtol=1e-9, gtol=1e-9, max_nfev=450,
     )
+    result._verification_lower_bounds = lower
+    result._verification_upper_bounds = upper
     return np.asarray(decode(result.x), dtype=float), result
 
 
+def _near_bound(value: float, bound: float, scale: float = 5e-5) -> bool:
+    return bool(abs(value - bound) <= scale * max(1.0, abs(bound)))
+
+
 def run_recovery_ensemble(
-    realizations: int = 12,
+    realizations: int = 3,
     base_seed: int = 2717,
-    stamp_size: int = 81,
 ) -> list[RecoveryRow]:
-    """Run the pre-declared truth grid at all four literature target redshifts."""
+    """Run the pre-declared source grid at all four literature target redshifts."""
     if realizations < 1:
         raise ValueError("realizations must be positive")
-    if stamp_size % 2 == 0:
-        raise ValueError("stamp_size must be odd")
 
     sigma = pixel_noise_from_point_depth()
-    center = 0.5 * (stamp_size - 1)
     rows: list[RecoveryRow] = []
 
     for iz, z in enumerate(TARGET_REDSHIFTS):
@@ -284,16 +321,14 @@ def run_recovery_ensemble(
         for icase, truth in enumerate(TRUTH_CASES):
             re_arcsec = float(truth["re_kpc"]) / kpc_arcsec
             re_pix = re_arcsec / PIXEL_SCALE_ARCSEC
-            flux = flux_in_depth_units(float(truth["mag_ab"]))
+            stamp_size = adaptive_stamp_size(re_pix)
+            center = 0.5 * (stamp_size - 1)
+            half_width_over_re = center / re_pix
+            target_mag = target_mag_from_source_mag(float(truth["source_mag_ab"]), float(z))
+            flux = flux_in_depth_units(target_mag)
             noiseless = _convolved_model(
-                (stamp_size, stamp_size),
-                flux,
-                re_pix,
-                float(truth["n"]),
-                float(truth["q"]),
-                center,
-                center,
-                0.0,
+                (stamp_size, stamp_size), flux, re_pix, float(truth["n"]),
+                float(truth["q"]), center, center, 0.0,
             )
 
             for realization in range(realizations):
@@ -301,54 +336,43 @@ def run_recovery_ensemble(
                 rng = np.random.default_rng(seed)
                 image = noiseless + rng.normal(0.0, sigma, size=noiseless.shape)
 
-                # Initial guesses are deterministic perturbations of truth, not
-                # truth itself, to exercise optimizer stability without adding
-                # a second stochastic variable.
-                initial_flux = flux * 0.93
-                initial_re = re_pix * 1.08
-                initial_n = max(0.25, float(truth["n"]) * 0.90)
-                initial_q = min(0.95, max(0.2, float(truth["q"]) + 0.04))
                 fit, result = _fit_single_sersic(
-                    image, sigma, initial_re, initial_n, initial_q, initial_flux
+                    image, sigma, re_pix * 1.08, max(0.25, float(truth["n"]) * 0.90),
+                    min(0.95, max(0.2, float(truth["q"]) + 0.04)), flux * 0.93,
                 )
                 recovered_flux, recovered_re_pix, recovered_n, recovered_q, _, _, sky = fit
                 recovered_re_kpc = recovered_re_pix * PIXEL_SCALE_ARCSEC * kpc_arcsec
+                lower = result._verification_lower_bounds
+                upper = result._verification_upper_bounds
+                recovered_mag = mag_from_depth_units(float(recovered_flux))
 
-                rows.append(
-                    RecoveryRow(
-                        case=str(truth["case"]),
-                        z_target=float(z),
-                        realization=realization,
-                        seed=seed,
-                        input_re_kpc=float(truth["re_kpc"]),
-                        input_n=float(truth["n"]),
-                        input_q=float(truth["q"]),
-                        input_mag_ab=float(truth["mag_ab"]),
-                        target_re_arcsec=re_arcsec,
-                        target_re_pixels=re_pix,
-                        psf_fwhm_pixels=PSF_FWHM_ARCSEC / PIXEL_SCALE_ARCSEC,
-                        point_source_depth_ab_5sigma=POINT_DEPTH_AB_5SIGMA,
-                        total_flux_depth_units=flux,
-                        pixel_noise_sigma_depth_units=sigma,
-                        fit_success=bool(result.success),
-                        fit_status=int(result.status),
-                        fit_cost=float(result.cost),
-                        recovered_re_kpc=float(recovered_re_kpc),
-                        recovered_n=float(recovered_n),
-                        recovered_q=float(recovered_q),
-                        recovered_mag_ab=mag_from_depth_units(float(recovered_flux)),
-                        recovered_sky=float(sky),
-                        re_ratio=float(recovered_re_kpc / float(truth["re_kpc"])),
-                        n_ratio=float(recovered_n / float(truth["n"])),
-                        q_difference=float(recovered_q - float(truth["q"])),
-                        mag_difference=float(mag_from_depth_units(float(recovered_flux)) - float(truth["mag_ab"])),
-                    )
-                )
+                rows.append(RecoveryRow(
+                    case=str(truth["case"]), z_source=SOURCE_REDSHIFT, z_target=float(z),
+                    realization=realization, seed=seed, input_re_kpc=float(truth["re_kpc"]),
+                    input_n=float(truth["n"]), input_q=float(truth["q"]),
+                    source_mag_ab=float(truth["source_mag_ab"]), target_mag_ab=target_mag,
+                    target_re_arcsec=re_arcsec, target_re_pixels=re_pix, stamp_size=stamp_size,
+                    half_width_over_re=half_width_over_re,
+                    psf_fwhm_pixels=PSF_FWHM_ARCSEC / PIXEL_SCALE_ARCSEC,
+                    point_source_depth_ab_5sigma=POINT_DEPTH_AB_5SIGMA,
+                    total_flux_depth_units=flux, pixel_noise_sigma_depth_units=sigma,
+                    fit_success=bool(result.success), fit_status=int(result.status), fit_cost=float(result.cost),
+                    hit_re_lower_bound=_near_bound(float(result.x[1]), float(lower[1])),
+                    hit_re_upper_bound=_near_bound(float(result.x[1]), float(upper[1])),
+                    hit_n_lower_bound=_near_bound(float(result.x[2]), float(lower[2])),
+                    hit_n_upper_bound=_near_bound(float(result.x[2]), float(upper[2])),
+                    recovered_re_kpc=float(recovered_re_kpc), recovered_n=float(recovered_n),
+                    recovered_q=float(recovered_q), recovered_mag_ab=recovered_mag,
+                    recovered_sky=float(sky), re_ratio=float(recovered_re_kpc / float(truth["re_kpc"])),
+                    n_ratio=float(recovered_n / float(truth["n"])),
+                    q_difference=float(recovered_q - float(truth["q"])),
+                    mag_difference=float(recovered_mag - target_mag),
+                ))
     return rows
 
 
 def summarize_rows(rows: list[RecoveryRow]) -> list[dict[str, object]]:
-    """Summarize median and 16/84-percentile recovery by truth case/redshift."""
+    """Summarize recovery and numerical pathologies by truth case/redshift."""
     out: list[dict[str, object]] = []
     for z in TARGET_REDSHIFTS:
         for truth in TRUTH_CASES:
@@ -356,15 +380,17 @@ def summarize_rows(rows: list[RecoveryRow]) -> list[dict[str, object]]:
             if not subset:
                 continue
             result: dict[str, object] = {
-                "case": str(truth["case"]),
-                "z_target": float(z),
-                "n_realizations": len(subset),
+                "case": str(truth["case"]), "z_target": float(z), "n_realizations": len(subset),
                 "fit_success_fraction": float(np.mean([r.fit_success for r in subset])),
-                "input_re_kpc": float(truth["re_kpc"]),
-                "input_n": float(truth["n"]),
-                "input_q": float(truth["q"]),
-                "input_mag_ab": float(truth["mag_ab"]),
-                "target_re_pixels": float(subset[0].target_re_pixels),
+                "any_parameter_bound_fraction": float(np.mean([
+                    r.hit_re_lower_bound or r.hit_re_upper_bound or r.hit_n_lower_bound or r.hit_n_upper_bound
+                    for r in subset
+                ])),
+                "input_re_kpc": float(truth["re_kpc"]), "input_n": float(truth["n"]),
+                "input_q": float(truth["q"]), "source_mag_ab": float(truth["source_mag_ab"]),
+                "target_mag_ab": float(subset[0].target_mag_ab),
+                "target_re_pixels": float(subset[0].target_re_pixels), "stamp_size": int(subset[0].stamp_size),
+                "half_width_over_re": float(subset[0].half_width_over_re),
             }
             for name in ("re_ratio", "n_ratio", "q_difference", "mag_difference"):
                 values = np.asarray([getattr(r, name) for r in subset], dtype=float)
