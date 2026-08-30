@@ -29,7 +29,7 @@ def make_model():
 
     model = datamodels.ImageModel((8, 8))
     model.meta.instrument.name = "NIRCAM"
-    # JWST datamodel/CRDS naming for the module-A long-wave detector.  STPSF
+    # JWST datamodel/CRDS naming for the module-A long-wave detector. STPSF
     # names the same physical detector NRCA5; that translation is handled only
     # at the instrument-adapter boundary.
     model.meta.instrument.detector = "NRCALONG"
@@ -46,6 +46,13 @@ def make_model():
     return model
 
 
+def _text(value) -> str:
+    """Normalize FITS string/bytes values for provenance JSON."""
+    if isinstance(value, bytes):
+        return value.decode("ascii", errors="replace").strip()
+    return str(value).strip()
+
+
 def main() -> None:
     required = ["CRDS_SERVER_URL", "CRDS_PATH", "CRDS_CONTEXT"]
     missing = [key for key in required if not os.environ.get(key)]
@@ -53,6 +60,7 @@ def main() -> None:
         raise RuntimeError(f"Missing required CRDS environment variables: {missing}")
 
     import crds
+    from jwst.photom.photom import find_row
     from stdatamodels.jwst import datamodels
 
     context = os.environ["CRDS_CONTEXT"]
@@ -98,18 +106,33 @@ def main() -> None:
         }
 
     photom_path = Path(refs["photom"])
-    with datamodels.NrcImgPhotomModel(photom_path) as photom:
-        rows = [
-            row
-            for row in photom.phot_table
-            if str(row["filter"]).strip() == "F444W" and str(row["pupil"]).strip() == "CLEAR"
-        ]
-        if len(rows) != 1:
-            raise RuntimeError(f"Expected one F444W/CLEAR PHOTOM row; found {len(rows)}")
-        result["photom_f444w_clear"] = {
-            "photmjsr": float(rows[0]["photmjsr"]),
-            "uncertainty": float(rows[0]["uncertainty"]),
+    with datamodels.NrcImgPhotomModel(photom_path) as photom_ref:
+        columns = list(photom_ref.phot_table.columns.names)
+        # Match exactly as jwst.photom.DataSet.calc_nircam does in v3.0.0:
+        # FILTER + PUPIL, plus SUBARRAY whenever that column exists.  The live
+        # reference contains multiple F444W/CLEAR rows because it carries
+        # subarray-specific calibrations; selecting the first row would be wrong.
+        fields_to_match = {"filter": "F444W", "pupil": "CLEAR"}
+        if "subarray" in columns:
+            fields_to_match["subarray"] = "FULL"
+        row_index = find_row(photom_ref.phot_table, fields_to_match)
+        if row_index is None:
+            raise RuntimeError(f"No PHOTOM row matched {fields_to_match}")
+        row = photom_ref.phot_table[row_index]
+        result["photom_table_columns"] = columns
+        result["photom_match_fields"] = fields_to_match
+        result["photom_selected_row"] = {
+            "row_index": int(row_index),
+            "filter": _text(row["filter"]),
+            "pupil": _text(row["pupil"]),
+            "subarray": _text(row["subarray"]) if "subarray" in columns else None,
+            "photmjsr": float(row["photmjsr"]),
+            "uncertainty": float(row["uncertainty"]),
         }
+        if not np.isfinite(result["photom_selected_row"]["photmjsr"]):
+            raise RuntimeError("Selected PHOTMJSR is not finite")
+        if result["photom_selected_row"]["photmjsr"] <= 0:
+            raise RuntimeError("Selected PHOTMJSR is not positive")
 
     area_path = Path(refs["area"])
     with datamodels.PixelAreaModel(area_path) as area:
