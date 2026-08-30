@@ -69,7 +69,7 @@ Gate D.
 ## Gate C — literature reproduction
 
 - [x] FERENGI-style artificial-redshift benchmark — synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**; see `benchmarks/ferengi_2008/REVIEW.md`. Existing regression bounds were not loosened and remain non-production sanity checks.
-- [ ] Paulino-Afonso/DOPTERIAN-style degradation benchmark.
+- [ ] Paulino-Afonso/DOPTERIAN-style degradation benchmark — **IN PROGRESS**. The published Table-2 structural anchors are now machine-readable and the distance-based versus Tolman surface-brightness convention is tested as an exact observable identity, with luminosity evolution kept separate. The gate remains open until image-level `r_e`/Sérsic-`n` degradation and recovery are reproduced and reviewed; see `benchmarks/paulino_afonso_2017/REVIEW.md`.
 - [ ] Yu et al. (2023) resolvedness/morphology trends.
 - [ ] AGN nuclear-fraction morphology contamination benchmark.
 - [ ] Zhuang & Shen PSF-mismatch AGN-host benchmark.
