@@ -87,10 +87,16 @@ def h_alpha_lstar_log10_erg_s(z: float) -> float:
 
 
 def luminosity_evolution_ratio(z_source: float, z_target: float) -> float:
-    """Return L*(z_target)/L*(z_source) from the paper's luminosity law."""
-    return 10.0 ** (
-        h_alpha_lstar_log10_erg_s(z_target) - h_alpha_lstar_log10_erg_s(z_source)
-    )
+    """Return L*(z_target)/L*(z_source) from the paper's luminosity law.
+
+    Algebraically the intercept 41.87 cancels exactly.  We therefore evaluate
+    the ratio as ``10**(0.45 * (z_target-z_source))`` rather than subtracting
+    two numbers near 42.  The previous implementation performed that needless
+    subtraction and lost about four parts in 10^15 in binary64 arithmetic,
+    causing the exact-form regression test to fail.  This change fixes the
+    numerical evaluation; the test tolerance is deliberately unchanged.
+    """
+    return float(10.0 ** (0.45 * (float(z_target) - float(z_source))))
 
 
 def distance_based_surface_brightness_ratio(
