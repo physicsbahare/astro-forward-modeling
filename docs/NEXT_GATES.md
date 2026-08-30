@@ -29,15 +29,28 @@ Requires an environment with the relevant packages and reference data.
 - [x] Compare Wiener kernels against current `photutils.psf_matching.make_wiener_kernel`.
 - [x] Compare chromatic rendering against GalSim on the same analytic scene.
 - [x] Compare polychromatic JWST PSFs against STPSF with controlled input spectra.
-- [ ] Confirm JWST calibrated-unit round trips against current `jwst` pipeline/CRDS products.
+- [x] Verify NIRCam PHOTOM science/error/variance scaling and inverse round trip against `jwst==3.0.0`.
+- [x] Freeze a compatible CRDS context and verify live NIRCam PHOTOM/AREA reference selection with checksummed provenance.
+- [ ] Quantify JWST drizzle/resampling behavior (flux, centroid, pixel scale, morphology, variance and covariance).
 
-The STPSF sub-gate is now reproducibly frozen to STPSF 2.2.0 plus the exact
+The STPSF sub-gate is reproducibly frozen to STPSF 2.2.0 plus the exact
 STPSF 2.2.0 data archive (SHA-256
 `bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98`).
-The first CI run passed four JWST/NIRCam checks covering data/software pinning,
-output-extension semantics and detector-effect toggling, chromatic PSF size,
-and detector-position field dependence.  This does **not** close the JWST
-pipeline/CRDS calibration or drizzle sub-gates.
+The initial CI suite passes four JWST/NIRCam checks covering data/software
+pinning, output-extension semantics and detector-effect toggling, chromatic PSF
+size, and detector-position field dependence.
+
+The first pipeline/CRDS calibration run also passes under `jwst==3.0.0` and
+`jwst_1584.pmap`.  For the controlled NRCA-long/F444W/FULL case, CRDS selects
+`jwst_nircam_photom_0168.fits` and `jwst_nircam_area_0261.fits`; both are
+recorded by SHA-256.  The test also exposed and resolved an important reference-
+table semantic: the PHOTOM table has subarray-specific rows, so NIRCam imaging
+must match FILTER + PUPIL + SUBARRAY when the `subarray` column is present,
+rather than taking the first F444W/CLEAR row.
+
+The remaining JWST Gate-B item is drizzle/resampling behavior.  It is kept
+separate because a correct PHOTOM conversion does not by itself guarantee
+correct pixel-area, covariance, or morphology behavior after drizzling.
 
 ## Gate C — literature reproduction
 
