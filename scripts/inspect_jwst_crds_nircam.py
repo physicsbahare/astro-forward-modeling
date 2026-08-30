@@ -29,7 +29,10 @@ def make_model():
 
     model = datamodels.ImageModel((8, 8))
     model.meta.instrument.name = "NIRCAM"
-    model.meta.instrument.detector = "NRCA5"
+    # JWST datamodel/CRDS naming for the module-A long-wave detector.  STPSF
+    # names the same physical detector NRCA5; that translation is handled only
+    # at the instrument-adapter boundary.
+    model.meta.instrument.detector = "NRCALONG"
     model.meta.instrument.filter = "F444W"
     model.meta.instrument.pupil = "CLEAR"
     model.meta.exposure.type = "NRC_IMAGE"
@@ -44,8 +47,6 @@ def make_model():
 
 
 def main() -> None:
-    # CRDS environment variables are deliberately checked before importing
-    # crds so CI cannot silently fall back to another context/server/cache.
     required = ["CRDS_SERVER_URL", "CRDS_PATH", "CRDS_CONTEXT"]
     missing = [key for key in required if not os.environ.get(key)]
     if missing:
@@ -128,7 +129,7 @@ def main() -> None:
 
     out = Path("benchmark_output/jwst_crds_nircam")
     out.mkdir(parents=True, exist_ok=True)
-    output_path = out / "crds_jwst_1584_nrca5_f444w.json"
+    output_path = out / "crds_jwst_1584_nrcalong_f444w.json"
     output_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     print(json.dumps(result, indent=2, sort_keys=True))
 
