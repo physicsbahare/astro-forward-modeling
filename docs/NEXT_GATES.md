@@ -24,12 +24,20 @@ Production package coding should not begin until these gates are closed.
 
 Requires an environment with the relevant packages and reference data.
 
-- [ ] Compare cosmological distances and units against `astropy.cosmology`.
-- [ ] Compare exact/adaptive reprojection against `reproject`.
-- [ ] Compare Wiener kernels against current `photutils.psf_matching.make_wiener_kernel`.
-- [ ] Compare chromatic rendering against GalSim on the same analytic scene.
-- [ ] Compare polychromatic JWST PSFs against STPSF with controlled input spectra.
+- [x] Compare cosmological distances and units against `astropy.cosmology`.
+- [x] Compare exact/adaptive reprojection against `reproject`.
+- [x] Compare Wiener kernels against current `photutils.psf_matching.make_wiener_kernel`.
+- [x] Compare chromatic rendering against GalSim on the same analytic scene.
+- [x] Compare polychromatic JWST PSFs against STPSF with controlled input spectra.
 - [ ] Confirm JWST calibrated-unit round trips against current `jwst` pipeline/CRDS products.
+
+The STPSF sub-gate is now reproducibly frozen to STPSF 2.2.0 plus the exact
+STPSF 2.2.0 data archive (SHA-256
+`bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98`).
+The first CI run passed four JWST/NIRCam checks covering data/software pinning,
+output-extension semantics and detector-effect toggling, chromatic PSF size,
+and detector-position field dependence.  This does **not** close the JWST
+pipeline/CRDS calibration or drizzle sub-gates.
 
 ## Gate C — literature reproduction
 
