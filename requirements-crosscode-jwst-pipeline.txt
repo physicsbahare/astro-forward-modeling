@@ -1,0 +1,5 @@
+# Gate-B JWST calibration environment.  The pipeline release is tied to the
+# explicit CRDS build context in the CI workflow; resolved dependencies are
+# recorded as an artifact on every run and will be frozen after the first
+# successful calibration/reference-selection run.
+jwst==3.0.0
