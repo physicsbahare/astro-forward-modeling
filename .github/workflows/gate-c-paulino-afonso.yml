@@ -13,6 +13,7 @@ on:
       - "scripts/run_paulino_afonso_sersic_floor.py"
       - "scripts/run_paulino_afonso_noiseless_identifiability.py"
       - "scripts/run_paulino_afonso_optimizer_diagnosis.py"
+      - "scripts/run_paulino_afonso_solver_convergence.py"
       - "benchmarks/paulino_afonso_2017/**"
       - ".github/workflows/gate-c-paulino-afonso.yml"
       - "pyproject.toml"
@@ -28,6 +29,7 @@ on:
       - "scripts/run_paulino_afonso_sersic_floor.py"
       - "scripts/run_paulino_afonso_noiseless_identifiability.py"
       - "scripts/run_paulino_afonso_optimizer_diagnosis.py"
+      - "scripts/run_paulino_afonso_solver_convergence.py"
       - "benchmarks/paulino_afonso_2017/**"
       - ".github/workflows/gate-c-paulino-afonso.yml"
       - "pyproject.toml"
@@ -36,7 +38,7 @@ on:
 jobs:
   anchor-radiometry-and-sersic-floor:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,6 +69,9 @@ jobs:
 
       - name: Diagnose high-n optimizer basins
         run: python scripts/run_paulino_afonso_optimizer_diagnosis.py
+
+      - name: Diagnose high-n solver convergence controls
+        run: python scripts/run_paulino_afonso_solver_convergence.py
 
       - name: Generate machine-readable C2 Sérsic-floor report
         run: python scripts/run_paulino_afonso_sersic_floor.py
