@@ -16,6 +16,8 @@ jobs:
       STPSF_DATA_VERSION: "2.2.0"
       # Version-specific URL linked by the official STPSF installation docs.
       STPSF_DATA_URL: "https://stsci.box.com/shared/static/mjst9j056ibf2uph4gxy8qxmi89tjzwk.gz"
+      # Measured from the exact 2.2.0 archive above in the first successful CI run.
+      STPSF_DATA_SHA256: "bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +34,7 @@ jobs:
       - name: Install pinned JWST/STPSF cross-code environment
         run: python -m pip install -r requirements-crosscode-jwst-stpsf.txt
 
-      - name: Download exact STPSF 2.2.0 reference-data bundle
+      - name: Download and verify exact STPSF 2.2.0 reference-data bundle
         shell: bash
         run: |
           set -euo pipefail
@@ -41,6 +43,7 @@ jobs:
           mkdir -p "$root"
           curl --fail --location --retry 5 --retry-delay 2 \
             "$STPSF_DATA_URL" -o "$archive"
+          printf '%s  %s\n' "$STPSF_DATA_SHA256" "$archive" | sha256sum --check --strict
           sha256sum "$archive" | tee stpsf-data-${STPSF_DATA_VERSION}.sha256
           tar -xzf "$archive" -C "$root"
           data_dir="$(dirname "$(find "$root" -type f -name version.txt -print -quit)")"
@@ -57,6 +60,7 @@ jobs:
           printf 'STPSF_PATH=%s\n' "$STPSF_PATH" | tee gate-b-jwst-environment.txt
           printf 'STPSF_DATA_VERSION=%s\n' "$STPSF_DATA_VERSION" | tee -a gate-b-jwst-environment.txt
           printf 'STPSF_DATA_URL=%s\n' "$STPSF_DATA_URL" | tee -a gate-b-jwst-environment.txt
+          printf 'STPSF_DATA_SHA256=%s\n' "$STPSF_DATA_SHA256" | tee -a gate-b-jwst-environment.txt
           cat "$STPSF_PATH/version.txt" | tee stpsf-data-version.txt
 
       - name: Run JWST/STPSF Gate-B checks
