@@ -1,4 +1,4 @@
-name: gate-b-jwst
+name: gate-b-jwst-stpsf
 
 on:
   push:
@@ -75,7 +75,7 @@ jobs:
     env:
       CRDS_SERVER_URL: "https://jwst-crds.stsci.edu"
       CRDS_CONTEXT: "jwst_1584.pmap"
-      CRDS_PATH: "${{ runner.temp }}/crds-cache"
+      CRDS_PATH: "/tmp/jwst-crds-cache"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
