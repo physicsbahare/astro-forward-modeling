@@ -15,10 +15,15 @@ def test_real_background_is_inserted_once_without_renoising():
         real_background_electrons=background,
     )
 
+    # The supplied real background must be preserved bit-for-bit and the final
+    # image must be exactly the one arithmetic addition of source + background.
+    # Do not test this by subtracting the source back out: floating-point
+    # addition followed by subtraction is not bitwise reversible for decimal
+    # values such as 0.01, even when no extra noise has been added.
     np.testing.assert_array_equal(result.background_electrons, background)
     np.testing.assert_array_equal(
-        result.image_electrons - result.source_electrons,
-        background,
+        result.image_electrons,
+        result.source_electrons + background,
     )
 
 
