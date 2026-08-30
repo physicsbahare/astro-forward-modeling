@@ -1,0 +1,28 @@
+name: gate-b-core-crosscode
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  crosscode-core:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install independent harness
+        run: python -m pip install -r requirements-verification.txt
+      - name: Install pinned Gate-B astronomy packages
+        run: python -m pip install -r requirements-crosscode-core.txt
+      - name: Run Gate-B core cross-code checks
+        run: pytest -q crosscode/test_gate_b_core.py
