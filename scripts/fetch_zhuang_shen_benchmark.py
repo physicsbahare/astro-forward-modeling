@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Fetch a small, immutable subset of the Zhuang & Shen benchmark products.
+"""Fetch an immutable subset of the Zhuang & Shen benchmark products.
 
-The upstream repository is pinned to a specific Git commit.  Each downloaded file
+The upstream repository is pinned to a specific Git commit. Each downloaded file
 is checked against the Git blob SHA recorded from that commit, then a SHA-256
-manifest is written locally.  Third-party benchmark data remain outside git.
+manifest is written locally. Third-party benchmark data remain outside git.
 """
 
 from __future__ import annotations
@@ -16,10 +16,7 @@ from urllib.request import urlopen
 
 UPSTREAM_REPO = "mingyangzhuang/JWST-NIRCam-Data-Product"
 UPSTREAM_COMMIT = "0a55283e973e2dc055ab807e29a04d89733fee48"
-RAW_ROOT = (
-    "https://raw.githubusercontent.com/"
-    f"{UPSTREAM_REPO}/{UPSTREAM_COMMIT}"
-)
+RAW_ROOT = "https://raw.githubusercontent.com/" f"{UPSTREAM_REPO}/{UPSTREAM_COMMIT}"
 
 FILES = {
     "info": {
@@ -45,6 +42,22 @@ FILES = {
     "f115w_center_free": {
         "path": "mock_AGN_results/mock_AGN_results_F115W_fiducial_PSF_center_not_tied.ipac",
         "git_blob_sha": "2d25e9dfc03a61e98786fc67607cbadf014081ab",
+    },
+    "f150w_fiducial": {
+        "path": "mock_AGN_results/mock_AGN_results_F150W_fiducial_PSF.ipac",
+        "git_blob_sha": "dffb475548618f8db8f67e5df678d40f00034964",
+    },
+    "f150w_broader": {
+        "path": "mock_AGN_results/mock_AGN_results_F150W_broader_PSF.ipac",
+        "git_blob_sha": "c9cc22c2566295d65a27c8b86190225f48999a69",
+    },
+    "f150w_narrower": {
+        "path": "mock_AGN_results/mock_AGN_results_F150W_narrower_PSF.ipac",
+        "git_blob_sha": "06bb790e75f48a085bacedec7cd28afce22596e5",
+    },
+    "f150w_center_free": {
+        "path": "mock_AGN_results/mock_AGN_results_F150W_fiducial_PSF_center_not_tied.ipac",
+        "git_blob_sha": "a7f7929509cd777805fcdf8a23a4f2c1cf1c3324",
     },
 }
 
@@ -117,10 +130,7 @@ def main() -> None:
     print(f"Verified {len(records)} files from immutable upstream commit {UPSTREAM_COMMIT}.")
     print(f"Manifest: {manifest_path}")
     for record in records:
-        print(
-            f"{record['path']}: {record['bytes']} bytes, "
-            f"sha256={record['sha256']}"
-        )
+        print(f"{record['path']}: {record['bytes']} bytes, sha256={record['sha256']}")
 
 
 if __name__ == "__main__":
