@@ -25,7 +25,11 @@ def _make_nircam_input(shape=(12, 16)):
     model.var_flat = np.full(shape, 0.04, dtype=np.float32)
 
     model.meta.instrument.name = "NIRCAM"
-    model.meta.instrument.detector = "NRCA5"
+    # The JWST pipeline/CRDS datamodel uses NRCALONG for the module-A long-wave
+    # detector; STPSF calls the same physical SCA NRCA5.  Keeping this
+    # translation explicit prevents instrument-model identifiers from leaking
+    # across package boundaries.
+    model.meta.instrument.detector = "NRCALONG"
     model.meta.instrument.filter = "F444W"
     model.meta.instrument.pupil = "CLEAR"
     model.meta.exposure.type = "NRC_IMAGE"
