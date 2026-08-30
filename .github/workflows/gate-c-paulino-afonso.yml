@@ -1,0 +1,60 @@
+name: gate-c-paulino-afonso
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "verification/paulino_afonso_2017.py"
+      - "tests/test_paulino_afonso_2017.py"
+      - "scripts/run_paulino_afonso_2017_anchor_benchmark.py"
+      - "benchmarks/paulino_afonso_2017/**"
+      - ".github/workflows/gate-c-paulino-afonso.yml"
+      - "pyproject.toml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "verification/paulino_afonso_2017.py"
+      - "tests/test_paulino_afonso_2017.py"
+      - "scripts/run_paulino_afonso_2017_anchor_benchmark.py"
+      - "benchmarks/paulino_afonso_2017/**"
+      - ".github/workflows/gate-c-paulino-afonso.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  anchor-and-radiometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-paulino-afonso-pip-freeze.txt
+
+      - name: Run C2 anchor and radiometric checks
+        run: pytest -q tests/test_paulino_afonso_2017.py
+
+      - name: Generate machine-readable C2 anchor report
+        run: python scripts/run_paulino_afonso_2017_anchor_benchmark.py
+
+      - name: Upload C2 anchor metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-paulino-afonso-anchor
+          path: |
+            gate-c-paulino-afonso-pip-freeze.txt
+            benchmark_output/paulino_afonso_2017/
+          if-no-files-found: warn
