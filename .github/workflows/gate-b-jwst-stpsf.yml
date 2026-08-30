@@ -102,6 +102,8 @@ jobs:
           crds list --status | tee gate-b-jwst-crds-status-before.txt
       - name: Verify NIRCam PHOTOM arithmetic and unit semantics
         run: pytest -q crosscode/test_gate_b_jwst_pipeline.py
+      - name: Verify initial JWST drizzle pixel-scale semantics
+        run: pytest -q crosscode/test_gate_b_jwst_resample.py
       - name: Select and inspect live PHOTOM and AREA references
         run: python scripts/inspect_jwst_crds_nircam.py
       - name: Record CRDS status after reference retrieval
