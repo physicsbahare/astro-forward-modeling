@@ -6,8 +6,13 @@ on:
       - verification-v0.1
     paths:
       - "verification/ferengi_synthetic.py"
+      - "verification/ferengi_noise_benchmark.py"
+      - "verification/target_noise.py"
       - "tests/test_ferengi_synthetic.py"
+      - "tests/test_ferengi_noise_benchmark.py"
+      - "tests/test_target_noise.py"
       - "scripts/run_ferengi_synthetic_benchmark.py"
+      - "scripts/run_ferengi_noise_benchmark.py"
       - ".github/workflows/gate-c-ferengi.yml"
       - "pyproject.toml"
   pull_request:
@@ -15,8 +20,13 @@ on:
       - main
     paths:
       - "verification/ferengi_synthetic.py"
+      - "verification/ferengi_noise_benchmark.py"
+      - "verification/target_noise.py"
       - "tests/test_ferengi_synthetic.py"
+      - "tests/test_ferengi_noise_benchmark.py"
+      - "tests/test_target_noise.py"
       - "scripts/run_ferengi_synthetic_benchmark.py"
+      - "scripts/run_ferengi_noise_benchmark.py"
       - ".github/workflows/gate-c-ferengi.yml"
       - "pyproject.toml"
   workflow_dispatch:
@@ -44,8 +54,14 @@ jobs:
       - name: Run deterministic FERENGI regression tests
         run: pytest -q tests/test_ferengi_synthetic.py
 
-      - name: Generate FERENGI benchmark metrics
+      - name: Generate deterministic FERENGI benchmark metrics
         run: python scripts/run_ferengi_synthetic_benchmark.py
+
+      - name: Run target-noise regression tests
+        run: pytest -q tests/test_target_noise.py tests/test_ferengi_noise_benchmark.py
+
+      - name: Generate FERENGI target-noise metrics
+        run: python scripts/run_ferengi_noise_benchmark.py
 
       - name: Upload benchmark metrics and provenance
         if: always()
