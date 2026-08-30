@@ -68,7 +68,7 @@ Gate D.
 
 ## Gate C — literature reproduction
 
-- [ ] FERENGI-style artificial-redshift benchmark.
+- [x] FERENGI-style artificial-redshift benchmark — synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**; see `benchmarks/ferengi_2008/REVIEW.md`. Existing regression bounds were not loosened and remain non-production sanity checks.
 - [ ] Paulino-Afonso/DOPTERIAN-style degradation benchmark.
 - [ ] Yu et al. (2023) resolvedness/morphology trends.
 - [ ] AGN nuclear-fraction morphology contamination benchmark.
