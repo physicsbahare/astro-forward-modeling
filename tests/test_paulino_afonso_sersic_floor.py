@@ -2,6 +2,9 @@
 
 These are numerical/semantic checks only.  They intentionally do not assert
 that a pure single-Sersic experiment must reproduce the paper's Table-2 bias.
+They also do not require every low-S/N fit to converge: Paulino-Afonso et al.
+explicitly report non-convergence fractions and exclude those objects from the
+structural sample, so convergence is itself a benchmark observable.
 """
 
 from __future__ import annotations
@@ -41,7 +44,12 @@ def test_small_recovery_smoke_run_preserves_row_identity_and_finite_outputs() ->
         (str(case["case"]), float(z)) for z in TARGET_REDSHIFTS for case in TRUTH_CASES
     }
     for row in rows:
-        assert row.fit_success
+        # Fit success/status is archived rather than thresholded here because
+        # non-convergence is a physically meaningful low-S/N outcome in the
+        # literature experiment itself.
+        assert isinstance(row.fit_success, bool)
+        assert isinstance(row.fit_status, int)
+        assert np.isfinite(row.fit_cost) and row.fit_cost >= 0
         assert np.isfinite(row.re_ratio) and row.re_ratio > 0
         assert np.isfinite(row.n_ratio) and row.n_ratio > 0
         assert np.isfinite(row.q_difference)
