@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Select and inspect NIRCam PHOTOM/AREA references under a pinned CRDS context.
 
-The script is a live Gate-B provenance check.  It intentionally downloads only
+The script is a live Gate-B provenance check. It intentionally downloads only
 the two calibration reference types required for this test rather than syncing a
 full JWST CRDS cache.
 """
@@ -76,19 +76,35 @@ def main() -> None:
         observatory="jwst",
     )
 
+    # ``get_crds_parameters`` returns the datamodel's flattened schema keys
+    # (e.g. ``meta.instrument.name``), not CRDS header keywords such as
+    # ``INSTRUME``. Record both the human-readable selection metadata and the
+    # exact flattened values supplied to CRDS so provenance cannot silently
+    # become a collection of null fields.
+    flat_keys = (
+        "meta.instrument.name",
+        "meta.instrument.detector",
+        "meta.instrument.filter",
+        "meta.instrument.pupil",
+        "meta.exposure.type",
+        "meta.subarray.name",
+        "meta.observation.date",
+        "meta.observation.time",
+    )
     result: dict[str, object] = {
         "context": context,
         "crds_version": getattr(crds, "__version__", "unknown"),
-        "selection_parameters": {
-            "INSTRUME": parameters.get("INSTRUME"),
-            "DETECTOR": parameters.get("DETECTOR"),
-            "FILTER": parameters.get("FILTER"),
-            "PUPIL": parameters.get("PUPIL"),
-            "EXP_TYPE": parameters.get("EXP_TYPE"),
-            "SUBARRAY": parameters.get("SUBARRAY"),
-            "DATE-OBS": parameters.get("DATE-OBS"),
-            "TIME-OBS": parameters.get("TIME-OBS"),
+        "selection_metadata": {
+            "instrument": model.meta.instrument.name,
+            "detector": model.meta.instrument.detector,
+            "filter": model.meta.instrument.filter,
+            "pupil": model.meta.instrument.pupil,
+            "exposure_type": model.meta.exposure.type,
+            "subarray": model.meta.subarray.name,
+            "date_obs": model.meta.observation.date,
+            "time_obs": model.meta.observation.time,
         },
+        "crds_flat_parameters": {key: parameters.get(key) for key in flat_keys},
         "references": {},
     }
 
@@ -109,7 +125,7 @@ def main() -> None:
     with datamodels.NrcImgPhotomModel(photom_path) as photom_ref:
         columns = list(photom_ref.phot_table.columns.names)
         # Match exactly as jwst.photom.DataSet.calc_nircam does in v3.0.0:
-        # FILTER + PUPIL, plus SUBARRAY whenever that column exists.  The live
+        # FILTER + PUPIL, plus SUBARRAY whenever that column exists. The live
         # reference contains multiple F444W/CLEAR rows because it carries
         # subarray-specific calibrations; selecting the first row would be wrong.
         fields_to_match = {"filter": "F444W", "pupil": "CLEAR"}
