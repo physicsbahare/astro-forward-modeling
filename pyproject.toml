@@ -18,6 +18,9 @@ dependencies = [
 test = ["pytest>=8"]
 tutorial = ["pandas>=2", "jupyter>=1"]
 
+[tool.setuptools]
+packages = ["verification"]
+
 [tool.pytest.ini_options]
 addopts = "-ra"
 testpaths = ["tests"]
