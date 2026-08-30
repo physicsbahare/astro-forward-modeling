@@ -1,0 +1,29 @@
+name: verification-suite
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  independent-verification:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install verification dependencies
+        run: python -m pip install -r requirements-verification.txt
+      - name: Run scientific regression tests
+        run: pytest -q
