@@ -1,4 +1,10 @@
-# Gate-B JWST/STPSF environment is deliberately isolated from the core cross-code pins.
-# STPSF 2.2.0 currently requires Astropy < 7.1, while the core Gate-B workflow uses Astropy 8.x.
+# Gate-B JWST/STPSF environment.  Direct numerical dependencies are pinned
+# so reruns do not silently change the optical calculation environment.
 stpsf==2.2.0
 synphot==1.7.0
+astropy==8.0.1
+numpy==2.3.5
+scipy==1.18.1
+photutils==3.0.0
+poppy==1.2.0
+pysiaf==0.28.0
