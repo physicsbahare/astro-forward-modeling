@@ -6,8 +6,11 @@ on:
       - verification-v0.1
     paths:
       - "verification/paulino_afonso_2017.py"
+      - "verification/paulino_afonso_sersic_floor.py"
       - "tests/test_paulino_afonso_2017.py"
+      - "tests/test_paulino_afonso_sersic_floor.py"
       - "scripts/run_paulino_afonso_2017_anchor_benchmark.py"
+      - "scripts/run_paulino_afonso_sersic_floor.py"
       - "benchmarks/paulino_afonso_2017/**"
       - ".github/workflows/gate-c-paulino-afonso.yml"
       - "pyproject.toml"
@@ -16,17 +19,20 @@ on:
       - main
     paths:
       - "verification/paulino_afonso_2017.py"
+      - "verification/paulino_afonso_sersic_floor.py"
       - "tests/test_paulino_afonso_2017.py"
+      - "tests/test_paulino_afonso_sersic_floor.py"
       - "scripts/run_paulino_afonso_2017_anchor_benchmark.py"
+      - "scripts/run_paulino_afonso_sersic_floor.py"
       - "benchmarks/paulino_afonso_2017/**"
       - ".github/workflows/gate-c-paulino-afonso.yml"
       - "pyproject.toml"
   workflow_dispatch:
 
 jobs:
-  anchor-and-radiometry:
+  anchor-radiometry-and-sersic-floor:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,14 +52,20 @@ jobs:
       - name: Run C2 anchor and radiometric checks
         run: pytest -q tests/test_paulino_afonso_2017.py
 
+      - name: Run C2 image-level invariant checks
+        run: pytest -q tests/test_paulino_afonso_sersic_floor.py
+
       - name: Generate machine-readable C2 anchor report
         run: python scripts/run_paulino_afonso_2017_anchor_benchmark.py
 
-      - name: Upload C2 anchor metrics and provenance
+      - name: Generate machine-readable C2 Sérsic-floor report
+        run: python scripts/run_paulino_afonso_sersic_floor.py
+
+      - name: Upload C2 metrics and provenance
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: gate-c-paulino-afonso-anchor
+          name: gate-c-paulino-afonso
           path: |
             gate-c-paulino-afonso-pip-freeze.txt
             benchmark_output/paulino_afonso_2017/
