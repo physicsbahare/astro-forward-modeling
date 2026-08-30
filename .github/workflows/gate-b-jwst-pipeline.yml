@@ -1,0 +1,73 @@
+name: gate-b-jwst-pipeline-crds
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "crosscode/test_gate_b_jwst_pipeline.py"
+      - "scripts/inspect_jwst_crds_nircam.py"
+      - "requirements-crosscode-jwst-pipeline.txt"
+      - ".github/workflows/gate-b-jwst-pipeline.yml"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  nircam-photom-crds:
+    runs-on: ubuntu-latest
+    env:
+      CRDS_SERVER_URL: "https://jwst-crds.stsci.edu"
+      CRDS_CONTEXT: "jwst_1584.pmap"
+      CRDS_PATH: "${{ runner.temp }}/crds-cache"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install independent harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Install pinned JWST pipeline
+        run: python -m pip install -r requirements-crosscode-jwst-pipeline.txt
+
+      - name: Record resolved calibration environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$CRDS_PATH"
+          python -m pip freeze | tee gate-b-jwst-pipeline-pip-freeze.txt
+          {
+            echo "CRDS_SERVER_URL=$CRDS_SERVER_URL"
+            echo "CRDS_CONTEXT=$CRDS_CONTEXT"
+            echo "CRDS_PATH=$CRDS_PATH"
+          } | tee gate-b-jwst-crds-environment.txt
+          crds list --status | tee gate-b-jwst-crds-status-before.txt
+
+      - name: Verify NIRCam PHOTOM arithmetic and unit semantics
+        run: pytest -q crosscode/test_gate_b_jwst_pipeline.py
+
+      - name: Select and inspect live PHOTOM and AREA references
+        run: python scripts/inspect_jwst_crds_nircam.py
+
+      - name: Record CRDS status after reference retrieval
+        run: crds list --status | tee gate-b-jwst-crds-status-after.txt
+
+      - name: Upload calibration provenance even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-b-jwst-pipeline-crds-provenance
+          path: |
+            gate-b-jwst-pipeline-pip-freeze.txt
+            gate-b-jwst-crds-environment.txt
+            gate-b-jwst-crds-status-before.txt
+            gate-b-jwst-crds-status-after.txt
+            benchmark_output/jwst_crds_nircam/
+          if-no-files-found: warn
