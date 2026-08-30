@@ -34,8 +34,6 @@ def test_astropy_cosmology_matches_independent_flat_lcdm_reference():
     da_rel = np.max(np.abs(da_ref - da_astropy) / da_astropy)
     duality = np.max(np.abs(dl_astropy / ((1.0 + z_grid) ** 2 * da_astropy) - 1.0))
 
-    # These are strict enough to expose convention mismatches but comfortably above
-    # ordinary double-precision quadrature noise for this smooth flat-LCDM case.
     assert dl_rel < 5.0e-10
     assert da_rel < 5.0e-10
     assert duality < 5.0e-13
@@ -68,8 +66,6 @@ def test_photutils_wiener_kernel_matches_reference_convention():
     external = make_wiener_kernel(source, target, regularization=regularization)
     reference = wiener_matching_kernel(source, target, regularization=regularization)
 
-    # Both kernels are normalized and should represent the same documented scalar
-    # Tikhonov/Wiener convention when no window or frequency penalty is supplied.
     assert abs(external.sum() - 1.0) < 5.0e-13
     assert abs(reference.sum() - 1.0) < 5.0e-13
 
@@ -89,7 +85,6 @@ def _simple_tan_wcs(nx: int, ny: int, pixel_arcsec: float, rotation_deg: float =
     w.wcs.crpix = [(nx + 1) / 2.0, (ny + 1) / 2.0]
     scale = pixel_arcsec / 3600.0
     theta = np.deg2rad(rotation_deg)
-    # RA axis carries the conventional negative sign.
     cd = np.array(
         [
             [-scale * np.cos(theta), scale * np.sin(theta)],
@@ -112,7 +107,6 @@ def test_reproject_exact_preserves_constant_surface_brightness():
     out, footprint = reproject_exact((source, w_in), w_out, shape_out=(129, 129))
     valid = footprint > 0.999
     assert np.count_nonzero(valid) > 1000
-
     max_abs = np.max(np.abs(out[valid] - 7.25))
     assert max_abs < 2.0e-10
 
@@ -120,8 +114,6 @@ def test_reproject_exact_preserves_constant_surface_brightness():
 def test_galsim_chromatic_gaussian_second_moment_matches_photon_weighted_truth():
     import galsim
 
-    # Fine output sampling makes pixelization a subdominant correction for this
-    # cross-code second-moment check.
     pixel_scale = 0.01  # arcsec/pixel
     source_sigma = 0.18  # arcsec
     psf_sigma_ref = 0.055  # arcsec at 2000 nm
@@ -146,7 +138,14 @@ def test_galsim_chromatic_gaussian_second_moment_matches_photon_weighted_truth()
         red_limit=4000.0,
     )
 
-    integrator = galsim.integ.ContinuousIntegrator(N=700)
+    # GalSim 2.8.4 requires the quadrature rule explicitly. Use trapezoidal
+    # integration here because the independent analytic reference below also
+    # uses dense trapezoidal quadrature.
+    integrator = galsim.integ.ContinuousIntegrator(
+        rule=galsim.integ.trapzRule,
+        N=700,
+        use_endpoints=True,
+    )
     image = observed.drawImage(
         band,
         nx=301,
@@ -169,8 +168,6 @@ def test_galsim_chromatic_gaussian_second_moment_matches_photon_weighted_truth()
     )
     measured_sigma_arcsec = measured_sigma_pix * pixel_scale
 
-    # GalSim converts F_lambda-like SEDs to photon weighting internally. For a
-    # photon-counting band integral, weight is proportional to F_lambda*T*lambda.
     wave = np.linspace(1200.0, 4000.0, 20001)
     throughput = np.exp(-0.5 * ((wave - 2600.0) / 650.0) ** 4)
     flambda = (wave / ref_wave_nm) ** alpha_flambda
