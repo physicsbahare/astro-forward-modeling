@@ -1,0 +1,76 @@
+name: gate-b-jwst-stpsf
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  stpsf-nircam:
+    runs-on: ubuntu-latest
+    env:
+      STPSF_DATA_VERSION: "2.2.0"
+      # Version-specific URL linked by the official STPSF installation docs.
+      STPSF_DATA_URL: "https://stsci.box.com/shared/static/mjst9j056ibf2uph4gxy8qxmi89tjzwk.gz"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install independent harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Install pinned JWST/STPSF cross-code environment
+        run: python -m pip install -r requirements-crosscode-jwst-stpsf.txt
+
+      - name: Download exact STPSF 2.2.0 reference-data bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/stpsf-data-${STPSF_DATA_VERSION}.tar.gz"
+          root="$RUNNER_TEMP/stpsf-reference"
+          mkdir -p "$root"
+          curl --fail --location --retry 5 --retry-delay 2 \
+            "$STPSF_DATA_URL" -o "$archive"
+          sha256sum "$archive" | tee stpsf-data-${STPSF_DATA_VERSION}.sha256
+          tar -xzf "$archive" -C "$root"
+          data_dir="$(dirname "$(find "$root" -type f -name version.txt -print -quit)")"
+          test -n "$data_dir"
+          test "$(cat "$data_dir/version.txt")" = "$STPSF_DATA_VERSION"
+          echo "STPSF_PATH=$data_dir" >> "$GITHUB_ENV"
+          printf '%s\n' "$data_dir" > stpsf-data-path.txt
+
+      - name: Record resolved software and reference-data provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip freeze | tee gate-b-jwst-pip-freeze.txt
+          printf 'STPSF_PATH=%s\n' "$STPSF_PATH" | tee gate-b-jwst-environment.txt
+          printf 'STPSF_DATA_VERSION=%s\n' "$STPSF_DATA_VERSION" | tee -a gate-b-jwst-environment.txt
+          printf 'STPSF_DATA_URL=%s\n' "$STPSF_DATA_URL" | tee -a gate-b-jwst-environment.txt
+          cat "$STPSF_PATH/version.txt" | tee stpsf-data-version.txt
+
+      - name: Run JWST/STPSF Gate-B checks
+        run: pytest -q crosscode/test_gate_b_jwst_stpsf.py
+
+      - name: Upload provenance even if a scientific check fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-b-jwst-stpsf-provenance
+          path: |
+            stpsf-data-2.2.0.sha256
+            stpsf-data-version.txt
+            stpsf-data-path.txt
+            gate-b-jwst-pip-freeze.txt
+            gate-b-jwst-environment.txt
+          if-no-files-found: warn
