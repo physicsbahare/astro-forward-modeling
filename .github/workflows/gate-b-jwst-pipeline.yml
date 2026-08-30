@@ -5,6 +5,7 @@ on:
     branches:
       - verification-v0.1
     paths:
+      - "crosscode/test_gate_b_jwst-pipeline.py"
       - "crosscode/test_gate_b_jwst_pipeline.py"
       - "scripts/inspect_jwst_crds_nircam.py"
       - "requirements-crosscode-jwst-pipeline.txt"
@@ -17,6 +18,7 @@ on:
 jobs:
   nircam-photom-crds:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       CRDS_SERVER_URL: "https://jwst-crds.stsci.edu"
       CRDS_CONTEXT: "jwst_1584.pmap"
