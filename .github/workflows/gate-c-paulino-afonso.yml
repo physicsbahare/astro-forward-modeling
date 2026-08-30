@@ -11,6 +11,7 @@ on:
       - "tests/test_paulino_afonso_sersic_floor.py"
       - "scripts/run_paulino_afonso_2017_anchor_benchmark.py"
       - "scripts/run_paulino_afonso_sersic_floor.py"
+      - "scripts/run_paulino_afonso_noiseless_identifiability.py"
       - "benchmarks/paulino_afonso_2017/**"
       - ".github/workflows/gate-c-paulino-afonso.yml"
       - "pyproject.toml"
@@ -24,6 +25,7 @@ on:
       - "tests/test_paulino_afonso_sersic_floor.py"
       - "scripts/run_paulino_afonso_2017_anchor_benchmark.py"
       - "scripts/run_paulino_afonso_sersic_floor.py"
+      - "scripts/run_paulino_afonso_noiseless_identifiability.py"
       - "benchmarks/paulino_afonso_2017/**"
       - ".github/workflows/gate-c-paulino-afonso.yml"
       - "pyproject.toml"
@@ -32,7 +34,7 @@ on:
 jobs:
   anchor-radiometry-and-sersic-floor:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,6 +59,9 @@ jobs:
 
       - name: Generate machine-readable C2 anchor report
         run: python scripts/run_paulino_afonso_2017_anchor_benchmark.py
+
+      - name: Diagnose same-model noiseless identifiability
+        run: python scripts/run_paulino_afonso_noiseless_identifiability.py
 
       - name: Generate machine-readable C2 Sérsic-floor report
         run: python scripts/run_paulino_afonso_sersic_floor.py
