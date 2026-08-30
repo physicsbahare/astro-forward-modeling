@@ -18,11 +18,19 @@ This snapshot is a **pre-implementation scientific verification harness**, not t
 - No-double-background rule for real-image injection.
 - Spectral-support diagnostics must measure predictive information, not wavelength-envelope overlap alone.
 
+## Closed cross-code sub-gates
+
+- Astropy cosmological distances and spectral-density unit conversion.
+- `reproject` exact/adaptive resampling semantics, including the distinction between surface brightness and flux per pixel.
+- Photutils Wiener PSF-matching convention.
+- GalSim chromatic Gaussian rendering against an analytic photon-weighted second-moment prediction.
+- JWST/NIRCam STPSF semantics using STPSF 2.2.0 with the exact 2.2.0 reference-data archive. Four CI checks pass: software/data pinning, ideal/distorted/detector-output semantics and detector-effect toggling, chromatic PSF broadening, and detector-position field dependence. The data archive is fixed by SHA-256 `bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98`.
+
 ## Not yet closed
 
-The following require independent maintained astronomy packages and/or survey data and therefore remain release gates:
+The following remain release gates:
 
-1. Cross-code comparison against Astropy, reproject, Photutils, GalSim, STPSF, and the JWST pipeline/CRDS.
+1. JWST pipeline/CRDS calibrated-unit round trips, explicit PHOTOM/AREA provenance, and drizzle/resampling behavior.
 2. Published-method reproduction: FERENGI, DOPTERIAN/Paulino-Afonso, Yu et al. (2023), AGN nuclear-contamination experiments, and Zhuang & Shen PSF-mismatch experiments.
 3. Real COSMOS-Web Level-1 injection/recovery using 30-mas mosaics, empirical/survey PSFs, WCS, segmentation, and real background statistics.
 4. Comparison of Level-1 mosaic injection with a small Level-2 exposure-injection experiment to quantify source-shot-noise/drizzle-covariance limitations.
