@@ -1,0 +1,34 @@
+name: gate-c-paulino-afonso-full-chain-califa
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/run_paulino_afonso_full_chain_califa.py'
+      - 'verification/paulino_afonso_2017.py'
+      - 'verification/paulino_afonso_sersic_floor.py'
+      - '.github/workflows/gate-c-paulino-afonso-full-chain-califa.yml'
+  workflow_dispatch:
+
+jobs:
+  full-chain-califa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install verification harness
+        run: python -m pip install -e '.[test]'
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-paulino-afonso-full-chain-califa-pip-freeze.txt
+      - name: Assemble controlled CALIFA artificial-redshifting chain
+        run: python scripts/run_paulino_afonso_full_chain_califa.py
+      - name: Upload full-chain metrics and provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-paulino-afonso-full-chain-califa
+          path: |
+            gate-c-paulino-afonso-full-chain-califa-pip-freeze.txt
+            benchmark_output/paulino_afonso_2017/full_chain_califa/
