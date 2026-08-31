@@ -22,7 +22,7 @@ Production package coding should not begin until these gates are closed.
 
 ## Gate B — cross-code verification against maintained astronomy packages
 
-**Status: complete for the currently defined Gate-B experiments.**
+**Status: original Gate-B experiments are complete; one new cross-code morphology extension is pending before production freeze.**
 
 - [x] Compare cosmological distances and units against `astropy.cosmology`.
 - [x] Compare exact/adaptive reprojection against `reproject`.
@@ -32,6 +32,7 @@ Production package coding should not begin until these gates are closed.
 - [x] Verify NIRCam PHOTOM science/error/variance scaling and inverse round trip against `jwst==3.0.0`.
 - [x] Freeze a compatible CRDS context and verify live NIRCam PHOTOM/AREA reference selection with checksummed provenance.
 - [x] Quantify JWST drizzle/resampling behavior for a controlled imaging case (flux, centroid, pixel scale, morphology, variance and covariance).
+- [ ] Add a pinned PyAutoGalaxy/PyAutoArray PSF-convolved morphology cross-code benchmark using identical analytic Sérsic/MGE scenes; compare flux, centroid, profile shape, second moments and recovered structural parameters. Treat this as an independent reference, not ground truth or a production dependency.
 
 The STPSF sub-gate is reproducibly frozen to STPSF 2.2.0 plus the exact
 STPSF 2.2.0 data archive (SHA-256
@@ -61,18 +62,25 @@ the measured aperture variance by about 36%. This behavior is consistent with
 stcal's documented approximate drizzle error propagation and must not be turned
 into a universal covariance correction factor.
 
-Gate B is therefore closed as a verification gate, not as a claim that one
-covariance number applies to arbitrary mosaics, kernels, pixfrac values or
-survey reductions. Those survey-specific effects are deliberately deferred to
+The original Gate-B set is closed as a verification record, not as a claim that
+one covariance number applies to arbitrary mosaics, kernels, pixfrac values or
+survey reductions. The new PyAutoGalaxy/PyAutoArray item is a post-closure
+extension motivated by a maintained 2026 implementation and must be completed
+before Gate F is frozen. Survey-specific covariance effects remain deferred to
 Gate D.
 
 ## Gate C — literature reproduction
 
 - [x] FERENGI-style artificial-redshift benchmark — synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**; see `benchmarks/ferengi_2008/REVIEW.md`. Existing regression bounds were not loosened and remain non-production sanity checks.
-- [ ] Paulino-Afonso/DOPTERIAN-style degradation benchmark — **IN PROGRESS**. The published Table-2 structural anchors are now machine-readable and the distance-based versus Tolman surface-brightness convention is tested as an exact observable identity, with luminosity evolution kept separate. The gate remains open until image-level `r_e`/Sérsic-`n` degradation and recovery are reproduced and reviewed; see `benchmarks/paulino_afonso_2017/REVIEW.md`.
+- [ ] Paulino-Afonso/DOPTERIAN-style degradation benchmark — **IN PROGRESS**. The published Table-2 structural anchors are machine-readable and the distance-based versus Tolman surface-brightness convention is tested as an exact observable identity, with luminosity evolution kept separate. The current numerical blocker is high-`n` same-model optimizer/Jacobian conditioning; noisy Sérsic-`n` bias must not be interpreted physically until this is resolved. See `benchmarks/paulino_afonso_2017/REVIEW.md` and `scripts/run_paulino_afonso_jacobian_diagnosis.py`.
 - [ ] Yu et al. (2023) resolvedness/morphology trends.
 - [ ] AGN nuclear-fraction morphology contamination benchmark.
 - [ ] Zhuang & Shen PSF-mismatch AGN-host benchmark.
+- [ ] Dewsnap et al. JWST AGN-host cross-fitter/PSF-construction benchmark: compare at least two PSF constructions and independent fitting implementations on controlled common scenes; do not use fit quality alone as a morphology-validity criterion.
+- [ ] Kawase, Shibuya & Matsuda (2026) controlled AGN-host synthetic validation case using smooth-host + sparse-point-source decomposition and the point-source-balance constraint; compare against the standard Sérsic+PSF stress test before considering production use.
+- [ ] Explicit source-SED / chromatic-PSF mismatch stress test including a color-gradient source. The PSF must be allowed to depend on the source SED within the bandpass; a single source-independent broadband PSF is not sufficient as the only verified mode.
+
+See `docs/RECENT_DEVELOPMENTS_2026_08.md` for the provenance and motivation of the newly added verification cases.
 
 ## Gate D — real-survey injection
 
@@ -94,6 +102,8 @@ Only after Gates B-D:
 ## Gate F — production architecture review
 
 - [ ] Review plugin interfaces (`InstrumentAdapter`, `PSFProvider`, `SceneReconstructor`, `Renderer`, `InjectionEngine`, `MeasurementAdapter`).
+- [ ] Confirm `PSFProvider` supports bandpass-integrated, source-SED-dependent PSFs and records PSF provenance/mismatch assumptions.
+- [ ] Review ScopeSim's source -> optical-train -> detector abstraction as a design/cross-validation reference; do not add ScopeSim as a production dependency solely for architectural similarity.
 - [ ] Review provenance schema.
 - [ ] Review exception/warning taxonomy.
 - [ ] Review unit conventions and calibration boundaries.
