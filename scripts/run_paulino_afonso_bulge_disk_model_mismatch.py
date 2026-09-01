@@ -3,18 +3,23 @@
 
 The full-chain information audit showed that noisy morphology failures are
 consistent with extended-source identifiability loss rather than a reason to
-widen fitter bounds.  The next controlled question is therefore model mismatch:
+widen fitter bounds. The next controlled question is therefore model mismatch:
 what single-Sersic morphology is recovered from a composite bulge+disk galaxy
 when the same physically feasible CALIFA-like artificial-redshifting operator is
 used, before adding target noise?
 
 This is deliberately a synthetic-equivalent diagnostic, not literal CALIFA or
-Paulino-Afonso survey reproduction.  The transfer is linear, so separately
-redshifted disk and bulge components are summed.  No acceptance band is imposed
+Paulino-Afonso survey reproduction. The transfer is linear, so separately
+redshifted disk and bulge components are summed. No acceptance band is imposed
 and no result is tuned toward the published Table-2 ratios.
+
+The optional --z-target argument only shards the pre-declared redshift grid for
+CI runtime. It does not change the scientific setup, starts, bounds, optimizer,
+or selection rule.
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import sys
@@ -58,14 +63,31 @@ def _central_crop(image,size):
     y0=(image.shape[0]-size)//2; x0=(image.shape[1]-size)//2
     return np.asarray(image[y0:y0+size,x0:x0+size],dtype=float)
 
+def _parse_args():
+    p=argparse.ArgumentParser()
+    p.add_argument('--z-target',type=float,default=None,
+                   help='Run one member of the pre-declared TARGET_Z grid; default runs all.')
+    return p.parse_args()
+
+def _selected_redshifts(z_target):
+    if z_target is None:
+        return tuple(float(z) for z in TARGET_Z)
+    matches=[float(z) for z in TARGET_Z if np.isclose(float(z),float(z_target),rtol=0.0,atol=1e-10)]
+    if not matches:
+        raise SystemExit(f'--z-target must be one of {tuple(float(z) for z in TARGET_Z)}')
+    return tuple(matches)
+
 def main():
-    out=Path('benchmark_output/paulino_afonso_2017/bulge_disk_model_mismatch')
+    args=_parse_args()
+    selected_z=_selected_redshifts(args.z_target)
+    suffix='all' if args.z_target is None else f'z_{selected_z[0]:.2f}'.replace('.','p')
+    out=Path('benchmark_output/paulino_afonso_2017/bulge_disk_model_mismatch')/suffix
     out.mkdir(parents=True,exist_ok=True)
     sigma=pixel_noise_from_point_depth()
     all_rows=[]; best_rows=[]
 
-    for z0 in TARGET_Z:
-        z=float(z0); kpc_arcsec=_kpc_per_arcsec(z)
+    for z in selected_z:
+        kpc_arcsec=_kpc_per_arcsec(z)
         for cfg in COMPOSITES:
             total_source_flux=flux_in_depth_units(cfg['total_source_mag_ab'])
             disk_flux=total_source_flux*(1.0-cfg['bt'])
@@ -115,15 +137,16 @@ def main():
             w=csv.DictWriter(h,fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
 
     summary=[]
-    for z0 in TARGET_Z:
+    for z in selected_z:
         for cfg in COMPOSITES:
-            r=next(x for x in best_rows if x['case']==cfg['case'] and float(x['z_target'])==float(z0))
+            r=next(x for x in best_rows if x['case']==cfg['case'] and float(x['z_target'])==float(z))
             summary.append({k:r[k] for k in ('case','z_target','bt','success','recovered_re_kpc','recovered_re_over_disk_re','recovered_n','recovered_q','centroid_error_pixels','hit_re_lower_bound','hit_re_upper_bound','hit_n_lower_bound','hit_n_upper_bound')})
 
     payload={
         'experiment':'noiseless bulge+disk model-mismatch through CALIFA-feasible full chain',
         'scientific_status':'controlled synthetic-equivalent diagnostic; not literal survey reproduction',
-        'n_composites':len(COMPOSITES),'n_target_redshifts':len(TARGET_Z),'n_best_rows':len(best_rows),
+        'execution_shard_redshifts':list(selected_z),
+        'n_composites':len(COMPOSITES),'n_target_redshifts':len(selected_z),'n_best_rows':len(best_rows),
         'source_structure':'co-centered exponential disk (n=1) + compact bulge (n=4), common transfer operator; single-Sersic recovery',
         'bt_values':[c['bt'] for c in COMPOSITES],
         'selection_rule':'lowest residual cost only; no truth/literature proximity criterion',
