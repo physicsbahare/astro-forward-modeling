@@ -1,0 +1,33 @@
+name: gate-c-paulino-afonso-transfer-centering
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/audit_paulino_afonso_transfer_centering.py'
+      - 'scripts/run_paulino_afonso_full_chain_califa.py'
+      - '.github/workflows/gate-c-paulino-afonso-transfer-centering.yml'
+  workflow_dispatch:
+
+jobs:
+  transfer-centering-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install verification harness
+        run: python -m pip install -e '.[test]'
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-paulino-afonso-transfer-centering-pip-freeze.txt
+      - name: Audit source binning and transfer centering
+        run: python scripts/audit_paulino_afonso_transfer_centering.py
+      - name: Upload transfer centering metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-paulino-afonso-transfer-centering
+          path: |
+            gate-c-paulino-afonso-transfer-centering-pip-freeze.txt
+            benchmark_output/paulino_afonso_2017/transfer_centering_audit/
