@@ -72,7 +72,7 @@ Gate D.
 ## Gate C — literature reproduction
 
 - [x] FERENGI-style artificial-redshift benchmark — synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**; see `benchmarks/ferengi_2008/REVIEW.md`. Existing regression bounds were not loosened and remain non-production sanity checks.
-- [ ] Paulino-Afonso/DOPTERIAN-style degradation benchmark — **IN PROGRESS**. The published Table-2 structural anchors are machine-readable and the distance-based versus Tolman surface-brightness convention is tested as an exact observable identity, with luminosity evolution kept separate. The current numerical blocker is high-`n` same-model optimizer/Jacobian conditioning; noisy Sérsic-`n` bias must not be interpreted physically until this is resolved. See `benchmarks/paulino_afonso_2017/REVIEW.md` and `scripts/run_paulino_afonso_jacobian_diagnosis.py`.
+- [x] Paulino-Afonso/DOPTERIAN-style degradation benchmark — controlled synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**. The high-`n` numerical blocker was resolved by separating detector-pixel integration from the historical point-sampled fitter, the transfer centering phase was corrected, and the full noiseless pixel-integrated single-Sérsic set recovers truth cleanly. The remaining target-noise pathologies persist at low extended-source information and are classified as identifiability loss rather than a reason to widen bounds. Exact Table-2 correction factors are not claimed; see `benchmarks/paulino_afonso_2017/REVIEW.md`.
 - [ ] Yu et al. (2023) resolvedness/morphology trends.
 - [ ] AGN nuclear-fraction morphology contamination benchmark.
 - [ ] Zhuang & Shen PSF-mismatch AGN-host benchmark.
