@@ -86,16 +86,24 @@ Architecture action:
 
 Reference: https://github.com/AstarVienna/ScopeSim
 
-## Current immediate numerical blocker
+## Current immediate Gate-C target
 
-Gate C2 remains blocked by the high-n single-Sérsic optimizer problem. The
-noiseless same-model experiment has an exact zero-residual solution, but the
-current optimizer diagnostics show basin dependence and disagreement between
-optimizer families. Therefore no observed high-n recovery bias may be called
-physical until the Jacobian/conditioning diagnosis is reviewed.
+The former Paulino-Afonso high-`n` blocker is resolved. The diagnostic sequence
+showed that exact same-model noiseless fitting is numerically recoverable, then
+identified a detector-pixel point-sampling mismatch and a separate sub-pixel
+centering/phase error. A detector-centred 4x pixel-integrated fitter recovers the
+full noiseless single-Sérsic set cleanly, while the noisy ensemble remains
+unstable only when the extended-source information becomes weak. Gate C2 is
+therefore reviewed as **PASS WITH EXPLAINED DIFFERENCE** for the controlled
+synthetic-equivalent benchmark; the historical outputs remain preserved.
 
-The next executable diagnostic is
-`scripts/run_paulino_afonso_jacobian_diagnosis.py`. It keeps the same physical
-model, bounds and scientific tolerances while comparing 2-point and 3-point
-finite-difference fits and measuring the transformed residual-Jacobian singular
-spectrum across several finite-difference step sizes.
+The next Gate-C target is Yu et al. (2023), arXiv:2307.04753, which directly
+parameterizes morphology bias by the resolvedness quantity `R_p / FWHM`. The
+first verification step should freeze the paper's definitions and qualitative
+bias directions before any fitting or correction function is implemented:
+non-parametric `R_p`/`R50` can be biased high by PSF smoothing, asymmetry and
+concentration are suppressed as resolution worsens for intrinsically structured
+galaxies, model-fit `R50`, `q`, and `n` are reported as much more stable, and
+asymmetry is only robust for large objects at approximately `R_p/FWHM >= 5` in
+the authors' corrected analysis. These are literature anchors, not production
+acceptance thresholds.
