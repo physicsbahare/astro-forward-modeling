@@ -1,0 +1,33 @@
+name: gate-c-paulino-afonso-centered-pixel-integration
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/diagnose_paulino_afonso_centered_pixel_integration.py'
+      - 'scripts/run_paulino_afonso_full_chain_califa.py'
+      - '.github/workflows/gate-c-paulino-afonso-centered-pixel-integration.yml'
+  workflow_dispatch:
+
+jobs:
+  centered-pixel-integration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install verification harness
+        run: python -m pip install -e '.[test]'
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-paulino-afonso-centered-pixel-integration-pip-freeze.txt
+      - name: Run detector-centered pixel integration diagnostic
+        run: python scripts/diagnose_paulino_afonso_centered_pixel_integration.py
+      - name: Upload corrected-geometry metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-paulino-afonso-centered-pixel-integration
+          path: |
+            gate-c-paulino-afonso-centered-pixel-integration-pip-freeze.txt
+            benchmark_output/paulino_afonso_2017/centered_pixel_integration/
