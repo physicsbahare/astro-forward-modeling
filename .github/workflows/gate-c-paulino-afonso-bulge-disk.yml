@@ -12,7 +12,11 @@ on:
 jobs:
   bulge-disk-model-mismatch:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        z_target: ['0.40', '0.84', '1.47', '2.23']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,11 +28,11 @@ jobs:
       - name: Record software provenance
         run: python -m pip freeze | tee gate-c-paulino-afonso-bulge-disk-pip-freeze.txt
       - name: Recover single-Sersic morphology from noiseless bulge-disk composites
-        run: python scripts/run_paulino_afonso_bulge_disk_model_mismatch.py
+        run: python scripts/run_paulino_afonso_bulge_disk_model_mismatch.py --z-target ${{ matrix.z_target }}
       - name: Upload bulge-disk metrics and provenance
         uses: actions/upload-artifact@v4
         with:
-          name: gate-c-paulino-afonso-bulge-disk
+          name: gate-c-paulino-afonso-bulge-disk-z-${{ matrix.z_target }}
           path: |
             gate-c-paulino-afonso-bulge-disk-pip-freeze.txt
             benchmark_output/paulino_afonso_2017/bulge_disk_model_mismatch/
