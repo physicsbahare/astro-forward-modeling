@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Assemble the next controlled Paulino-Afonso C2 artificial-redshifting chain.
+"""Assemble the controlled Paulino-Afonso C2 artificial-redshifting chain.
 
 This is still a verification-stage diagnostic, not production code and not a
-literal reproduction of the original survey sample.  It combines the pieces
-that have already been validated separately for the physically feasible
-CALIFA-like path:
+literal reproduction of the original survey sample. It combines the pieces
+validated separately for the physically feasible CALIFA-like path:
 
-1. pixel-integrated source Sersic rendering (4x detector supersampling);
+1. detector-centered pixel-integrated source Sersic rendering (4x supersampling);
 2. SDSS-like 0.396 arcsec/pixel sampling at z=0.015;
 3. 1.3 arcsec source PSF;
 4. angular resampling onto the ACS 0.03 arcsec/pixel target grid;
@@ -15,9 +14,18 @@ CALIFA-like path:
    evolution law; and
 7. the declared ACS white-noise depth model (AB=27.2, 5 sigma point source).
 
-The noiseless transferred image is compared with a direct target observation of
-the same latent galaxy.  Noise is then added only after that operator-integrity
-comparison.  No morphology acceptance threshold is introduced here.
+A targeted centering audit exposed a numerical phase defect in the earlier
+verification helper: it built an odd fine grid, trimmed it to a multiple of the
+oversampling factor, and then assigned detector coordinates as if the trimmed
+blocks remained centered. That deterministic sub-pixel offset is a renderer
+geometry bug, not an astrophysical effect and not a reason to widen centroid or
+morphology bounds.
+
+The implementation below constructs detector pixels first and places a
+symmetric set of sub-pixel centers inside every detector pixel. Block summation
+is therefore phase-preserving by construction. The legacy benchmark artifacts
+remain part of the verification history; downstream diagnostics must be rerun
+with this corrected geometry rather than retroactively reinterpreted.
 """
 
 from __future__ import annotations
@@ -60,11 +68,25 @@ CASES = (
 
 
 def odd_grid(pixel_scale_arcsec: float, z: float, half_extent_kpc: float):
+    """Centered coarse detector grid retained for transfer interpolation."""
     kpc_pix = pixel_scale_arcsec * _kpc_per_arcsec(z)
     half_n = int(np.ceil(half_extent_kpc / kpc_pix))
     coord = np.arange(-half_n, half_n + 1, dtype=float) * kpc_pix
     yy, xx = np.meshgrid(coord, coord, indexing="ij")
     return coord, xx, yy, kpc_pix
+
+
+def detector_centers(pixel_scale_arcsec: float, z: float, half_extent_kpc: float):
+    kpc_pix = pixel_scale_arcsec * _kpc_per_arcsec(z)
+    half_n = int(np.ceil(half_extent_kpc / kpc_pix))
+    coord = np.arange(-half_n, half_n + 1, dtype=float) * kpc_pix
+    return coord, kpc_pix
+
+
+def subpixel_centers(coarse_coord: np.ndarray, kpc_pix: float, factor: int) -> np.ndarray:
+    """Symmetric sub-pixel centers inside each detector pixel."""
+    offsets = ((np.arange(factor, dtype=float) + 0.5) / factor - 0.5) * kpc_pix
+    return (coarse_coord[:, None] + offsets[None, :]).reshape(-1)
 
 
 def sersic_density(x, y, re_kpc: float, n: float, q: float):
@@ -79,31 +101,39 @@ def sersic_density(x, y, re_kpc: float, n: float, q: float):
 
 
 def block_sum(image: np.ndarray, factor: int) -> np.ndarray:
+    """Exact detector block sum; trimming is intentionally forbidden."""
     ny, nx = image.shape
-    ny2 = (ny // factor) * factor
-    nx2 = (nx // factor) * factor
-    trimmed = image[:ny2, :nx2]
-    return trimmed.reshape(ny2 // factor, factor, nx2 // factor, factor).sum(axis=(1, 3))
+    if ny % factor or nx % factor:
+        raise RuntimeError("fine grid must be exactly divisible by the detector oversampling factor")
+    return image.reshape(ny // factor, factor, nx // factor, factor).sum(axis=(1, 3))
+
+
+def detector_integrated_image(
+    case: dict,
+    total_flux: float,
+    z: float,
+    pixel_scale_arcsec: float,
+    psf_fwhm_arcsec: float,
+):
+    """Render a centered, pixel-integrated detector image with a Gaussian PSF."""
+    coarse, kpc_pix = detector_centers(pixel_scale_arcsec, z, HALF_EXTENT_KPC)
+    fine_coord = subpixel_centers(coarse, kpc_pix, OVERSAMPLE)
+    yf, xf = np.meshgrid(fine_coord, fine_coord, indexing="ij")
+    density = sersic_density(xf, yf, case["re_kpc"], case["n"], case["q"])
+    kpc_f = kpc_pix / OVERSAMPLE
+    fine = density * kpc_f**2
+    fine *= total_flux / np.sum(fine)
+    sigma_f = psf_fwhm_arcsec * FWHM_TO_SIGMA / (pixel_scale_arcsec / OVERSAMPLE)
+    fine = gaussian_filter(fine, sigma_f, mode="constant", cval=0.0, truncate=7.0)
+    det = block_sum(fine, OVERSAMPLE)
+    return coarse, det, kpc_pix
 
 
 def source_detector_image(case: dict, total_flux: float):
-    fine_scale = SOURCE_PIXEL_SCALE / OVERSAMPLE
-    coord_f, xf, yf, kpc_f = odd_grid(fine_scale, SOURCE_Z, HALF_EXTENT_KPC)
-    density = sersic_density(xf, yf, case["re_kpc"], case["n"], case["q"])
-    # Convert continuous surface brightness to fine-pixel flux and normalize to
-    # the declared observed source flux before PSF convolution.
-    fine = density * kpc_f**2
-    fine *= total_flux / np.sum(fine)
-    sigma_f = SOURCE_PSF_FWHM * FWHM_TO_SIGMA / fine_scale
-    fine = gaussian_filter(fine, sigma_f, mode="constant", cval=0.0, truncate=7.0)
-    det = block_sum(fine, OVERSAMPLE)
-    # Build detector-center physical coordinates from the binned dimensions.
-    kpc_det = SOURCE_PIXEL_SCALE * _kpc_per_arcsec(SOURCE_Z)
-    cy = 0.5 * (det.shape[0] - 1)
-    cx = 0.5 * (det.shape[1] - 1)
-    ycoord = (np.arange(det.shape[0]) - cy) * kpc_det
-    xcoord = (np.arange(det.shape[1]) - cx) * kpc_det
-    return xcoord, ycoord, det, kpc_det
+    coord, det, kpc_det = detector_integrated_image(
+        case, total_flux, SOURCE_Z, SOURCE_PIXEL_SCALE, SOURCE_PSF_FWHM
+    )
+    return coord, coord, det, kpc_det
 
 
 def transfer_to_target(case: dict, z: float, source_flux: float):
@@ -132,17 +162,10 @@ def transfer_to_target(case: dict, z: float, source_flux: float):
 
 
 def direct_target(case: dict, z: float, target_flux: float, tx, ty, kpc_target_pix: float):
-    # Pixel-integrated target truth using the same 4x supersampling principle.
-    fine_scale = TARGET_PIXEL_SCALE / OVERSAMPLE
-    _, xf, yf, kpc_f = odd_grid(fine_scale, z, HALF_EXTENT_KPC)
-    density = sersic_density(xf, yf, case["re_kpc"], case["n"], case["q"])
-    fine = density * kpc_f**2
-    fine *= target_flux / np.sum(fine)
-    sigma_f = TARGET_PSF_FWHM * FWHM_TO_SIGMA / fine_scale
-    fine = gaussian_filter(fine, sigma_f, mode="constant", cval=0.0, truncate=7.0)
-    direct = block_sum(fine, OVERSAMPLE)
-    # Shapes can differ by one detector pixel because of independent odd-grid
-    # construction. Crop symmetrically to the common central footprint.
+    # Direct target truth uses the same detector-centered 4x pixel integration.
+    _, direct, _ = detector_integrated_image(
+        case, target_flux, z, TARGET_PIXEL_SCALE, TARGET_PSF_FWHM
+    )
     return direct
 
 
@@ -210,6 +233,7 @@ def main():
         "experiment": "CALIFA-feasible full artificial-redshifting chain assembly",
         "scientific_status": "controlled image-level diagnostic; not literal survey reproduction",
         "source_render_oversampling": OVERSAMPLE,
+        "pixel_integration_geometry": "detector-centered symmetric subpixel centers; no trimming phase shift",
         "n_rows": len(rows),
         "components": [
             "source pixel integration", "source PSF", "angular resampling",
@@ -222,8 +246,8 @@ def main():
         "rows": rows,
         "next_decision_rule": (
             "If the assembled noiseless chain preserves the declared radiometric mapping and the residual image "
-            "difference remains at the validated sampling/transfer floor, proceed to morphology recovery on these "
-            "degraded images with the operational multistart fitter. Do not tune any tolerance to the literature."
+            "difference remains at the validated sampling/transfer floor, rerun morphology recovery on these "
+            "phase-corrected degraded images with unchanged scientific fit bounds and tolerances."
         ),
     }
     (out / "summary.json").write_text(json.dumps(payload, indent=2) + "\n")
