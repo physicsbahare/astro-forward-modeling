@@ -1,9 +1,10 @@
 """Yu et al. (2023) Gate-C resolvedness/morphology literature anchors.
 
-This module belongs to the pre-production verification harness.  It freezes
+This module belongs to the pre-production verification harness. It freezes
 published definitions and literature values needed by the controlled Gate-C
-experiments.  It does not implement the paper's empirical correction functions
-and it does not define any production morphology acceptance threshold.
+experiments. It implements the published Eq. (28) asymmetry noise-correction
+algebra, but it does not implement the paper's empirical resolvedness-correction
+functions and it does not define any production morphology acceptance threshold.
 
 Reference
 ---------
@@ -14,13 +15,14 @@ uncertainties in quantifying morphology", arXiv:2307.04753.
 Important semantics
 -------------------
 The seven resolution levels and the ~R_p/FWHM >= 5 asymmetry statement are
-literature anchors from that paper.  They are not universal pass/fail cuts.
+literature anchors from that paper. They are not universal pass/fail cuts.
 Synthetic-equivalent experiments in this repository are not literal DESI or
 CEERS reproductions unless explicitly stated otherwise.
 """
 
 from __future__ import annotations
 
+import math
 from dataclasses import asdict, dataclass
 
 N_NEARBY_GALAXIES = 1816
@@ -37,6 +39,10 @@ CONCENTRATION_COEFFICIENT = 5.0
 ASYMMETRY_APERTURE_RP = 1.5
 ASYMMETRY_NOISE_F1 = 2.25
 ASYMMETRY_NOISE_F2 = 2.10
+ASYMMETRY_NOISE_FORMULA = (
+    "A = [min sum|I0-I180| - F2 min sum|B0-B180|] / "
+    "[sum|I0| - F1 sum|B0|]"
+)
 SERSIC_N_BOUNDS = (0.5, 6.0)
 
 PUBLISHED_MEAN_DELTA_N = -0.11
@@ -67,7 +73,7 @@ class ResolutionLevel:
 def resolution_level(petrosian_radius_true: float, psf_fwhm: float) -> float:
     """Return the Yu et al. resolvedness quantity R_p,true/FWHM.
 
-    Both inputs must use the same angular or pixel unit.  The ratio is
+    Both inputs must use the same angular or pixel unit. The ratio is
     dimensionless and carries no pass/fail interpretation here.
     """
     rp = float(petrosian_radius_true)
@@ -86,6 +92,42 @@ def resolution_row(petrosian_radius_true: float, psf_fwhm: float) -> ResolutionL
         psf_fwhm=float(psf_fwhm),
         rp_true_over_fwhm=resolution_level(petrosian_radius_true, psf_fwhm),
     )
+
+
+def asymmetry_noise_corrected_from_terms(
+    galaxy_residual_min: float,
+    background_residual_min: float,
+    galaxy_abs_flux_sum: float,
+    background_abs_flux_sum: float,
+    F1: float,
+    F2: float,
+) -> float:
+    """Evaluate the algebraic form of Yu et al. (2023) Eq. (28).
+
+    F1 and F2 are the *fractions* defined by their Eqs. (29)-(30), not the
+    lowercase threshold multipliers f1 and f2. The result is not clipped:
+    a negative corrected asymmetry or a non-positive corrected denominator is
+    a diagnostic outcome rather than a reason to modify the published formula.
+    """
+    terms = (
+        float(galaxy_residual_min),
+        float(background_residual_min),
+        float(galaxy_abs_flux_sum),
+        float(background_abs_flux_sum),
+        float(F1),
+        float(F2),
+    )
+    if not all(math.isfinite(v) for v in terms):
+        raise ValueError("Eq. (28) terms must be finite")
+    gres, bres, gflux, bflux, frac1, frac2 = terms
+    if gres < 0 or bres < 0 or gflux < 0 or bflux < 0:
+        raise ValueError("Eq. (28) absolute-sum terms must be non-negative")
+    if not (0.0 <= frac1 <= 1.0 and 0.0 <= frac2 <= 1.0):
+        raise ValueError("Eq. (29)-(30) fractions must lie in [0, 1]")
+    denominator = gflux - frac1 * bflux
+    if denominator <= 0:
+        raise ValueError("Eq. (28) corrected denominator is non-positive")
+    return (gres - frac2 * bres) / denominator
 
 
 def literature_anchor_record() -> dict[str, object]:
@@ -107,6 +149,9 @@ def literature_anchor_record() -> dict[str, object]:
         "asymmetry_aperture_rp": ASYMMETRY_APERTURE_RP,
         "asymmetry_center": "chosen by minimizing asymmetry",
         "asymmetry_noise_correction": {
+            "equation": ASYMMETRY_NOISE_FORMULA,
+            "F1_definition": "N(I0 < f1 sigma_bkg) / Nall",
+            "F2_definition": "N(|I0-I180| < f2 sigma_bkg) / Nall",
             "f1": ASYMMETRY_NOISE_F1,
             "f2": ASYMMETRY_NOISE_F2,
         },
@@ -120,8 +165,8 @@ def literature_anchor_record() -> dict[str, object]:
         "asymmetry_robust_resolution_anchor": ASYMMETRY_ROBUST_RESOLUTION_ANCHOR,
         "qualitative_trends": dict(PUBLISHED_QUALITATIVE_TRENDS),
         "semantics": (
-            "Literature anchors only. The empirical correction functions and any production "
-            "resolvedness policy require separate reproduction and acceptance review. "
+            "Literature anchors only. The empirical resolvedness-correction functions and any "
+            "production resolvedness policy require separate reproduction and acceptance review. "
             "R_p/FWHM about 5 is not a universal morphology cut."
         ),
     }
