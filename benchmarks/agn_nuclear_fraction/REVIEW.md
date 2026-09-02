@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage 2b CI reviewed; Stage 2c independent GalSim comparison frozen below.**
+**Status: IN PROGRESS — Stage 2c independent-renderer CI reviewed; Stage 3a noise pilot frozen below.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -227,3 +227,61 @@ three fits/nine starts, with output hashes and residual images checked.
 These local checks are not Stage-2c CI success. The optional GalSim test module
 skips only when GalSim is absent from the base suite; the dedicated workflow
 installs the exact pin and the experiment itself requires and checks it.
+
+## Stage-2c CI review and Stage-3a freeze (2026-09-02 UTC)
+
+Run `33661985266` explicitly completed/success at commit
+`94fc982e17b248b0227230554d6b47c5e1d40de8`, jobs `100354463534` and
+`100354463644`. Downloaded artifacts `9859083212` (n=4), `9859077660`
+(n=1). Reviewed six winners, all 18 starts, ten renderer metric rows,
+config/summary JSON, provenance, both renderer image bundles and all six
+fit image bundles. CSV/JSON values agree; arrays are finite; reference sums,
+data hashes and recalculated residual metrics agree. All starts succeeded
+without bounds; largest within-case n spread is approximately 3.73e-7.
+
+GalSim coarse→fine host L1 drift is 5.84e-10 (n=1), 1.23e-7 (n=4),
+well below local-8x versus fine-GalSim differences of 1.14e-5 and 2.11e-4.
+Local-16x differences fall to 2.85e-6 and 5.77e-5 respectively. This is
+independent evidence of decreasing discretization error for these scenes,
+not a universal convergence tolerance. With 8x fitting, n=4 Re bias is
+-0.01458%, delta_n=+0.0004627, delta_q=+0.00008205; at ratio=0.1 nuclear
+flux bias is +0.1345%. The analytic Gaussian nucleus is common to truth and
+fit; the GalSim point comparison was separate (fine L1 error 7.01e-7).
+No physical PSF mismatch was introduced. Historical numerical floors remain.
+
+Decision: proceed to a limited background-noise pilot, not close this gate.
+Independent rendering now provides a measured noiseless baseline against
+which noise-induced structural variation can be compared. Freeze host-only
+known-template SNRs 100, 20 and 5: pixel sigma = ||unit GalSim host||_2/SNR.
+This SNR is not marginalized over the nucleus/structure and is not aperture
+SNR. Use spatially constant, zero-mean independent Gaussian background noise,
+three seeds 20260903/20260904/20260905, PCG64 with SeedSequence([seed,n]).
+Share each unit noise realization across the three ratios and SNRs for paired
+comparisons; these paired cases are not independent ensemble replicates.
+No Poisson/source-shot noise, resampling covariance, centroid freedom, PA
+freedom, fitted sky or PSF mismatch. Each is a distinct later question.
+
+Keep the same GalSim 2.8.4 fine host and analytic nuclear reference, 8x
+decomposition fitter, all six scenes, three starts, bounds, termination
+tolerances, max_nfev=160 and minimum-cost winner. Six host×SNR shards,
+max two concurrent, 54 fits/162 starts total. Persist every start, convergence
+and boundary flag, noise/data hashes, pixel sigma, chi-square, noiseless-model
+discrepancy and all reference/noise/prediction/residual arrays. Also record
+the host-renderer L2 discrepancy divided by sigma to compare numerical and
+noise scales. CI checks finite completion, never closeness to truth. Three
+realizations per case are a pilot, not calibrated uncertainties or reliable
+failure rates. Config is written before generation/fitting; no recovery bands.
+
+Next: inspect all noise outputs against the Stage-2c noiseless baseline. Ask
+whether structural scatter/bounds/start disagreement are dominated by lost
+information, and whether a larger predeclared ensemble or separate source-shot
+noise/free-center experiment is needed. Do not interpret successful execution
+as scientific acceptance or quietly discard low-SNR outcomes. Workflow:
+`gate-c-agn-noise-pilot`; resolve run by implementation commit, no duplicate
+dispatch. Stage-2c and earlier records remain unchanged.
+
+Implementation checks: fourteen targeted tests passed locally with the pinned
+GalSim installed. The first three low-SNR smoke fits (n=1, SNR=5, seed
+20260903) completed; noise hashes, additive-noise construction, residuals and
+chi-square were checked from the saved arrays. A nuclear-flux zero-bound hit
+was retained. These are local checks only, not Stage-3a Actions results.
