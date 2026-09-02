@@ -48,3 +48,39 @@ Keeping these effects separate is required so that a failure can be attributed t
 ## Review decision
 
 **IN PROGRESS.** Only the Stage-0 anchors are frozen. No Stage-1 morphology result exists yet, so no PASS/FAIL decision is made.
+
+## Stage-1 implementation (2026-09-02)
+
+Stage-0 run `33632426495` is explicitly `completed/success`. Its anchor JSON
+was inspected in the job log (the same payload written to the artifact).
+
+The separate `gate-c-agn-nuclear-fraction-noiseless` workflow implements the
+planned six images and two measurement models per image. Historical anchor
+outputs remain unchanged. Choices below are fixed before the first execution:
+
+- Circular Gaussian PSF, FWHM=3 detector pixels, no noise. This is a controlled
+  PSF choice, **not** a measured NIRCam PSF or literal survey reproduction.
+- 129-square detector stamp, 4x detector-centered subpixel integration.
+  Host convolution occurs on the fine grid, with padding for the full
+  six-sigma Gaussian support before cropping. The point source uses the exact
+  detector integral of the same continuous Gaussian. Sérsic amplitudes denote
+  analytic infinite-plane total flux; finite-stamp flux is separately recorded
+  and is never renormalized. Identical host rendering in truth and fitting
+  isolates model mismatch but cannot validate quadrature convergence.
+- Host center and PA are fixed to truth; background is exactly zero. This
+  intentionally limited reference does not test free-center degeneracies.
+- Re bounds [0.5,60] pixels, n [0.5,6], q [0.15,1], following the Yu diagnostic.
+  Three common starts n=1,2.5,5 with Re=12 and q=0.75; no truth-dependent start.
+- TRF least squares profiles the one or two nonnegative flux amplitudes using
+  NNLS. No upper flux bound. Max 160 function evaluations; ftol/xtol=1e-10,
+  gtol=1e-7. Winner is minimum residual cost, even if unsuccessful; every start
+  and boundary flag is retained. No recovery acceptance interval is introduced.
+- Outputs: config, metrics, all starts, summary, and truth/fitted image NPZs,
+  plus software/commit provenance. The workflow only validates finite matrix
+  completion, not closeness to truth or literature. Optimizer non-convergence
+  remains in the output rather than being suppressed.
+
+Only one push-triggered two-shard run is added (no duplicate PR trigger for
+this diagnostic). The next decision is to review decomposition recovery,
+residuals, and host-only contamination as nuclear fraction rises. A successful
+CI run alone will not close this gate or justify skipping noise/PSF mismatch.

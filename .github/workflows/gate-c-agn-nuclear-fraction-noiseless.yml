@@ -1,0 +1,47 @@
+name: gate-c-agn-nuclear-fraction-noiseless
+
+on:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - "scripts/run_agn_nuclear_fraction_noiseless.py"
+      - "tests/test_agn_nuclear_fraction_noiseless.py"
+      - "verification/agn_nuclear_fraction.py"
+      - ".github/workflows/gate-c-agn-nuclear-fraction-noiseless.yml"
+  workflow_dispatch:
+
+jobs:
+  noiseless-perfect-psf:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        host_n: [1, 4]
+    env:
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+      - name: Record provenance
+        run: |
+          mkdir -p benchmark_output/agn_nuclear_fraction/noiseless
+          python -m pip freeze > benchmark_output/agn_nuclear_fraction/noiseless/pip-freeze.txt
+          git rev-parse HEAD > benchmark_output/agn_nuclear_fraction/noiseless/commit.txt
+      - name: Verify anchors and renderer algebra
+        run: python -m pytest -q tests/test_agn_nuclear_fraction.py tests/test_agn_nuclear_fraction_noiseless.py
+      - name: Compare host-only and Sersic plus PSF fits
+        run: python scripts/run_agn_nuclear_fraction_noiseless.py --host-n ${{ matrix.host_n }}
+      - name: Preserve diagnostic outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agn-noiseless-host-n${{ matrix.host_n }}
+          path: benchmark_output/agn_nuclear_fraction/noiseless/
+          if-no-files-found: error
