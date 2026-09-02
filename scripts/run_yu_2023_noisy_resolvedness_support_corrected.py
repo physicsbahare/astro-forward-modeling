@@ -27,6 +27,10 @@ from pathlib import Path as _Path
 import numpy as np
 from scipy.ndimage import map_coordinates
 
+ROOT = _Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 import scripts.run_yu_2023_noisy_resolvedness as legacy
 from scripts import run_yu_2023_psf_only_resolvedness as stage1
 
