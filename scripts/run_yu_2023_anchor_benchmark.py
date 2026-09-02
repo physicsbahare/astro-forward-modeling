@@ -27,8 +27,8 @@ def main() -> None:
         resolution_row(2.5, 0.5).to_dict(),
     ]
     payload["status"] = (
-        "anchor stage only; next reproduce controlled bias versus R_p/FWHM "
-        "before evaluating any correction function"
+        "exact literature definitions frozen; controlled PSF-only/noiseless resolvedness "
+        "sweep is a separate Stage-1 diagnostic and does not evaluate the paper's correction functions"
     )
 
     path = out / "anchor.json"

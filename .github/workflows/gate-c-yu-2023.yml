@@ -8,6 +8,7 @@ on:
       - "verification/yu_2023.py"
       - "tests/test_yu_2023.py"
       - "scripts/run_yu_2023_anchor_benchmark.py"
+      - "scripts/run_yu_2023_psf_only_resolvedness.py"
       - "benchmarks/yu_2023/**"
       - ".github/workflows/gate-c-yu-2023.yml"
       - "pyproject.toml"
@@ -18,15 +19,16 @@ on:
       - "verification/yu_2023.py"
       - "tests/test_yu_2023.py"
       - "scripts/run_yu_2023_anchor_benchmark.py"
+      - "scripts/run_yu_2023_psf_only_resolvedness.py"
       - "benchmarks/yu_2023/**"
       - ".github/workflows/gate-c-yu-2023.yml"
       - "pyproject.toml"
   workflow_dispatch:
 
 jobs:
-  yu-2023-anchor:
+  yu-2023-psf-only-noiseless:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,13 +45,16 @@ jobs:
       - name: Record software provenance
         run: python -m pip freeze | tee gate-c-yu-2023-pip-freeze.txt
 
-      - name: Test frozen Yu et al. resolvedness anchors
+      - name: Test frozen Yu et al. definitions and anchors
         run: pytest -q tests/test_yu_2023.py
 
       - name: Generate machine-readable Yu et al. anchor report
         run: python scripts/run_yu_2023_anchor_benchmark.py
 
-      - name: Upload Yu et al. anchor metrics and provenance
+      - name: Run PSF-only noiseless resolvedness sweep
+        run: python scripts/run_yu_2023_psf_only_resolvedness.py
+
+      - name: Upload Yu et al. Stage-1 metrics and provenance
         if: always()
         uses: actions/upload-artifact@v4
         with:
