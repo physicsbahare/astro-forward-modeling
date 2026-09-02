@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage 2c independent-renderer CI reviewed; Stage 3a noise pilot frozen below.**
+**Status: IN PROGRESS — Stage 3a noise CI reviewed; Stage 3b likelihood-profile grid frozen below.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -285,3 +285,58 @@ GalSim installed. The first three low-SNR smoke fits (n=1, SNR=5, seed
 20260903) completed; noise hashes, additive-noise construction, residuals and
 chi-square were checked from the saved arrays. A nuclear-flux zero-bound hit
 was retained. These are local checks only, not Stage-3a Actions results.
+
+## Stage-3a CI review and Stage-3b freeze (2026-09-02 UTC)
+
+Run `33668364723` explicitly completed/success, commit
+`46c7af879cb0c27432c2a34352b37dcada9d1be3`. All six jobs succeeded:
+`100375560131`, `100375560432`, `100375560450`, `100375560565`,
+`100375560623`, `100375560664`. Downloaded and reviewed all six artifacts:
+`9861533515`, `9861542096`, `9861952745`, `9862155519`, `9862258463`,
+`9862653168`. All 54 winners/162 starts and 54 image bundles inspected;
+CSV/summary/config consistency, source commit, image/noise hashes, finite
+arrays, additive noise, residuals and chi-square reconstruction verified.
+
+All 162 starts report success, but 16/54 winners hit at least one bound:
+none at SNR=100; three at SNR=20 (n=4); thirteen at SNR=5 (seven n=1,
+six n=4). These counts are paired pilot outcomes, NOT independent failure
+probabilities. At n=4, Re/true Re spans 0.823–1.119 at SNR=100 and
+0.489–1.277 at SNR=20; at SNR=5 it reaches 0.254. Maximum within-case
+n start spread is approximately 0.00624. Numerical host discrepancy divided
+by sigma is at most 0.0979 (n=4,SNR=100), falling with SNR, supporting
+noise/information loss rather than the measured rendering floor as the
+dominant effect; this alone does not prove a global optimum was found.
+
+With a shared exact point template, constant variance and paired additive
+noise, increasing true nuclear flux simply translates the fitted nuclear
+amplitude when its nonnegativity boundary is inactive. Thus near-identical
+structural estimates across ratios here are expected, not evidence that
+nuclear brightness never matters. Shot noise/PSF mismatch break this setup.
+
+Decision: inspect the likelihood shape before enlarging the noise ensemble
+or introducing another physical effect. Stage 3b uses the ACTUAL archived
+Stage-3a images, not regenerated noise and not reruns of its unrestricted
+fits. Select all n=4, ratio=1 cases (all three SNRs and all three seeds),
+representing an interior-amplitude comparison without choosing only extreme
+outcomes. Freeze n-grid [0.5,1,2,3,4,5,6]. At each fixed n optimize Re,q
+and NNLS fluxes, with three Re starts [4,12,36], q start=0.75. Keep Re/q
+bounds and all optimizer tolerances/max_nfev=160 unchanged. The new starts
+probe nuisance optima; they do not overwrite original fits or enlarge bounds.
+Fixed grid endpoints are not counted as optimized n-bound hits.
+
+Three SNR shards, at most two concurrently; 63 grid winners and 189 starts.
+Download source artifacts by run ID, verify commit and exact data hashes,
+retain original winner/chi-square in source_record.json, and save all grid
+starts and prediction/residual arrays. Report RAW delta chi-square relative
+to the archived unrestricted winner, including negative values. A lower
+grid cost would motivate an optimizer diagnosis, not silent replacement.
+Do not attach confidence levels or asymptotic acceptance bands to this coarse
+grid, especially with boundaries and three noise realizations. CI validates
+complete finite output only. Next: decide whether profiles support weak
+constraints versus missed minima before selecting further noise/PSF work.
+Workflow `gate-c-agn-n-profile`; resolve by implementation commit, no duplicates.
+
+Implementation checks: nine targeted local tests passed. The first five
+completed SNR=5 profile-grid cells were checked for saved residual consistency
+and raw delta-chi-square bookkeeping against the archived winner. This is a
+partial local smoke check, not a completed Stage-3b experiment or CI success.
