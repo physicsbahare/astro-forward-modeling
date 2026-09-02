@@ -6,6 +6,7 @@ from verification.yu_2023 import (
     ASYMMETRY_APERTURE_RP,
     ASYMMETRY_NOISE_F1,
     ASYMMETRY_NOISE_F2,
+    ASYMMETRY_NOISE_FORMULA,
     ASYMMETRY_ROBUST_RESOLUTION_ANCHOR,
     CONCENTRATION_COEFFICIENT,
     LOG10_STELLAR_MASS_RANGE,
@@ -88,7 +89,14 @@ def test_anchor_record_contains_exact_measurement_definitions() -> None:
     assert record["concentration_definition"] == "C = 5 log10(R80/R20)"
     assert record["asymmetry_aperture_rp"] == 1.5
     assert record["asymmetry_center"] == "chosen by minimizing asymmetry"
-    assert record["asymmetry_noise_correction"] == {"f1": 2.25, "f2": 2.10}
+
+    noise = record["asymmetry_noise_correction"]
+    assert noise["equation"] == ASYMMETRY_NOISE_FORMULA
+    assert noise["F1_definition"] == "N(I0 < f1 sigma_bkg) / Nall"
+    assert noise["F2_definition"] == "N(|I0-I180| < f2 sigma_bkg) / Nall"
+    assert noise["f1"] == 2.25
+    assert noise["f2"] == 2.10
+
     assert record["single_sersic_fit"]["n_bounds"] == [0.5, 6.0]
 
 
