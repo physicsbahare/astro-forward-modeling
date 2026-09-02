@@ -6,6 +6,8 @@ on:
       - verification-v0.1
     paths:
       - "scripts/run_yu_2023_stpsf_psf_asymmetry.py"
+      - "scripts/run_yu_2023_stpsf_psf_asymmetry_support_corrected.py"
+      - "scripts/run_yu_2023_noisy_resolvedness_support_corrected.py"
       - "scripts/run_yu_2023_psf_only_resolvedness.py"
       - "verification/yu_2023.py"
       - "tests/test_yu_2023.py"
@@ -17,6 +19,8 @@ on:
       - main
     paths:
       - "scripts/run_yu_2023_stpsf_psf_asymmetry.py"
+      - "scripts/run_yu_2023_stpsf_psf_asymmetry_support_corrected.py"
+      - "scripts/run_yu_2023_noisy_resolvedness_support_corrected.py"
       - "scripts/run_yu_2023_psf_only_resolvedness.py"
       - "verification/yu_2023.py"
       - "tests/test_yu_2023.py"
@@ -28,23 +32,27 @@ on:
 jobs:
   yu-2023-stpsf-asymmetry:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       STPSF_DATA_VERSION: "2.2.0"
-      STPSF_DATA_URL: "https://stsci.box.com/shared/static/mjst9j056ibf2uph4gxy8qxmi89tjzwk.gz"
-      STPSF_DATA_SHA256: "bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98"
+      STPSF_DATA_URL: https://stsci.box.com/shared/static/mjst9j056ibf2uph4gxy8qxmi89tjzwk.gz
+      STPSF_DATA_SHA256: bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
+
       - name: Install verification harness
         run: python -m pip install -e ".[test]"
+
       - name: Install pinned STPSF environment
         run: python -m pip install -r requirements-crosscode-jwst-stpsf.txt
+
       - name: Download and verify exact STPSF reference-data bundle
         shell: bash
         run: |
@@ -60,12 +68,16 @@ jobs:
           test -n "$data_dir"
           test "$(cat "$data_dir/version.txt")" = "$STPSF_DATA_VERSION"
           echo "STPSF_PATH=$data_dir" >> "$GITHUB_ENV"
+
       - name: Record software provenance
         run: python -m pip freeze | tee gate-c-yu-2023-stpsf-asymmetry-pip-freeze.txt
+
       - name: Test frozen Yu definitions
         run: pytest -q tests/test_yu_2023.py
-      - name: Run noiseless STPSF asymmetry diagnostic
-        run: python scripts/run_yu_2023_stpsf_psf_asymmetry.py
+
+      - name: Run support-corrected noiseless STPSF asymmetry diagnostic
+        run: python scripts/run_yu_2023_stpsf_psf_asymmetry_support_corrected.py
+
       - name: Upload metrics and provenance
         if: always()
         uses: actions/upload-artifact@v4
@@ -74,5 +86,5 @@ jobs:
           path: |
             gate-c-yu-2023-stpsf-asymmetry-pip-freeze.txt
             stpsf-data-2.2.0.sha256
-            benchmark_output/yu_2023/stpsf_psf_asymmetry/
+            benchmark_output/yu_2023/stpsf_psf_asymmetry_support_corrected/
           if-no-files-found: warn
