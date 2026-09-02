@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage-0 literature/control anchors frozen; no morphology result interpreted yet.**
+**Status: IN PROGRESS — Stage 1 CI artifacts reviewed; Stage 2a sampling diagnostic frozen below.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -47,7 +47,7 @@ Keeping these effects separate is required so that a failure can be attributed t
 
 ## Review decision
 
-**IN PROGRESS.** Only the Stage-0 anchors are frozen. No Stage-1 morphology result exists yet, so no PASS/FAIL decision is made.
+**IN PROGRESS.** Stage 1 establishes same-renderer recovery and host-only contamination, not quadrature convergence or gate closure. See the dated review below.
 
 ## Stage-1 implementation (2026-09-02)
 
@@ -84,3 +84,46 @@ Only one push-triggered two-shard run is added (no duplicate PR trigger for
 this diagnostic). The next decision is to review decomposition recovery,
 residuals, and host-only contamination as nuclear fraction rises. A successful
 CI run alone will not close this gate or justify skipping noise/PSF mismatch.
+
+## Stage-1 CI review and Stage-2a freeze (2026-09-02)
+
+GitHub explicitly confirmed run `33642676932` completed/success at commit
+`a059cd4a3475ac1b36a84e60f750fa733e39dd7b`. Both jobs succeeded:
+`100289447991` (n=1) and `100289447884` (n=4). Downloaded and inspected
+artifacts `9852668703` and `9852845589`: configs, commit provenance, metrics,
+all 36 starts, summaries and all six NPZ truth/prediction products. Historical
+run `33642495377` also succeeded, but this review uses the replacement run.
+
+All 36 starts report optimizer success. All 18 decomposition starts recover
+the input parameters (largest observed absolute n error about 3.75e-7).
+All six decomposition winners have no bound hits; fractional L1 image
+residuals range from 4.11e-16 to 6.96e-12. All six host-only winners hit
+bounds: both ratio=0.1 cases reach n=6; all ratio=1 and 10 cases reach
+Re=0.5. Host-only fractional L1 residuals span 0.0924–0.4803. The smaller
+relative residual at high nuclear fraction does not imply accurate morphology.
+NPZ arrays are finite, truth components sum to data to floating-point accuracy,
+and recalculated image residuals agree with metrics. No acceptance bands changed.
+
+Decision: test sampling before target noise. A common 4x renderer can cancel
+its own quadrature errors; the exact integrated point source does not share
+the host's approximate pixel integration. Stage 2a freezes factors 4, 8, 16,
+both existing n values and all three ratios, with every other scene/PSF setting
+unchanged. Compare 4→8, 8→16 and 4→16; higher sampling is a reference, not
+proven truth. Record host image L1 differences and finite-stamp flux, plus
+nonnegative host/nuclear flux bias when the lower-sampled host template fits
+the higher-sampled image with structural parameters fixed. Record normalized
+two-template condition numbers, explicitly not full nonlinear identifiability.
+Save config before computation, all nine rows per host and image arrays.
+CI checks finite matrix completion only; no new scientific pass band.
+
+Next decision after CI artifact review: determine whether remaining sampling
+drift requires finer/independent rendering and nonlinear cross-sampling fits
+before adding noise. No target-noise or PSF-mismatch stage is authorized by
+same-renderer recovery alone. The Stage-2a push-triggered workflow is
+`gate-c-agn-sampling`; resolve its run by the implementation commit and do
+not launch a duplicate. Stage-1 files/results are preserved unchanged.
+
+Implementation checks: nine targeted pytest tests passed locally; both local
+Stage-2a matrices completed (18 rows). These are not CI results. Parameters
+above were frozen before those executions. No scientific acceptance decision
+is made from the local smoke runs.
