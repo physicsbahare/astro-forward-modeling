@@ -1,6 +1,17 @@
 """Algebra and detector-centering checks, not morphology acceptance cuts."""
 import numpy as np
-from scripts.run_agn_nuclear_fraction_noiseless import Renderer, profile_flux
+import importlib.util
+from pathlib import Path
+
+# Also support the repository-wide console-entry-point `pytest` invocation.
+# The scripts directory is not an installed package.
+_spec = importlib.util.spec_from_file_location(
+    "agn_noiseless_diagnostic",
+    Path(__file__).resolve().parents[1] / "scripts/run_agn_nuclear_fraction_noiseless.py",
+)
+_module = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_module)
+Renderer, profile_flux = _module.Renderer, _module.profile_flux
 
 
 def test_profiled_flux_recovers_known_nonnegative_mixture():
