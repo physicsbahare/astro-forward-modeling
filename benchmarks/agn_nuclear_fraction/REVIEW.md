@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage 1 CI artifacts reviewed; Stage 2a sampling diagnostic frozen below.**
+**Status: IN PROGRESS — Stage 2a CI artifacts reviewed; Stage 2b nonlinear cross-sampling diagnostic frozen below.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -127,3 +127,44 @@ Implementation checks: nine targeted pytest tests passed locally; both local
 Stage-2a matrices completed (18 rows). These are not CI results. Parameters
 above were frozen before those executions. No scientific acceptance decision
 is made from the local smoke runs.
+
+## Stage-2a CI review and Stage-2b freeze (2026-09-02 UTC)
+
+Run `33650581586`, commit `bb95563d95f5123c6d27eb988be055e362ac8799`,
+explicitly completed/success, with jobs `100316256577` and `100316256985`.
+Downloaded artifacts `9854597447` (n=1) and `9854598606` (n=4). Inspected
+all 18 metric rows, matching summary/config JSON, commit provenance and all
+26 image arrays. Recomputed residuals agree with the CSV; arrays are finite.
+This stage has analytic NNLS flux solutions, not nonlinear starts.
+
+Host fractional L1 changes for 4→8 and 8→16 are respectively 3.40e-5 and
+8.53e-6 (n=1), and 5.27e-4 and 1.54e-4 (n=4). Thus refinement reduces
+differences, but does not establish convergence to an independent reference.
+For n=4 the 4→16 difference is 6.81e-4. Fixed-shape fitting with the 4x
+template shifts host flux by +3.10e-4 and nuclear flux by +4.76e-4 in units
+of the unit true host flux; at AGN/host=0.1 the latter is about 0.476% of
+the true nucleus. These are observed numbers, not acceptance thresholds.
+Normalized two-template condition numbers are about 1.48 (n=1) and 2.83
+(n=4); these do not describe nonlinear structural or free-centroid degeneracy.
+
+Decision: quantify nonlinear propagation before deciding a rendering setting
+for the noise experiment. Stage 2b freezes the same six noiseless scenes,
+reference factor=16, fitting factors=4 and 8, and decomposition only. Free
+Re, n, q and NNLS fluxes; keep center/PA/background fixed. Reuse Stage-1
+bounds, three starts, optimizer settings, max_nfev=160 and minimum-cost winner
+without changes. Four CI shards (host n × fitting factor), 12 fits and 36
+starts total. Save every start, boundary flag, config, reference/prediction/
+residual image and source-commit/software provenance. CI checks completion
+and finite costs, not recovery. No noise or PSF mismatch is introduced.
+
+The higher-sampled reference is still not independently validated. Following
+Stage-2b CI artifact review, use structural drift and start agreement to choose
+the next independent-renderer comparison; do not declare 16x converged or
+skip that comparison based solely on these fits. New workflow:
+`gate-c-agn-cross-sampling`, resolved by its implementation commit. Preserve
+both earlier stages; do not rerun or overwrite their historical records.
+
+Local implementation checks: ten targeted tests passed. The n=4/factor=4
+smoke shard completed three fits and nine starts; image residuals, data hashes
+and output completeness were checked. This is local execution only, not
+Stage-2b Actions success or a new scientific acceptance decision.
