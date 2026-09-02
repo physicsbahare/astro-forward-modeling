@@ -1,0 +1,60 @@
+name: gate-c-agn-nuclear-fraction
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "verification/agn_nuclear_fraction.py"
+      - "tests/test_agn_nuclear_fraction.py"
+      - "scripts/run_agn_nuclear_fraction_anchor.py"
+      - "benchmarks/agn_nuclear_fraction/REVIEW.md"
+      - ".github/workflows/gate-c-agn-nuclear-fraction.yml"
+      - "pyproject.toml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "verification/agn_nuclear_fraction.py"
+      - "tests/test_agn_nuclear_fraction.py"
+      - "scripts/run_agn_nuclear_fraction_anchor.py"
+      - "benchmarks/agn_nuclear_fraction/REVIEW.md"
+      - ".github/workflows/gate-c-agn-nuclear-fraction.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  agn-nuclear-fraction-anchor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-agn-nuclear-fraction-pip-freeze.txt
+
+      - name: Test frozen AGN nuclear-fraction anchors
+        run: pytest -q tests/test_agn_nuclear_fraction.py
+
+      - name: Write anchor record
+        run: python scripts/run_agn_nuclear_fraction_anchor.py
+
+      - name: Upload anchor and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-agn-nuclear-fraction
+          path: |
+            gate-c-agn-nuclear-fraction-pip-freeze.txt
+            benchmark_output/agn_nuclear_fraction/anchor.json
+          if-no-files-found: warn

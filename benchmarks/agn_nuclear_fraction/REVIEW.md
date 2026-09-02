@@ -1,0 +1,50 @@
+# Gate C4 — AGN nuclear-fraction morphology contamination benchmark
+
+**Status: IN PROGRESS — Stage-0 literature/control anchors frozen; no morphology result interpreted yet.**
+
+Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
+
+## Purpose
+
+This gate isolates one question before any PSF-mismatch experiment: how strongly does an unresolved central source contaminate recovered host morphology as the AGN fraction increases, even when the PSF is perfectly known?
+
+It is deliberately separate from the later Zhuang & Shen PSF-mismatch gate. Noise is also deferred until after the noiseless perfect-PSF diagnostic is understood.
+
+## Frozen literature anchors
+
+Zhuang & Shen generate mock AGN+host systems over a broad grid including AGN-to-host flux ratios from `0.1` to `10` in `0.2 dex` steps, host effective radii from `4` to `64` pixels in `0.3 dex` steps, Sérsic indices `0.5, 1, 1.5, 2, 3, 4, 6`, axis ratios `0.3, 0.6, 0.9`, and a fixed position angle of `45 deg`.
+
+Their diagnostic figures repeatedly show the representative AGN-to-host ratios `0.1`, `1`, and `10`. Stage 1 therefore freezes exactly those three ratios rather than choosing new values after seeing benchmark behavior. They correspond to nuclear fractions `F_AGN/(F_AGN+F_host)` of `1/11`, `1/2`, and `10/11`.
+
+For the first controlled sweep, the host scenes are also predeclared as a subset of the published grid:
+
+- `Re = 16 pix`;
+- Sérsic `n = 1` and `n = 4`;
+- `q = 0.6`;
+- PA `=45 deg`.
+
+These values are diagnostic anchors, not production cuts.
+
+## Planned Stage 1 — perfect-PSF, noiseless isolation
+
+For each host scene and each of the three frozen AGN-to-host ratios, generate the same AGN+host image with a central unresolved source and a perfectly known PSF. Measure it two ways:
+
+1. host-only single-Sérsic fit, which intentionally ignores the nuclear component and exposes morphology contamination;
+2. explicit Sérsic+PSF decomposition using the same PSF that generated the image.
+
+Record host flux, nuclear flux, host `Re`, host `n`, host `q`, convergence, and every parameter-bound hit. Do not widen a bound or introduce an acceptance band in response to the result.
+
+The scientific comparison is the *difference between the two measurement models as nuclear fraction increases*. A successful explicit same-model decomposition is expected to be a numerical reference, not proof that real AGN-host decomposition is uniquely identifiable.
+
+## Deferred effects
+
+- target noise: separate later stage;
+- PSF mismatch: separate Zhuang & Shen gate;
+- cross-fitter/model non-uniqueness: Dewsnap et al. gate;
+- sparse point-source/smooth-host alternative decomposition: Kawase et al. gate.
+
+Keeping these effects separate is required so that a failure can be attributed to nuclear contamination, information loss, PSF mismatch, or model/fitter ambiguity rather than an uncontrolled mixture.
+
+## Review decision
+
+**IN PROGRESS.** Only the Stage-0 anchors are frozen. No Stage-1 morphology result exists yet, so no PASS/FAIL decision is made.
