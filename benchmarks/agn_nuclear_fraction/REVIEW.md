@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage 3c shot-noise CI reviewed; Stage 3d estimated-weight diagnostic frozen below.**
+**Status: IN PROGRESS — Stage 3d estimated-weight CI reviewed; Stage 3e expanded noise ensemble frozen below.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -454,3 +454,64 @@ Implementation checks: eleven targeted local tests passed. The first two-pass
 SNR=100, ratio=0.1, seed20260903 case completed; input hash, estimated variance
 formula, saved residual and mixed-pass CSV schema were checked. This is a
 partial local smoke test, not Stage-3d CI success.
+
+## Stage-3d CI review and Stage-3e freeze (2026-09-02 UTC)
+
+Run `33686694903` explicitly completed/success at commit
+`6cc0ef5484747774acfa9871cd8ad90a86e75b4b`. All three jobs succeeded:
+`100435758077`, `100435758285`, `100435758299`. Downloaded artifacts
+`9869108340`, `9868539439`, `9868524724`. Reviewed 54 winners, all 162
+starts and 27 two-pass image bundles. CSV/summary/config and commit match;
+data hashes, finite arrays, estimated variance formula, saved residuals and
+reconstructed normalized costs agree. Every winner is minimum cost among
+its three recorded starts. Historical oracle fits remain unchanged.
+
+All starts succeeded. Initial unweighted fits have 2/3/6 bound-hit winners
+at SNR=100/20/5; the estimated-weight pass has 0/3/6, matching the oracle
+counts, not demonstrating reliable truth recovery. Maximum absolute radius
+differences from oracle, in units of true Re, are 0.002226/0.004569/0.004325.
+Maximum absolute n differences are 0.03666/0.007774/0.01289. Initial unweighted
+radius differences reach 0.3818/0.4257/0.04422. Weight estimation is therefore
+a smaller effect than the pilot's broad low-information recovery scatter for
+these cases. This is descriptive evidence, not a new acceptance tolerance.
+
+Decision: expand independent noise realizations using the single-update
+estimator before drawing conclusions about scatter and boundary frequencies.
+Stage 3e freezes NEW seeds 20261001 through 20261012 inclusive (12 per case),
+disjoint from all three pilot seeds. Keep n=4, Re=16, q=0.6, PA=45 degrees,
+ratios 0.1/1/10, host-only background SNR=100/20/5 and analytic total host
+count 10000 electrons. Reuse the archived GalSim host template and background
+sigma from Stage-3c source records; no renderer or physical PSF changes.
+
+Gaussian background PCG64 SeedSequence([seed,4,311]); source-shot draws
+PCG64 SeedSequence([seed,4,ratio_index,310]). Background is shared across
+ratios/SNRs; shot counts across SNRs only. Each of the 12 seeds is an independent
+replicate within a particular SNR/ratio case; the 108 images are NOT all
+independent. Do not reuse pilot realizations or pool them silently. No
+resampling/covariance, free center/PA, fitted background or PSF mismatch.
+
+Each new image gets the exact Stage-3d two-pass estimator: unweighted
+initial fit then ONE variance estimate from its model and a fixed-weight fit.
+All starts/bounds/budgets/tolerances unchanged. Preserve both passes/all
+starts and every failure/bound, including failed initial fits. No oracle
+refits or choosing an estimator after seeing outcomes. Save counts, truth,
+background/shot noise, data, initial/final predictions, estimated variance,
+residuals and hashes. 108 images, 216 winners, 648 starts, split into 12
+SNR-by-three-seed-block shards with at most two running concurrently.
+
+After all shards complete, summarize per SNR/ratio mean, median and RMS errors
+in Re/true Re-1, n-4, q-0.6, host flux-1 and nuclear flux/ratio-1; report
+bound/failure counts with denominator 12 for each pass, never excluding them.
+Do not attach a recovery cut, asymptotic confidence band or precision claim
+to these descriptive summaries. Twelve realizations improve on three but
+do not calibrate rare failures or coverage. CI tests finite completion only.
+Next: decide whether the perfect-PSF contamination gate can be recorded as a
+limited synthetic-equivalent result with explicit low-information limitations
+before opening the separate Zhuang & Shen PSF-mismatch gate; do not infer
+production readiness or n=1 generality. Workflow `gate-c-agn-noise-ensemble`;
+resolve all shards by implementation commit; do not duplicate active runs.
+
+Implementation checks: thirteen targeted local tests passed. The first new
+seed (20261001), SNR=100, ratio=0.1 two-pass case completed; hashes, count
+conversion, additive-noise construction, model variance and residual arrays
+were checked. This partial local smoke does not establish Stage-3e CI success.
