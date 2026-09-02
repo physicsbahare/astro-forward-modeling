@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage 2a CI artifacts reviewed; Stage 2b nonlinear cross-sampling diagnostic frozen below.**
+**Status: IN PROGRESS — Stage 2b CI reviewed; Stage 2c independent GalSim comparison frozen below.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -168,3 +168,62 @@ Local implementation checks: ten targeted tests passed. The n=4/factor=4
 smoke shard completed three fits and nine starts; image residuals, data hashes
 and output completeness were checked. This is local execution only, not
 Stage-2b Actions success or a new scientific acceptance decision.
+
+## Stage-2b CI review and Stage-2c freeze (2026-09-02 UTC)
+
+Run `33656800320` explicitly completed/success at commit
+`69985d03a886ba2d2941369196e770548a49118b`. All four jobs succeeded:
+`100337252653`, `100337252888`, `100337252905`, `100337253078`.
+Downloaded artifacts `9857050645`, `9857052938`, `9857074318`, `9857074576`.
+Reviewed all 12 winners and 36 starts, checked CSV against summary/config JSON,
+commit provenance and image hashes, and verified all 12 reference/prediction/
+residual bundles are finite and reproduce the reported residuals.
+
+All starts succeeded without bounds. For n=4, moving the fitting quadrature
+from 4x to 8x reduces Re bias from approximately -0.05844% to -0.01100%,
+delta_n from +0.001363 to +0.0003402, and delta_q from +0.0003117 to
++0.00006160. At ratio=0.1, nuclear flux bias decreases from +0.4160% to
++0.09687% of true nuclear flux. For n=1, delta_n decreases in magnitude
+from -9.30e-5 to -1.86e-5. Maximum within-scene/start spread in fitted n
+is approximately 3.73e-7. These are diagnostic observations, not acceptance
+thresholds. No low-noise/global/free-center identifiability claim follows.
+
+Decision: compare against a genuinely independent implementation now, rather
+than infer truth from continued refinement of the same renderer. Stage 2c
+pins GalSim 2.8.4 (already used by Gate B) and freezes two FFT settings:
+coarse/fine folding_threshold=1e-4/1e-5, maxk_threshold=1e-5/1e-6,
+kvalue_accuracy=xvalue_accuracy=1e-7/1e-8. All other GSParams retain the
+pinned version defaults. No truncation or finite-stamp renormalization.
+GalSim's area-preserving shear requires circular HLR=16*sqrt(0.6) to match
+semi-major Re=16, with q=0.6 and beta=45 degrees. Use float64, 129-square,
+scale=1, centered drawImage(method='fft') for a single pixel integration.
+
+Compare both GalSim host images and local 4/8/16x host images; separately
+compare the GalSim Gaussian point image to the analytic detector integral.
+Keep the analytic point template in generated AGN scenes and fitting so this
+isolates host-rendering differences, not an introduced PSF mismatch. Fit the
+fine-GalSim host plus each of the original three nuclear ratios using the 8x
+local fitter, with all Stage-1 bounds/starts/budget unchanged. Two host shards,
+six fits and 18 starts. Save renderer metrics/images, all fit starts, config,
+predictions/residuals and provenance. Neither GalSim nor its fine setting is
+declared exact truth. CI checks finite completion; new profile/PSF algebra
+tests check conventions, not morphology recovery. Their numerical criteria
+are fixed in tests before first execution and must not be relaxed to pass.
+
+Sources checked before implementation:
+https://galsim-developers.github.io/GalSim/_build/html/gal.html and
+https://galsim-developers.github.io/GalSim/_build/html/gsobject.html
+(Sersic radius semantics, area-preserving shear, and FFT pixel integration).
+Next: review GalSim refinement against cross-code differences, structural
+bias and all starts before choosing whether a noise experiment is justified
+or more numerical validation is required. This does not close the separate
+PyAutoGalaxy, Dewsnap or other roadmap gates. Workflow: `gate-c-agn-galsim`;
+resolve the run by its implementation commit without duplicate dispatches.
+
+Local implementation validation: all 12 targeted tests passed with GalSim
+2.8.4 installed, including independent profile normalization/ellipse checks
+and the Gaussian pixel-integral check. The full n=4 smoke shard completed
+three fits/nine starts, with output hashes and residual images checked.
+These local checks are not Stage-2c CI success. The optional GalSim test module
+skips only when GalSim is absent from the base suite; the dedicated workflow
+installs the exact pin and the experiment itself requires and checks it.
