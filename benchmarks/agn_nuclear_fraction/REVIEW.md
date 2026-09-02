@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage 3b profile CI reviewed; Stage 3c paired source-shot-noise pilot frozen below.**
+**Status: IN PROGRESS — Stage 3c shot-noise CI reviewed; Stage 3d estimated-weight diagnostic frozen below.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -401,3 +401,56 @@ SNR=100, ratio=0.1, seed20260903 fits completed; count/noise construction,
 identical oracle weights, source/data hashes, residuals and weighted sums
 were verified from saved arrays. This partial local smoke is not Stage-3c
 CI success or a new scientific acceptance result.
+
+## Stage-3c CI review and Stage-3d freeze (2026-09-02 UTC)
+
+Run `33680659156`, commit `335b76bdf6b83f1d0374252affe5ebcf4c29995c`,
+explicitly completed/success. Jobs `100416148571`, `100416148739`,
+`100416148814` all succeeded. Downloaded artifacts `9867395226`,
+`9866298197`, `9866258193`; all 54 winners/162 starts and 54 image bundles
+reviewed. CSV/JSON/config/commit consistency, data/shot/source hashes,
+count-to-noise construction, truth sums, variance maps, paired data construction,
+residuals and weighted residual sums checked. All arrays are finite.
+
+All starts succeeded. Each arm has nine bound-hit winners: zero at SNR=100,
+three at SNR=20, six at SNR=5. Added shot noise changes individual outcomes
+even though the bound counts are unchanged. Shot-arm Re/true Re ranges are
+0.8414–1.1645 (SNR=100), 0.3998–1.3031 (20), 0.2419–1.1437 (5).
+The largest absolute paired radius shift is 0.1710 of true Re (SNR=5,
+ratio=10, seed20260903). At SNR=100 it is 0.05413. Maximum within-case
+n start spread is 0.00752. These are paired pilot observations, not calibrated
+failure probabilities or proof of a monotonic trend with nuclear brightness.
+
+Decision: test removal of oracle source-variance information before expanding
+the ensemble or adding PSF mismatch. Stage 3d uses ONLY the actual archived
+background-plus-shot images: n=4, ratios 0.1/1/10, SNR=100/20/5, all three
+seeds. Fit each data image unweighted with the inherited three starts and
+minimum-cost winner. Set variance to known background sigma squared plus
+that initial predicted image / 10000, then perform ONE fixed-weight fit using
+the same starts, bounds, tolerances and budget. No true source intensity,
+oracle parameters, or oracle weights may enter either fit. Known background
+calibration and count conversion are retained. Do not clip invalid predicted
+intensity; fail explicitly. No iterative updates until an outcome looks better.
+
+Compare this estimated-weight result with the archived oracle fit of EXACTLY
+the same data. This is a single-update feasible-WLS diagnostic, not an exact
+Poisson-Gaussian likelihood or a production prescription. The initial fit's
+own bias/bounds/failures can propagate into the weights and must remain visible.
+No truth-recovery criteria or confidence bands are introduced. Preserve both
+passes/all starts, initial/final/oracle predictions, both variance maps, data
+hashes, source records and residuals. Unweighted and whitened L1 diagnostics
+have separate columns. There are 54 new fit winners/162 starts across three
+SNR shards, at most two concurrent. CI checks finite matrix completion only.
+
+Next: quantify changes from removing oracle weights, and decide whether weight
+estimation instability requires another controlled diagnostic or whether a
+larger predeclared ensemble is justified before PSF-mismatch work. Existing
+shot/noise/profile results remain unchanged; n=1 generality, centroid freedom,
+practical background estimation and survey covariance remain unverified.
+Workflow `gate-c-agn-estimated-weights`; resolve by implementation commit,
+never dispatch a duplicate active experiment.
+
+Implementation checks: eleven targeted local tests passed. The first two-pass
+SNR=100, ratio=0.1, seed20260903 case completed; input hash, estimated variance
+formula, saved residual and mixed-pass CSV schema were checked. This is a
+partial local smoke test, not Stage-3d CI success.
