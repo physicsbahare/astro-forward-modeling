@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage 3a noise CI reviewed; Stage 3b likelihood-profile grid frozen below.**
+**Status: IN PROGRESS — Stage 3b profile CI reviewed; Stage 3c paired source-shot-noise pilot frozen below.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -340,3 +340,64 @@ Implementation checks: nine targeted local tests passed. The first five
 completed SNR=5 profile-grid cells were checked for saved residual consistency
 and raw delta-chi-square bookkeeping against the archived winner. This is a
 partial local smoke check, not a completed Stage-3b experiment or CI success.
+
+## Stage-3b CI review and Stage-3c freeze (2026-09-02 UTC)
+
+Run `33674620167` explicitly completed/success at commit
+`0869377df252ea81e4506b87d427a27c7e070ac7`; jobs `100396200031`,
+`100396200145`, `100396200349` all succeeded. Downloaded artifacts
+`9865650468`, `9864063887`, `9864035067`. Reviewed all 63 grid winners,
+189 starts and 63 image bundles. CSV agrees with summary, configs agree,
+commit/data hashes match, arrays are finite, and reconstructed residual sums
+agree for both new and original predictions. No start failures; seven
+SNR=5 winners hit nuisance bounds (fixed n endpoints are not counted).
+
+At SNR=5 the full n-grid chi-square spans are approximately 0.958, 0.983
+and 1.681 for seeds 20260903/4/5. At SNR=100 the spans are approximately
+401, 380 and 309. This strongly supports weak constraints at low SNR, not
+an assertion that every global optimum was proved. The lowest signed delta
+against the archived winner is approximately -2.5e-7 (SNR=5, seed20260903,
+n=6); it is retained as numerical optimizer disagreement. Maximum within-node
+start chi-square spread is 1.64e-6. No confidence level is inferred from
+these coarse grids, and no post-hoc tolerance is used to certify minima.
+
+Decision: introduce source shot noise as a separate paired experiment, while
+keeping perfect PSF and fixed center/PA/sky. Stage 3c selects n=4, all original
+ratios 0.1/1/10, all SNR=100/20/5 shards and all three original seeds.
+Use actual archived Stage-3a truth/background images, checking commit and data
+hashes. Set analytic total host count to 10,000 electrons (a controlled scale,
+not a survey exposure), with nuclear total 10,000 times the ratio. Draw Poisson
+counts per pixel from 10,000 times the noiseless host+nucleus; divide by
+10,000 and subtract the noiseless image to obtain zero-mean source noise.
+Do not renormalize the stamp or clip negative intensities; invalid intensities
+must fail explicitly. PCG64 SeedSequence([seed,4,ratio_index,310]), ratio_index
+0/1/2. Shot draws are shared across SNR shards, not across ratios; background
+is the original paired draw. No double-counted background or resampling.
+
+Two arms per scene: archived background-only image and that same image plus
+source noise. BOTH use identical fixed oracle variance sigma_bg^2 + I_true/10000.
+Whiten data and both model templates and reuse the unchanged TRF/NNLS fitter,
+three starts, bounds, max_nfev=160 and tolerances. This is approximate weighted
+least squares, NOT exact Poisson-Gaussian maximum likelihood. Oracle weights
+use unavailable true intensity and are not an operational fitting prescription.
+For the background-only arm these weights deliberately differ from its actual
+variance: that arm is a matched-estimator control, not a calibrated chi-square
+test. Thus compare the two new arms to isolate shot noise; do not attribute
+differences from the old unweighted pilot solely to the added noise.
+
+Three SNR shards, maximum two concurrent, 54 winners/162 starts total. Retain
+all failures/bounds, paired hashes, counts, variance maps, truth/background/
+shot/data/prediction/residual arrays and weighted residual sums. Whitened L1
+diagnostics are explicitly named. CI checks finite completion only. Three
+paired seeds and n=4 are a pilot, not failure probabilities or generality to
+n=1. PSF mismatch, free center and practical variance estimation remain open.
+Next: inspect paired structural/flux shifts and bounds versus nuclear ratio,
+then decide whether practical weights or a broader noise ensemble is required
+before the separate PSF-mismatch gate. Workflow `gate-c-agn-shot-noise`,
+resolved by implementation commit; do not duplicate an active run.
+
+Implementation checks: nine targeted local tests passed. The first paired
+SNR=100, ratio=0.1, seed20260903 fits completed; count/noise construction,
+identical oracle weights, source/data hashes, residuals and weighted sums
+were verified from saved arrays. This partial local smoke is not Stage-3c
+CI success or a new scientific acceptance result.
