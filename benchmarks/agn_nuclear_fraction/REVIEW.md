@@ -1,6 +1,6 @@
 # Gate C4 — AGN nuclear-fraction morphology contamination benchmark
 
-**Status: IN PROGRESS — Stage 3d estimated-weight CI reviewed; Stage 3e expanded noise ensemble frozen below.**
+**Status: CONTROLLED SCOPE COMPLETE — same-renderer, independent-renderer and noise diagnostics reviewed; low-information failures retained. Not a universal accuracy or production-readiness claim.**
 
 Primary anchor: Zhuang & Shen (2024), *Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition*, ApJ 962, 139, arXiv:2304.13776.
 
@@ -515,3 +515,48 @@ Implementation checks: thirteen targeted local tests passed. The first new
 seed (20261001), SNR=100, ratio=0.1 two-pass case completed; hashes, count
 conversion, additive-noise construction, model variance and residual arrays
 were checked. This partial local smoke does not establish Stage-3e CI success.
+
+## Stage-3e CI review and controlled-scope decision (2026-09-03 UTC)
+
+Run `33691443555`, commit `8ad412ec5de6cec80bf90ee5189aaacf79f6431c`,
+explicitly completed/success at 2026-09-03T00:00:18Z. All 12 jobs succeeded:
+`100450842090`, `100450842285`, `100450842305`, `100450842310`,
+`100450842319`, `100450842326`, `100450842344`, `100450842355`,
+`100450842382`, `100450842392`, `100450842425`, `100450842449`.
+Downloaded artifact IDs `9872335368`, `9872143033`, `9872123392`,
+`9871891940`, `9871884885`, `9871703260`, `9871694741`, `9871553873`,
+`9871017780`, `9871009830`, `9870765262`, `9870467360`.
+
+All 216 winners, 648 starts and 108 truth/noise/two-pass image bundles were
+reviewed. CSV/JSON/config/commit consistency, data/background/shot hashes,
+cross-SNR shot pairing, component sums, count conversion, additive noise,
+estimated variances, residuals and reconstructed costs verified. Every winner
+is the minimum-cost recorded start; all starts report success. Each per-case
+ensemble contains exactly the frozen 12 seeds, with no exclusions.
+
+Full preregistered mean/median/RMS errors for Re,n,q and both fluxes, and
+bound/failure counts for both passes, are in `ensemble_33691443555.json`.
+Reproduce with `python scripts/summarize_agn_noise_ensemble.py ARTIFACT_ROOT`,
+where the twelve extracted artifact folders retain their GitHub names.
+
+Final estimated-weight bound counts for ratios 0.1/1/10 are 0/0/1 at
+SNR=100, 4/4/4 at SNR=20 and 10/11/11 at SNR=5 (denominator 12 each).
+Final fractional-radius RMS errors are 0.194/0.194/0.180, 0.808/0.842/0.614
+and 1.450/1.463/1.228 respectively. These are RMS errors including bias and
+boundary outcomes, not Gaussian standard errors. At SNR=5 median radius
+errors are approximately -0.264/-0.221/-0.226 despite positive means:
+the distribution is strongly asymmetric. Pooling paired cases as independent
+would misrepresent uncertainty. Twelve seeds do not calibrate rare failures.
+
+Decision: the restricted perfect-PSF contamination experiment is complete as
+a synthetic-equivalent verification record with explained limitations. It
+demonstrates host-only model mismatch, an independent numerical baseline,
+and persistent low-information morphology loss under explicit noise/weighting
+assumptions. It does NOT certify accurate low-SNR recovery, survey performance,
+free-centroid inference, n=1 shot-noise generality, or production thresholds.
+No recovery bands were introduced, and no bounds were widened.
+
+Proceed to the separate C5 PSF-mismatch gate, initially a noiseless Gaussian
+width-only diagnostic with matched control. Its frozen plan is in
+`benchmarks/zhuang_shen_2024/REVIEW.md`. Published-table analysis and historical
+AGN artifacts are preserved, not rerun or replaced by this experiment.
