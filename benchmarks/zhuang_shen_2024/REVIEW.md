@@ -1039,3 +1039,86 @@ No settings were changed after these images. Full local tests: **157 passed,
 one external-Imfit-binary test skipped**, one intentional failure-capture
 warning. Pinned actionlint 1.7.12 accepted all workflows. The prerequisite
 ordinary regression run 33788706072 also explicitly completed/success.
+
+### C5l actual CI review and C5m freeze — 2026-09-03 UTC
+
+GitHub confirms **33798675379** at `094de88e88b668015658536d13583c201cfaaaf2`
+completed/success, updated 19:52:15Z. Both jobs and every step succeeded.
+Artifacts 9910256926/9910271962 were downloaded and ZIP SHA256 verified.
+The unchanged read-only audit checked all **32 renders, 16 Gaussian controls,
+96 direct starts, 48 arm pairs and 720 new arrays**, including parent hashes,
+all predictions/residuals, KKT, Fourier products, FFT receipts and manifests.
+There were no failed workers or zero amplitudes. All 32 FFT warnings remain.
+Science-script runtimes were 88.52/120.26 seconds. Full actual-CI receipt:
+`cell_response_33798675379.json`.
+
+The finite-cell surrogate does **not** consistently explain the discrepancy.
+For flattened n=0.5, matched cell8 differs from Imfit8 by **1.700%/1.693%**
+(A/B), compared with canonical no_cell **1.699%/1.740%**. Round n=0.5
+matched cell2 improves Imfit2 agreement to **0.0815%/0.1105%**, but that is
+not evidence the same correction applies across shape or sampling. Flattened
+n=6 matched cell8 differences are **0.2307%/0.2587%**, worse than no_cell
+**0.2246%/0.2144%**. All off-diagonal results remain in the receipt; no best
+cell is selected or adopted. Neither renderer is truth and no convergence,
+new physical PSF or free-shape recovery claim follows.
+
+Rechecked the tagged Imfit Sersic implementation and official makeimage
+architecture docs. Its adaptive integration depends on elliptical radius
+in numerical pixels, so a uniform box cannot reproduce it exactly. The next
+isolated question is whether Imfit 8-to-16 numerical sampling changes the
+compact cases and fits within the existing caps. `C5M_PROTOCOL.md` freezes
+all eight scenes, 16 renders, 32 amplitude fits and eight within-code
+comparisons. Reuse unchanged author Imfit 1.9.0, C5h geometry/convolution,
+same signed PSFs and archived C5l no_cell. No custom integrator, new
+cross-fitter, physical-bound change, or post-hoc tolerance. PyImfit is the
+same engine and would not add independence for this question. References
+and license/reuse/resource assessment are in the protocol. Follow
+**gate-c-agn-imfit-refinement** on its implementing commit; not yet a CI
+success claim. Higher sampling is a diagnostic, not permission to expand
+memory/time caps or assert morphology recovery.
+
+### C5m LOCAL resource failure; separate C5n freeze
+
+C5m was **not dispatched**. The first local attempt exposed an archive-key
+adapter error (C5l stores PSFs as A/B, not A_normalized_input/B_normalized_input).
+Corrected that schema access and added a regression test without changing
+any science setting. The separate corrected local attempt retained all eight
+successful sampling8 replays, but all eight sampling16 calls failed in
+Imfit Convolver::DoFullSetup allocation, before rendering. No tolerance or
+resource cap was raised. Both original and repaired local records, actual
+error logs, configurations and available array identities are preserved in
+`c5m_local_20260903.json`; `C5M_WORKFLOW_NOT_DISPATCHED.yml` preserves the
+undispatched plan outside the active workflow directory. A subsequent
+equivalent refactor expresses the pair labels using the frozen SAMPLES
+tuple instead of literal 8/16, allowing reuse without altering C5m science.
+
+Checked tagged Imfit ModelObject and Convolver allocation code. With the
+unchanged full PSF support, sampling16 needs about **7.77 GiB for six FFT
+arrays alone**, already beyond the six-GiB cap; blindly rerunning it in CI
+would not answer a new question. A separately frozen **C5n 8/10** experiment
+uses the same engine and physical scene, with about **3.04 GiB** for those
+arrays at sampling10 (not a promise of peak process memory). This samples
+a finer grid with headroom; it is not a substituted success for C5m16 or
+proof of convergence. No new handwritten convolution, cropped PSF,
+alternative integration algorithm or physical bound is introduced.
+See `C5N_PROTOCOL.md` for the source citations, candidate assessment and
+frozen design. Follow **gate-c-agn-imfit-bounded** on the implementing commit.
+The C5l prerequisite regression `33798675329` explicitly completed/success.
+
+C5n local verification: all 16 renders completed under unchanged caps;
+maximum makeimage RSS was 3589876 KiB. All 32 amplitude starts, eight
+sampling pairs, 16 fine FITS/native reductions and 168 finalized NPZ arrays
+were checked. n4 passed the full strict artifact audit. n1's original
+artifact audit **failed** because a leftover temporary kernel archive was
+present despite successful finalization. Its SHA256 is exactly identical
+to the finalized kernel, but it is retained as an unexplained artifact-
+completeness failure, not relabelled success. A separate byte-verified copy
+of finalized n1 products passed the unchanged numerical/algebra audit;
+that does not make the original artifact complete. The CI audit continues
+to reject any `.partial` file; no cleanup, ignore rule or tolerance was
+added. Python's documented os.replace semantics were checked; the cause
+of the duplicate is not established. No scientific rerender or setting
+change was made. `c5n_local_20260903.json` distinguishes these audit scopes.
+Full local suite: **167 passed**, including the pinned external-binary smoke
+test; one deliberate failure-capture warning remains. Pinned actionlint
+1.7.12 accepted all workflows. Actual CI outputs still require review.

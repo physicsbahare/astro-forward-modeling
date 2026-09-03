@@ -73,9 +73,13 @@ is negligible by comparison. C5j's LOCAL control study retained four
 resource failures and remains incomplete; it was not dispatched. C5k
 `33788705952` succeeded; all 56 starts and 896 arrays were reviewed.
 Spacing sensitivity is small, but cutoff and Imfit differences remain.
-C5l now isolates the finite numerical-cell convention before freeing shape.
-See `benchmarks/zhuang_shen_2024/C5L_PROTOCOL.md` and the C5 review; follow
-`gate-c-agn-cell-response` on its implementing commit, not an older renderer
+C5l `33798675379` succeeded; all 96 starts and 720 arrays were reviewed.
+The uniform numerical cell does not consistently explain the discrepancy.
+C5m's LOCAL Imfit16 calls all failed allocation under the six-GiB cap; that
+incomplete stage was not dispatched. C5n separately freezes Imfit8/10 with
+source-derived memory headroom, preserving all prior settings and failures.
+See `benchmarks/zhuang_shen_2024/C5N_PROTOCOL.md` and the C5 review; follow
+`gate-c-agn-imfit-bounded` on its implementing commit, not an older renderer
 run or the undispatched C5j plan. No physical PSF,
 free-shape morphology, or survey-readiness claim follows.
 
@@ -105,7 +109,7 @@ Gate D.
 - [x] Paulino-Afonso/DOPTERIAN-style degradation benchmark — controlled synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**. The high-`n` numerical blocker was resolved by separating detector-pixel integration from the historical point-sampled fitter, the transfer centering phase was corrected, and the full noiseless pixel-integrated single-Sérsic set recovers truth cleanly. The remaining target-noise pathologies persist at low extended-source information and are classified as identifiability loss rather than a reason to widen bounds. Exact Table-2 correction factors are not claimed; see `benchmarks/paulino_afonso_2017/REVIEW.md`.
 - [x] Yu et al. (2023) resolvedness/morphology trends — controlled synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**. Circular-PSF smoothing reproduces the expected concentration/asymmetry suppression, the controlled noise stage preserves low-information failures and bound hits, and the pinned STPSF F444W diagnostic recovers the expected small positive asymmetry contribution from a realistic non-180-degree-symmetric PSF. No universal `R_p/FWHM` cut is inferred; see `benchmarks/yu_2023/REVIEW.md`.
 - [x] AGN nuclear-fraction morphology contamination benchmark — controlled synthetic-equivalent scope complete with explicit limitations. Ensemble run `33691443555` succeeded; all 216 winners/648 starts reviewed. Final bound hits persist (1/36, 12/36, 32/36 at SNR=100/20/5). No low-SNR accuracy, universal acceptance, or production claim. See `benchmarks/agn_nuclear_fraction/REVIEW.md` and its machine-readable ensemble summary.
-- [ ] Zhuang & Shen PSF-mismatch AGN-host benchmark — actual C5d–C5i and C5k artifacts reviewed; C5j remains a separate incomplete LOCAL diagnostic with four preserved memory-cap failures. C5k `33788705952` retains up to 0.107% cutoff sensitivity and 1.740% Imfit8 difference despite small grid-spacing drift. Neither renderer is truth. C5l tests the finite numerical-cell convention against all archived Imfit2/4/8 images; no structural bound changes or extra physical detector response are adopted. See `benchmarks/zhuang_shen_2024/C5L_PROTOCOL.md`, `fourier_grid_33788705952.json` and `REVIEW.md`. Signed PSFs remain non-photon-ready. Free-shape, physical/chromatic PSF and survey-readiness questions remain open; C5l is not yet a GitHub-success claim.
+- [ ] Zhuang & Shen PSF-mismatch AGN-host benchmark — actual C5d–C5i and C5k–C5l artifacts reviewed; C5j and C5m remain incomplete LOCAL diagnostics with preserved memory-cap failures. C5l `33798675379` confirms a uniform finite cell does not consistently explain cross-code differences (matched cell8 still about 1.7% for flattened n=0.5). Neither renderer is truth. C5n separately freezes Imfit8/10 sampling with the same signed PSFs, bounds and resource caps; see `benchmarks/zhuang_shen_2024/C5N_PROTOCOL.md`, `cell_response_33798675379.json` and `REVIEW.md`. No extra physical detector response is adopted. Free-shape, physical/chromatic PSF and survey-readiness remain open; C5n is not yet a GitHub-success claim.
 - [ ] Dewsnap et al. JWST AGN-host cross-fitter/PSF-construction benchmark: compare at least two PSF constructions and independent fitting implementations on controlled common scenes; do not use fit quality alone as a morphology-validity criterion.
 - [ ] Kawase, Shibuya & Matsuda (2026) controlled AGN-host synthetic validation case using smooth-host + sparse-point-source decomposition and the point-source-balance constraint; compare against the standard Sérsic+PSF stress test before considering production use.
 - [ ] Explicit source-SED / chromatic-PSF mismatch stress test including a color-gradient source. The PSF must be allowed to depend on the source SED within the bandpass; a single source-independent broadband PSF is not sufficient as the only verified mode.
