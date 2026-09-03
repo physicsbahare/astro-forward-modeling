@@ -10,6 +10,7 @@ on:
       - "verification/paulino_afonso_sersic_floor.py"
       - "pyproject.toml"
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - main
     paths:
@@ -21,6 +22,8 @@ on:
 
 jobs:
   sampling-diagnosis:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) && !(github.event_name == 'push' && github.ref == 'refs/heads/verification-v0.1' && github.event.before == '88f3fb646a0b89e6cb9b8b8ee1aacae377edca56' && contains(github.event.head_commit.message, '[C5e isolated]')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

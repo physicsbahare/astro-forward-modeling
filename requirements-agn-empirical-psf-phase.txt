@@ -1,0 +1,3 @@
+# C5e adds a public ePSF interpolation cross-check without changing C5d pins.
+-r requirements-agn-empirical-psf.txt
+photutils==3.0.0

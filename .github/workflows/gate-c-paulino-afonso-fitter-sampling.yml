@@ -2,6 +2,7 @@ name: gate-c-paulino-afonso-fitter-sampling
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - 'scripts/audit_paulino_afonso_fitter_sampling.py'
       - 'verification/paulino_afonso_sersic_floor.py'
@@ -10,6 +11,8 @@ on:
 
 jobs:
   fitter-sampling-audit:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) && !(github.event_name == 'push' && github.ref == 'refs/heads/verification-v0.1' && github.event.before == '88f3fb646a0b89e6cb9b8b8ee1aacae377edca56' && contains(github.event.head_commit.message, '[C5e isolated]')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:

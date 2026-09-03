@@ -1,0 +1,329 @@
+{
+  "reviewed_date_utc": "2026-09-03",
+  "parent_commit": "88f3fb646a0b89e6cb9b8b8ee1aacae377edca56",
+  "scope": "draft PR 5 replay routing; single-parent C5e bootstrap; full push regression preserved",
+  "validation": "parsed all YAML; stripping only declared routing additions exactly reproduces each parent document",
+  "workflows": [
+    {
+      "path": ".github/workflows/gate-b-core.yml",
+      "parent_blob_sha1": "ebb6fed84ebf1138a55d3beaa641a57cd395f61e",
+      "updated_blob_sha1": "05ad358cd9b9d14d8a029b712e7b1a54a5da39e5",
+      "job_ids": [
+        "crosscode-core"
+      ],
+      "scientific_job_body_sha256": "940331dd20b704e1c46d6da1a093d0c938af0092d423d46d08317177a0c4bd67",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-b-jwst-pipeline.yml",
+      "parent_blob_sha1": "cc19a1da92c59c475b19ee384b875c3e46adcc45",
+      "updated_blob_sha1": "231729a330310e7692b256788c118b396e764566",
+      "job_ids": [
+        "nircam-photom-crds"
+      ],
+      "scientific_job_body_sha256": "d057235020c3cf0e54c9a8aa0007bfd924614fb4c0df8fc5bfd024b889891054",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-b-jwst-stpsf.yml",
+      "parent_blob_sha1": "c9500a07229f81711fa290576ee6a50a425c731e",
+      "updated_blob_sha1": "c70174083d006a43dfe9322f005f15bbbcf8d186",
+      "job_ids": [
+        "stpsf-nircam",
+        "pipeline-crds-nircam"
+      ],
+      "scientific_job_body_sha256": "67dc98c8093779f86868c823483e35efc58baf6c7edd2c18bbe480dde3166a4f",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-agn-nuclear-fraction.yml",
+      "parent_blob_sha1": "f8a4743f36c8623ccfb81ccee6f01b313e196d6b",
+      "updated_blob_sha1": "300ab989c7e72471a0ad634c7d9c8b85a8eb17c3",
+      "job_ids": [
+        "agn-nuclear-fraction-anchor"
+      ],
+      "scientific_job_body_sha256": "3ef433c9549125740f021e6c717c8f569e23ce2821d320ba9565080bd2dc2d3f",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-ferengi.yml",
+      "parent_blob_sha1": "1eb80d9a93cdb79295e8f896092e297cf22be973",
+      "updated_blob_sha1": "6e372e9aab731a013de79ae673b2e38774e35a99",
+      "job_ids": [
+        "synthetic-observation-only"
+      ],
+      "scientific_job_body_sha256": "a57afc9f8b8d9cca4b236fc018c10fb30e85b343b905715e39cb65b00f3931db",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-bulge-disk-noisy.yml",
+      "parent_blob_sha1": "ffc8b0c70f00728b11032b5469eb78bc229663b5",
+      "updated_blob_sha1": "3b56769e880daac01cf7b091ab7ab4f13d4fdc01",
+      "job_ids": [
+        "bulge-disk-noisy-ensemble"
+      ],
+      "scientific_job_body_sha256": "5ed649925b9cb95515c67ba28a5acdf12347993e212b487b1c1006b3766bbecf",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-bulge-disk-stability.yml",
+      "parent_blob_sha1": "200b435e69dd6e0f300483def3a8abea7ee73156",
+      "updated_blob_sha1": "550e2a0b1976e14c7cd8654745e64c52f07349a2",
+      "job_ids": [
+        "bulge-disk-stability-continuation"
+      ],
+      "scientific_job_body_sha256": "692d3d6f988acd13a796c76644fe5097de4518721b5c8aa88861d31b43178452",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-bulge-disk.yml",
+      "parent_blob_sha1": "d417afd6200cdc11a25f16869fb4bbdf1978434c",
+      "updated_blob_sha1": "53dc779d241c9dc064a531f976fa77be7c553da5",
+      "job_ids": [
+        "bulge-disk-model-mismatch"
+      ],
+      "scientific_job_body_sha256": "26fcd62a4f6ec4d2e8b96b33f081741f47e38934d0d6625de4fa6326a0cf3a49",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-centered-pixel-integration.yml",
+      "parent_blob_sha1": "7ac29672f1076fbc1b4ec1e6dc36faa4abbf1c9a",
+      "updated_blob_sha1": "33c1592c8d053716ce6ef969124c60331ace6d23",
+      "job_ids": [
+        "centered-pixel-integration"
+      ],
+      "scientific_job_body_sha256": "b6bc0088e23d017012699b1a71613cd5c589124fccdd44254ca34a504415e30f",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-fitter-render-floor.yml",
+      "parent_blob_sha1": "e19ad3e3ee1c8532d5e0dd6b32f5fdaca6d016fa",
+      "updated_blob_sha1": "6fc62f419e9b1c5be7585c8958b5110373c9b53f",
+      "job_ids": [
+        "fitter-render-floor"
+      ],
+      "scientific_job_body_sha256": "c1fd62fa74745142588c793f900fa82d7fe2735705126d005e43293507e9adb7",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-fitter-sampling.yml",
+      "parent_blob_sha1": "34366881f9075bd382b9ca54e2911b082222405c",
+      "updated_blob_sha1": "2825070533d35a43d75627429ff99c06c51de9d0",
+      "job_ids": [
+        "fitter-sampling-audit"
+      ],
+      "scientific_job_body_sha256": "e0849b735371becea5c57b4b7a7d4e14ed59cdbafc3609d12f93edd82792a3ac",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-full-chain-califa.yml",
+      "parent_blob_sha1": "29c772d9e02c22cb025137dfa7e6d6a03ba42705",
+      "updated_blob_sha1": "87535d40b76eb6701bb5dd0f21d2289d765d025d",
+      "job_ids": [
+        "full-chain-califa"
+      ],
+      "scientific_job_body_sha256": "5e1fa7f16ab7a590954ce6cd1a6ad7a370a4e6b30061ca90161df1af77fab03c",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-full-chain-information.yml",
+      "parent_blob_sha1": "3b3594acfa6c44d295d7cbd73435c503ae3ce32f",
+      "updated_blob_sha1": "f1a20fb51efecaa9f348b272ab27e9845327a6cc",
+      "job_ids": [
+        "information-audit"
+      ],
+      "scientific_job_body_sha256": "5249e36f83140b5be518d9817100797bb21e6f0267e95f0bea3d67518e96acb2",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-full-chain-morphology.yml",
+      "parent_blob_sha1": "e1555fe4a804984e6cc75c7aeba9840486aee07e",
+      "updated_blob_sha1": "40cf57de18089f9a85e3fc06ca99e906b4d74ad0",
+      "job_ids": [
+        "full-chain-morphology-recovery"
+      ],
+      "scientific_job_body_sha256": "ce65769780fce5257a49c957ff7eed7bed53e006037ec0d608f6ec7f9fea0b8a",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-full-chain-noisy-morphology.yml",
+      "parent_blob_sha1": "35b57d03956e9a430daf221390bb3528ae7ce4f3",
+      "updated_blob_sha1": "0044779f2f3cc4f2a33e6c0232426b06fab04939",
+      "job_ids": [
+        "full-chain-noisy-morphology"
+      ],
+      "scientific_job_body_sha256": "b3382f789093346e02889b644fcf23a06a0403a075aeb1263b9aaff25f961e01",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-high-n-pixel-integration-surface.yml",
+      "parent_blob_sha1": "526b62ee3ca764613f8eb203c884f913108270ec",
+      "updated_blob_sha1": "eead6c856ba0d0cef4db571c9118035086f0e0fc",
+      "job_ids": [
+        "high-n-pixel-integration-surface"
+      ],
+      "scientific_job_body_sha256": "2c83af9b86a6e25b34906bc22d4516d767c265b39881cb8e0636aa35d53cc770",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-noisy-operational.yml",
+      "parent_blob_sha1": "8bc4f637f2cbca45e156c12e65fc198fab92cc0c",
+      "updated_blob_sha1": "dd8c965a39165edf065bb9623106b00c4be33307",
+      "job_ids": [
+        "noisy-operational-floor"
+      ],
+      "scientific_job_body_sha256": "0ad8348926ee52139774671442718b6d6bc69b42e1db9bbbdfc3c7e92c07ba21",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-operational-floor.yml",
+      "parent_blob_sha1": "11a0cbc6457ba8d02d8179c2f8bbfba042d60701",
+      "updated_blob_sha1": "fd2bc3a9e475109d064227a0b87e0a10b5a29c75",
+      "job_ids": [
+        "operational-multistart-noiseless-floor"
+      ],
+      "scientific_job_body_sha256": "5054bf53bcb26e70e04ee3c4ce29f32f882d1beb6502654347ddc45631c3ab1b",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-pixel-integrated-full-single-sersic.yml",
+      "parent_blob_sha1": "cdd13b4d54e57f6b19cf69beac35f67b50f7fa5c",
+      "updated_blob_sha1": "514fef3d9c54130c187b4c3d4b0816161a646cc9",
+      "job_ids": [
+        "pixel-integrated-full-single-sersic"
+      ],
+      "scientific_job_body_sha256": "84980009d14c35f500c13b8d49644e05752c826632036d386a15d6276a800e4c",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-pixel-integrated-noisy-single-sersic.yml",
+      "parent_blob_sha1": "2d4935a3c11f82356a853bc79b89ae6aed70df3c",
+      "updated_blob_sha1": "3427c8393bfc30c0787156d3dfcfaa8d6f7951bf",
+      "job_ids": [
+        "pixel-integrated-noisy-single-sersic"
+      ],
+      "scientific_job_body_sha256": "517f6e577a6a4d1c353d18a7f080fbcc878faca27e305d02a31fc3a802ae9c2b",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-pixel-integrated-structural-fitter.yml",
+      "parent_blob_sha1": "c5b532b3416713820f12d7a7a08147c43fd9c552",
+      "updated_blob_sha1": "81b897d8c0db2d8a84c685e8e8565976c812bc7c",
+      "job_ids": [
+        "pixel-integrated-structural-fitter"
+      ],
+      "scientific_job_body_sha256": "179d9c0ca3bb5f92be1e991ecb7d93a58ffdbc53fb2f695af0f73607f7ffecde",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-psf-feasibility.yml",
+      "parent_blob_sha1": "9559121265fad65baf45114bfc5a367d43f70d46",
+      "updated_blob_sha1": "5a944405a4ef6c7c0b648a3cf110bc7f4fffcbaa",
+      "job_ids": [
+        "psf-feasibility"
+      ],
+      "scientific_job_body_sha256": "9959693ea6955b967a2560a892f06f2acdcc4d81b39250039c5da510736c1c1f",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-psf-transfer-sampling.yml",
+      "parent_blob_sha1": "b39360232377bf11e4262151a1bff65b93b74568",
+      "updated_blob_sha1": "972fd26772e39b87bbc5df8ee658a15453efa1e5",
+      "job_ids": [
+        "sampling-diagnosis"
+      ],
+      "scientific_job_body_sha256": "a0773d8e0b13d72e6f6d1cc75aa03cae259a890ed77709cc37b4672dd087d50d",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-psf-transfer.yml",
+      "parent_blob_sha1": "3b65a709441db5bf282ecfbf42aedc3286140483",
+      "updated_blob_sha1": "59dc11368da4956e215b14c0b484398e999d4c2a",
+      "job_ids": [
+        "psf-transfer-operator"
+      ],
+      "scientific_job_body_sha256": "acfe43b56c42f24843faa4f1e53903c3194454656667b8e591b83317939e1fbc",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-robust-floor.yml",
+      "parent_blob_sha1": "96d614befecd05b411faed08f521bb974ea36095",
+      "updated_blob_sha1": "bab1d9620cb1f695cc9287d90941045286f6ef7d",
+      "job_ids": [
+        "allcase-noiseless-robust-floor"
+      ],
+      "scientific_job_body_sha256": "f32836728b39b1e5a4235f2afb7cea7ae6cf43e147ab76f13a0bb4a22a92e374",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso-transfer-centering.yml",
+      "parent_blob_sha1": "68f1df7a072fed2b856affb494f8a5c2dd1af2e4",
+      "updated_blob_sha1": "333ac9144590ea68e2384dc6b22dccd459e400ec",
+      "job_ids": [
+        "transfer-centering-audit"
+      ],
+      "scientific_job_body_sha256": "e7315ad9d174dea7fdfb69701367842907da022372544969a318f3ae9e9e9eff",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-paulino-afonso.yml",
+      "parent_blob_sha1": "f31c4c1b668e7e3bad5c69f3b7a109999c44eed9",
+      "updated_blob_sha1": "f7060c9c16c8fd19122227f80545ef7d23fbb425",
+      "job_ids": [
+        "anchor-radiometry-and-sersic-floor"
+      ],
+      "scientific_job_body_sha256": "eef62f012d38030c3105115c74e4070617ae9cedd5775741a12d1350d028fe92",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-yu-2023-noisy-support-corrected.yml",
+      "parent_blob_sha1": "cbfc981ab13c556446484f97c164c8757ac62ddb",
+      "updated_blob_sha1": "f5c3d38722a8e410d849b6b315d8469131f72ffe",
+      "job_ids": [
+        "yu-2023-noisy-support-corrected"
+      ],
+      "scientific_job_body_sha256": "cb5817eb9033f13cc4384d53d96dfa53557ba66c61698f05b71d31d32d477719",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-yu-2023-noisy.yml",
+      "parent_blob_sha1": "9d44021f5d14825c644797d8fb55ee860b7940e7",
+      "updated_blob_sha1": "549ceb523a1c85f2181f344d86e6ca7180d33025",
+      "job_ids": [
+        "yu-2023-noisy-resolvedness"
+      ],
+      "scientific_job_body_sha256": "eea43ead05bced5562a21ecec0a30dcfb0ec489af414f795de008d953aed32b3",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-yu-2023-stpsf-asymmetry.yml",
+      "parent_blob_sha1": "97a500887b156401b54ebc17dae99e71910fdb04",
+      "updated_blob_sha1": "a7205e50a7db8398b9e2131dcc27b69b30e52d0a",
+      "job_ids": [
+        "yu-2023-stpsf-asymmetry"
+      ],
+      "scientific_job_body_sha256": "abae46b658c74c044db8ce9629ca4ec90d81d9ae2379d50b2a2c3a28b43b0ee7",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/gate-c-yu-2023.yml",
+      "parent_blob_sha1": "8ae1e4772791ac0ffbf50ea96cd114ff5826142e",
+      "updated_blob_sha1": "4b9cc7a5019a7c557ca5b66b78ca71daebd00f7b",
+      "job_ids": [
+        "yu-2023-psf-only-noiseless"
+      ],
+      "scientific_job_body_sha256": "582619484106459815c36d1c4247ce0e680eae494f02a709a8d8aadfab1863e3",
+      "science_body_unchanged": true
+    },
+    {
+      "path": ".github/workflows/verification.yml",
+      "parent_blob_sha1": "67c1f897615823aa585ba3249f8b6c47fa3454b5",
+      "updated_blob_sha1": "4a514a8710ac65d1ed5881c295c6ae9885e9df63",
+      "job_ids": [
+        "independent-verification"
+      ],
+      "scientific_job_body_sha256": "e4bea1e03639a68c8ddf173a6089037e77fa2c933f7ea1ae879dc866ef31d983",
+      "science_body_unchanged": true
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 # C5 — Zhuang & Shen PSF-mismatch verification
 
-Status: IN PROGRESS. C5a/C5b/C5c reviewed; C5d empirical-PSF transfer and
-fixed-shape flux diagnostic frozen 2026-09-03 UTC before its execution.
+Status: IN PROGRESS. C5a–C5d reviewed; C5e subpixel-phase/interpolation
+diagnostic frozen 2026-09-03 UTC before its execution. No nonlinear
+empirical-PSF or physical-injection acceptance is implied.
 
 Primary reference: Zhuang & Shen (2024), ApJ 962, 139,
 https://arxiv.org/abs/2304.13776 (abstract checked 2026-09-03).
@@ -363,3 +364,148 @@ https://docs.github.com/en/actions/reference/runners/github-hosted-runners
 (checked 2026-09-03). Retain that standard runner, not a paid/larger resource.
 `runtime.json` and `warnings.json` record observed resource use and every
 warning; actual CI installation, execution and artifacts still need review.
+
+## C5d GitHub review — 2026-09-03 UTC
+
+GitHub explicitly confirms run `33717899427`, commit
+`88f3fb646a0b89e6cb9b8b8ee1aacae377edca56`, completed/success at 06:07:38Z.
+Jobs `100530837930` (n=1) and `100530837792` (n=4) both succeeded, including
+the targeted tests and artifact upload. Downloaded artifacts
+`agn-empirical-psf-transfer-n1` (`9880481087`) and
+`agn-empirical-psf-transfer-n4` (`9880386950`). Their ZIP SHA256 values and
+every constituent file hash are in `empirical_transfer_33717899427.json`.
+
+Reviewed all 48 direct NNLS fits/start records, 12 truth bundles and 184
+image arrays, including the Gaussian controls and original signed PSFs.
+Checks covered source Git/SHA256 hashes, commit/config/runtime pins, complete
+case coverage, CSV/JSON equality, predictions/residuals, costs/L1, singular
+values and KKT bookkeeping. High-contrast truth/model/residual images were
+also inspected visually. No solve failed or reached a zero-amplitude bound;
+there were no nonlinear starts in this experiment.
+
+The native Gaussian control L1 differences are 0.7–1.2e-14; convolved-Gaussian
+differences are 0.62–1.11e-7. An intentionally duplicated pixel integration
+changes the point image by 1.10%/3.60% in L1. This validates the scoped
+effective-response convention, not the physical accuracy of an empirical PSF.
+Matched fine-Quintic amplitudes recover by construction. For A-truth/B-fit
+at AGN/host=10, host flux is 2.1063 (n=1) and 3.3317 (n=4) instead of 1;
+the reverse B-truth/A-fit gives 0.6778/0.8495. These are conditional signed-
+model flux biases with fixed shape, not structural recovery or pure width
+effects. The supplied modules also differ in registration, wings and noise.
+
+Input negative absolute-mass fractions are 3.2755% (A) and 9.3129% (B).
+Native point sums remain 1.0055926 and 0.9900869 without renormalization.
+The observed n=4 peak RSS is 2,561,332 KiB with four recorded large-FFT
+warnings; the job completed without changing any accuracy or support choice.
+These signed models remain invalid as Poisson intensity maps. At zero phase,
+native pixels land on input grid nodes, so agreement between interpolants at
+that phase does not test off-grid behavior. Subpixel sampling and finite-window
+normalization must be characterized before choosing a nonlinear extension.
+
+## C5e literature/software decision — 2026-09-03 UTC
+
+Anderson & King (2000), https://arxiv.org/abs/astro-ph/0006325, motivates
+effective-PSF and pixel-phase checks. Godden & Blundell (2025),
+https://arxiv.org/abs/2512.16764v1, studies interpolation, oversampling and
+pixel-phase errors; its instrument-specific outcomes are not NIRCam limits.
+Checked the maintained Photutils 3.0.0 release, license, installed public
+`ImagePSF` implementation and documentation:
+https://photutils.readthedocs.io/en/stable/api/photutils.psf.ImagePSF.html,
+https://github.com/astropy/photutils/releases/tag/3.0.0,
+https://github.com/astropy/photutils/blob/3.0.0/LICENSE.rst.
+
+Reuse `ImagePSF` (BSD-3-Clause, cubic SciPy spline, explicit origin and
+oversampling) alongside GalSim's Quintic/Lanczos-4. Its oversampled input
+must sum to oversampling squared for the same flux convention: supply four
+times the C5d signed-normalized image, not a new stamp normalization.
+Pin Photutils 3.0.0 while retaining every C5d NumPy/SciPy/GalSim/Astropy pin.
+The package installs and imports in the isolated Python 3.12 environment;
+its required Astropy>=6.1.4, NumPy>=2 and SciPy>=1.13 are satisfied.
+This is an interpolation cross-check, not an independent physical truth or
+independent galaxy fitter. No PSF reconstruction or custom interpolation is
+needed. EPSFBuilder/PSFEx rebuilding still needs original selected star data
+and weights; Imfit remains the later convention-controlled cross-fitter.
+
+## C5e frozen experiment — before inspecting new results
+
+Question: how much do native-sampled flux, signed-wing statistics and a
+fixed-position point-source flux fit vary with subpixel phase or interpolation?
+Reuse the ACTUAL C5d n=1 artifact for both published A/B PSFs (its PSF bytes
+match the reviewed n=4 artifact). Verify the parent commit, selected files
+against the C5d audit SHA256 record, Git blob hashes and zero-phase point
+template. Do not regenerate a substitute parent or silently redownload changed
+author data. Keep the original 401x401 arrays, signed-sum normalization,
+0.015/0.03 arcsec sample/effective-pixel scales and zero-extended input support.
+
+Use the Cartesian phases x,y=(0,0.25,0.5,0.75) in native pixels, 16 per module.
+Positive phases shift the source toward increasing array x/y. Render a unit
+point source only; there is NO galaxy, added noise, free center, structural fit
+or new PSF construction. This calibration sub-experiment does not revise any
+historical host fit. Compare GalSim fine-Quintic, GalSim fine-Lanczos4 and
+Photutils cubic `ImagePSF(oversampling=2, flux=1, fill_value=0)` at identical
+geometric centers. Photutils receives eight zero sample rows/columns on each
+edge so its spline can represent the same zero-extension assumption; this
+padding contains no new measured wings. Its origin follows the padded center.
+Do not depixelize, integrate a second detector pixel, clip, smooth or recenter.
+
+Save 211x211 native point templates, covering the known support plus a fixed
+margin, and their central 201x201 crops. Report full/crop signed sums separately;
+neither is rescaled to unity. Record all four disjoint even/odd input-grid
+phase sums: their average must equal the input signed normalization as an
+algebraic partition, not as evidence of physical flux conservation. Report
+signed/absolute mass and negative mass inside radii 0.1/0.2/0.5/1/2/3 arcsec,
+using pixel-center membership around the declared source position. These are
+diagnostic apertures, not corrections or acceptance cuts. Signed centroids
+are explicitly not physical astrometric truth for a noisy signed model.
+
+At each phase use the GalSim fine-Quintic 201-pixel crop as the labelled
+reference data; fit one nonnegative amplitude with EACH of the three models
+at the SAME fixed position, reusing the inherited SciPy NNLS helper without
+an upper bound. Archive all 48 direct solves per module (96 total), including
+same-model controls, costs, KKT gradients, zero-amplitude flags and all data,
+templates, predictions and residuals. There is one start record per direct
+solve, not a nonlinear multistart or a morphology inference.
+
+Run the inherited analytic Gaussian effective-pixel controls at both optical
+FWHMs 0.09/0.165 arcsec and all 16 phases, with each implementation. Report
+the full image L1 differences, signed-sum and fitted-flux diagnostics. Existing
+zero-phase Gaussian sanity/identity checks remain; off-grid errors have no new
+post-hoc pass band. CI requires finite complete output and algebraic/provenance
+checks, not a desired flux, bias sign, positive wings or package agreement.
+
+Workflow `gate-c-agn-empirical-psf-phase`, two module jobs, maximum two concurrent,
+is resolved by its implementation commit; never duplicate an active run.
+Only after its actual CI products are reviewed should we choose between a
+bounded signed-model nonlinear diagnostic and a separately specified physical
+PSF construction requiring additional data/validation. No photon injection,
+global identifiability, C5 closure or production implementation is authorized.
+
+### C5e local implementation checks (not GitHub results)
+
+All 29 targeted tests pass with the frozen environment, including 10 new
+phase/normalization/source-integrity tests and four CI-routing checks. The
+full local ordinary test suite also passes: 83 tests. Both LOCAL module
+executions completed under the frozen settings. The 96 point fits, 192
+Gaussian-control rows, 576 aperture rows and all saved phase/control image
+arrays were checked for finiteness, CSV/JSON identity, source hashes and
+prediction/residual/cost bookkeeping. Negative samples and every direct solve
+remain present; no observed discrepancy was used to tune a setting or a band.
+These are implementation checks, NOT C5e GitHub success or physical accuracy.
+
+### CI replay repair — 2026-09-03 UTC
+
+The GitHub run list exposed unnecessary historical benchmark replays on each
+update to the long-lived draft PR. A focused official-documentation check
+confirmed cumulative three-dot PR path matching and the supported native
+job-condition mechanism. `docs/VERIFICATION_CI_ROUTING.md` records the narrow
+draft-PR #5 routing repair and one-parent bootstrap guard. The full ordinary
+regression suite still runs on every branch push; the new C5e workflow remains
+mandatory for its own experiment. Existing active jobs are not cancelled.
+
+Parsed before/after YAML for all 32 affected workflows and verified all 33
+scientific job bodies are unchanged after removing only the declared routing
+keys. The machine-readable audit `ci_routing_20260903.json` records the parent
+blob hashes and identical scientific-job fingerprints. No parameter, bound,
+acceptance criterion, test command or previous result changed. A skipped legacy
+job is NOT a newly successful scientific run. No merge or production approval
+is inferred; PR #5 remains draft.

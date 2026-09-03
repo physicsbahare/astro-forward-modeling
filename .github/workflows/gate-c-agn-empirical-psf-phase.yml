@@ -1,0 +1,53 @@
+name: gate-c-agn-empirical-psf-phase
+on:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - scripts/run_agn_empirical_psf_phase.py
+      - tests/test_agn_empirical_psf_phase.py
+      - requirements-agn-empirical-psf-phase.txt
+      - .github/workflows/gate-c-agn-empirical-psf-phase.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: agn-empirical-psf-phase-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  empirical-phase:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        module: [A, B]
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '.[test]' -r requirements-agn-empirical-psf-phase.txt
+      - run: python -m pytest -q tests/test_agn_empirical_psf_phase.py tests/test_agn_empirical_psf_transfer.py tests/test_agn_galsim.py tests/test_agn_nuclear_fraction_noiseless.py tests/test_agn_nuclear_fraction.py tests/test_verification_ci_routing.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: agn-empirical-psf-transfer-n1
+          run-id: 33717899427
+          github-token: ${{ github.token }}
+          path: parent_empirical_transfer
+      - name: Record provenance
+        run: |
+          mkdir -p benchmark_output/agn_empirical_psf_phase
+          git rev-parse HEAD > benchmark_output/agn_empirical_psf_phase/commit.txt
+          python -m pip freeze > benchmark_output/agn_empirical_psf_phase/pip-freeze.txt
+      - run: python scripts/run_agn_empirical_psf_phase.py --module ${{ matrix.module }} --source parent_empirical_transfer
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agn-empirical-psf-phase-${{ matrix.module }}
+          path: benchmark_output/agn_empirical_psf_phase/
+          if-no-files-found: error
