@@ -1165,3 +1165,47 @@ jobs and the successful original C5n. The repair commit triggers the
 regression and same-setting C5n verification reruns; do not advance to new
 dependent science before these necessary checks succeed. Follow the newest
 `verification-suite` and `gate-c-agn-imfit-bounded` on the repair commit.
+
+### C5n repair reruns confirmed; C5o frozen — 2026-09-03 UTC
+
+GitHub explicitly confirms both repair runs at
+`9668b1ef6763676d93d7fefdb480054d80c8182a` completed/success. Verification
+run **33810187827** passed on Python 3.11 and 3.12; the actual Python3.11 log
+reports 65 passed and 13 explicit optional-astronomy skips. Dedicated C5n
+run **33810187864** passed both host jobs. Each required the exact pinned
+astronomy environment, passed 21 targeted tests, reran the unchanged C5n
+science, and passed the strict full-output audit. The n=4 job audit reports
+eight workers, 16 starts, four pairs, 84 new arrays and eight FITS outputs;
+the symmetric n=1 job passed the same steps. This confirms the test-collection
+repair without changing C5n's scientific result or erasing failed regression
+33806193588.
+
+Full-bound numerical convergence remains open at the extreme compact corners.
+That does not require repeating another corner sweep before testing the actual
+nominal anchor: C5h already measured only 0.002--0.028% Imfit8/GalSim image
+L1 differences at Re=16, q=0.6, n=1/4. After rechecking the Imfit paper,
+official configuration/PSF/PointSource documentation and pinned executable,
+`C5O_PROTOCOL.md` freezes a matched-PSF, noiseless, free-host-shape cross-
+fitter preflight at only those nominal anchors. Reuse Imfit 1.9.0's own Sersic,
+PointSource and optimizer; no custom renderer or optimizer is introduced.
+
+C5o keeps host/nuclear centers fixed and releases PA, q, n, Re and both
+nonnegative amplitudes for modules A/B and AGN/host 1/10, with three frozen
+starts. The wrong-PSF arm is deliberately absent: first establish how the
+independent host renderer/fitter behaves with the matched signed empirical
+PSF, then freeze mismatch separately if justified. All shape bounds, crop,
+PSF values and full-pixel objective remain. Signed negative wings are not
+photon-ready. Complete output and algebra are required, but no recovery band
+is invented. Follow `gate-c-agn-imfit-free-shape`; local tests or a successful
+process exit are not GitHub success or physical recovery.
+
+Local implementation verification: **171 tests passed**, with the unchanged
+C5h external-makeimage smoke test skipped because C5o installs the separate
+pinned `imfit` executable; its own binary/function check passed. Actionlint
+1.7.12 accepts all workflows. A complete local n=1 execution and read-only
+audit checked four cases, 12 starts and 48 image arrays with no winner bound
+hit. The minimum-cost solutions recover n=1.00105--1.00145,
+Re=15.9835--16.0108 and q=0.599614--0.599719. However, the deliberately
+extended start in both AGN/host=10 cases converged to a much worse q=1 boundary
+basin; that start is retained rather than reported as agreement. These are
+LOCAL pipeline observations only, not GitHub success or an acceptance band.
