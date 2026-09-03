@@ -21,6 +21,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate workflow expressions with pinned actionlint
+        if: matrix.python-version == '3.12'
+        shell: bash
+        run: |
+          set -euo pipefail
+          lint_dir="$RUNNER_TEMP/actionlint-1.7.12"
+          mkdir -p "$lint_dir"
+          curl --fail --location --retry 2 --max-time 90 \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz \
+            --output "$lint_dir/actionlint.tar.gz"
+          printf '8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  %s\n' \
+            "$lint_dir/actionlint.tar.gz" | sha256sum --check -
+          tar --no-same-owner -xzf "$lint_dir/actionlint.tar.gz" -C "$lint_dir" actionlint LICENSE.txt
+          "$lint_dir/actionlint" -version
+          "$lint_dir/actionlint" -shellcheck= -pyflakes= .github/workflows/*.yml
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

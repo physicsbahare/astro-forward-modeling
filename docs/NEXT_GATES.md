@@ -49,6 +49,15 @@ table semantic: the PHOTOM table has subarray-specific rows, so NIRCam imaging
 must match FILTER + PUPIL + SUBARRAY when the `subarray` column is present,
 rather than taking the first F444W/CLEAR row.
 
+Execution-status addendum (2026-09-03): the separate calibration workflow
+currently needs an infrastructure-only rerun after GitHub rejected an invalid
+job-level `runner.temp` reference (runs `33717897774` and `33727184271`).
+The repair resolves the identical cache path in a runner step, preserving all
+calibration settings and historical results. Local semantic checks and 85
+tests pass; do not infer calibration-CI success until its rerun is reviewed.
+See `docs/VERIFICATION_CI_ROUTING.md`. This does not replace or duplicate the
+active empirical-PSF phase run `33727185586` at `b23d2a2`.
+
 The controlled drizzle experiment also passes the flux/centroid/size and pixel-
 area checks. A separate white-noise experiment shows why covariance must remain
 explicit in later survey work. At native 0.063 arcsec sampling the noise remains

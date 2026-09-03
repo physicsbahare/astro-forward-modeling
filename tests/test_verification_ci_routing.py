@@ -46,3 +46,26 @@ def test_gate_b_push_paths_preserve_code_dependency_coverage():
         for path in ['crosscode/**','verification/**','requirements-crosscode-*.txt','pyproject.toml',
                      '.github/workflows/'+name]:
             assert "      - '"+path+"'" in trigger
+
+
+def test_calibration_cache_is_resolved_at_runtime_not_job_context():
+    content=(ROOT/'.github/workflows/gate-b-jwst-pipeline.yml').read_text()
+    job_env=content.split('    env:',1)[1].split('    steps:',1)[0]
+    assert 'runner.temp' not in job_env
+    assert 'CRDS_PATH:' not in job_env
+    assert 'CRDS_CONTEXT: "jwst_1584.pmap"' in job_env
+    setup=content.split('- name: Resolve calibration cache on the runner',1)[1].split('- name:',1)[0]
+    assert "printf 'CRDS_PATH=%s/crds-cache\\n'" in setup
+    assert '"$RUNNER_TEMP" >> "$GITHUB_ENV"' in setup
+    assert content.index('Resolve calibration cache') < content.index('Install pinned JWST pipeline')
+
+
+def test_semantic_workflow_validator_is_pinned_and_does_not_replace_tests():
+    content=(ROOT/'.github/workflows/verification.yml').read_text()
+    step=content.split('- name: Validate workflow expressions with pinned actionlint',1)[1].split('- name:',1)[0]
+    assert "if: matrix.python-version == '3.12'" in step
+    assert 'releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz' in step
+    assert '8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8' in step
+    assert 'sha256sum --check -' in step
+    assert 'actionlint" -shellcheck= -pyflakes= .github/workflows/*.yml' in step
+    assert 'run: pytest -q' in content

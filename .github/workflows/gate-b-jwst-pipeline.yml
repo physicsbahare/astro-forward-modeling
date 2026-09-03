@@ -25,10 +25,13 @@ jobs:
     env:
       CRDS_SERVER_URL: "https://jwst-crds.stsci.edu"
       CRDS_CONTEXT: "jwst_1584.pmap"
-      CRDS_PATH: "${{ runner.temp }}/crds-cache"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Resolve calibration cache on the runner
+        shell: bash
+        run: printf 'CRDS_PATH=%s/crds-cache\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
 
       - name: Set up Python
         uses: actions/setup-python@v5

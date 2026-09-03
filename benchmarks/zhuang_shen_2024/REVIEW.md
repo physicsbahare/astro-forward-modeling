@@ -509,3 +509,31 @@ blob hashes and identical scientific-job fingerprints. No parameter, bound,
 acceptance criterion, test command or previous result changed. A skipped legacy
 job is NOT a newly successful scientific run. No merge or production approval
 is inferred; PR #5 remains draft.
+
+### C5e launch and separate calibration-CI repair — 2026-09-03 UTC
+
+C5e was committed as `b23d2a21f1d6cb2823b1adb44c04e9a14b55fac7` and
+GitHub launched `gate-c-agn-empirical-psf-phase` run `33727185586`
+(explicitly QUEUED, not completed/success). Its ordinary regression push run
+is `33727185557`. Follow the phase run at this SHA even after the following
+infrastructure-only repair; none of its frozen scripts, tests, requirements,
+inputs or workflow is modified. No dependent science decision is made now.
+
+GitHub also rejected old calibration workflow run `33727184271` before any
+job: `runner.temp` is not an allowed job-level environment context. The same
+failure is explicitly present in parent run `33717897774`, so the defect
+predates C5e. Plain YAML parsing was insufficient. Consulted the official
+GitHub context/environment-file documentation and the authors' maintained
+actionlint release; reused pinned actionlint 1.7.12 (MIT, archive SHA verified)
+instead of implementing an expression checker. It reproduced that one error
+across all 48 workflows. Resolve the same CRDS cache path on the runner via
+`GITHUB_ENV`, preserving `jwst_1584.pmap`, all package pins and science commands.
+Add the pinned semantic check to the ordinary regression suite, without
+replacing or bypassing any scientific test. All 48 workflows now validate
+locally and all 85 local tests pass. These are NOT calibration-CI success.
+
+See `docs/VERIFICATION_CI_ROUTING.md` for source links, implementation scope,
+license and checksum, and `ci_validation_33727184271.json` for the separate
+failure/repair record. The earlier routing audit and historical science
+results remain intact. Only the affected calibration rerun and normal push
+regression are expected from this repair; C5e must remain a single active run.
