@@ -1,7 +1,9 @@
 # C5 — Zhuang & Shen PSF-mismatch verification
 
-Status: IN PROGRESS. C5a–C5h reviewed from actual CI artifacts; C5i compact-
-boundary diagnosis is frozen in `C5I_PROTOCOL.md`. Host shape is not freed yet.
+Status: IN PROGRESS. C5a–C5i reviewed from actual CI artifacts. C5j remains
+an incomplete LOCAL diagnostic with four retained resource failures; it was
+not dispatched. C5k's separate bounded-grid question is frozen in
+`C5K_PROTOCOL.md`. Host shape is not freed yet.
 Historical status: C5e subpixel-phase/interpolation
 diagnostic frozen 2026-09-03 UTC before its execution. No nonlinear
 empirical-PSF or physical-injection acceptance is implied.
@@ -827,3 +829,147 @@ hash; it downloads run 33759931812 rather than an older centroid experiment.
 Do not infer GitHub success from local tests or outputs. Review all workers,
 radius conventions, Gaussian controls, amplitude starts and residual/image
 products after explicit completed/success before selecting another stage.
+
+## C5i actual GitHub review and C5j freeze — 2026-09-03
+
+GitHub explicitly confirms **33766246396**, commit
+`169018474ae502a537bc736a64ead778f24e42cd`, completed/success at
+14:50:10Z. Jobs `100684749911` / `100684750112` and all their steps
+succeeded. Regression `33766246298` also succeeded. Branch and draft PR5
+were checked for subsequent replacements/active experiments before acting.
+
+Downloaded artifacts `9898810716` (n=1 shard) and `9898833104` (n=4)
+match GitHub's ZIP digests. The read-only reproducible audit
+`scripts/audit_agn_compact_renderer.py` and
+`compact_renderer_33766246396.json` preserve the receipt, every file/array
+identity, row and diagnostic. All **32 Sersic images, 16 Gaussian controls,
+48 direct fits/start records and 308 new arrays** were reviewed, including
+parent/raw-PSF identity, protocol/settings/pins, both radius conventions,
+all worker logs/warnings/resources, CSV/JSON identity, native images,
+Gaussian/refinement residuals, saved amplitude predictions, cost and KKT
+bookkeeping. No warning, failed worker, zero amplitude or incomplete NPZ was
+found. All prediction/cost/gradient reconstruction differences were zero.
+Job runtimes were 15.44/23.05 seconds, maximum child RSS 231572 KiB.
+The historical local incomplete-NPZ record remains separate and unchanged.
+
+The n=0.5 maximum GalSim coarse/fine L1 change is **1.08034e-5** and its
+Gaussian identity difference reaches **1.07450e-5**. In contrast, n=6
+coarse/fine changes span **0.226--0.903%**; the maximum occurs for flattened
+q=0.15 with module B. The maximum n=6 nominal-versus-Imfit-b_n-equivalent
+image L1 difference is **1.38096e-8** (n=0.5: 2.13043e-5). The analytic
+radius convention therefore does not explain the measured n=6 discrepancy.
+Inspection of all eight nominal coarse/fine residual panels shows much
+larger, grid-aligned structure for n=6; this is descriptive evidence, not
+proof of one specific Fourier failure mode.
+
+At 8x, archived Imfit versus nominal fine GalSim L1 differences are
+**1.547--2.704% for n=6**. For the flattened n=0.5 case they are
+3.531% / 3.659% (A/B), versus 0.146% / 0.182% for its round counterpart.
+The corresponding one-amplitude projections also change; these are
+numerical comparisons, not host recovery. Smaller within-renderer changes
+do not automatically make that renderer independent truth. No acceptance
+band or bound was changed and no free-shape inference was authorized by
+successful execution alone.
+
+### Next experiment and software-first decision
+
+`C5J_PROTOCOL.md` was frozen before any new C5j evaluations. Reuse GalSim's
+documented GSParams and public InterpolatedImage support options, retaining
+the exact signed PSFs, geometry, crop, physics and dependency pins. Four
+single-setting interventions separate the existing coarse/fine controls;
+three additional fixed controls inspect Hankel integration accuracy, PSF
+spatial-support estimation and PSF Fourier-range estimation. Both original
+coarse/fine replays are retained. Native images, Gaussian controls, fixed
+Fourier probes, actual FFT grids and direct amplitude projections are saved.
+
+The focused official-source/paper review, tagged source blob identities,
+license/CI/runtime assessment and reuse decision are in the protocol.
+Notably, Sersic's quadrature has its own integration tolerances, while an
+empirical signed image's estimated Fourier support is not the same as a
+guaranteed optical band limit. Neither is diagnosed merely from source
+inspection. No custom renderer, integration routine or optimizer is added;
+PyImfit shares the already-tested Imfit engine and would not isolate this
+GalSim numerical question. Per-worker time/memory caps remain unchanged.
+All nine interventions are fixed and always retained; no fastest/closest
+arm will be adopted merely because it has a smaller residual.
+
+Original continuation plan, superseded by the local failure below: follow
+**gate-c-agn-fourier-controls** at its implementing commit. The planned
+new run ID/SHA would be recorded in each config; its prerequisite is run
+33766246396 and the checksum-audited record above. Further science depends
+on explicit CI success and inspection of all actual outputs. Local tests
+and runs are not GitHub success. C5, free-shape inference, physical/chromatic
+PSF work, subsequent literature gates and production remain open.
+
+### C5j LOCAL failure and separately frozen C5k — 2026-09-03
+
+The full local C5j execution attempted all 72 workers. All 68 successful
+Sersic renders, 36 Gaussian controls, 68 direct starts and 892 new arrays
+were audited; four n=6 `fine_psf_bandlimit` attempts failed with MemoryError.
+The six-GiB address-space cap prevented the requested single allocations
+of 440--989 GiB. GalSim warned of approximately 243000--364000-square FFTs.
+All warnings, failures and available products are retained in the complete
+read-only local audit `c5j_local_20260903.json`, reproducible with
+`scripts/audit_agn_fourier_local.py`. **C5j is incomplete, not passed, and
+was never dispatched to CI.** Its nine arms, original code/protocol and
+completeness requirement are not altered. The proposed workflow is kept as
+`C5J_WORKFLOW_NOT_DISPATCHED.yml`, outside the active workflow directory.
+
+The successful local controls inform a narrower question. For flattened
+n=6, the folding-only intervention differs from the archived fine image
+by just 7.81e-8 L1 (A) / 5.11e-8 (B); maxk-only and xvalue-only remain
+identical to the coarse image. The separate Hankel refinement changes the
+fine image by 6.42--7.46e-7 L1. Thus the local evidence implicates grid
+spacing in the original coarse/fine difference, while the full-interpolant
+frequency range is computationally infeasible. These are local numerical
+observations, not GitHub success or proof of which renderer is correct.
+
+After checking the tagged convolution implementation and the documented
+InterpolatedImage `_force_maxk` option, froze **C5k** before its images:
+two FFT-grid spacings crossed with 1x/2x/4x the inherited fine-PSF frequency
+cutoff, plus the unchanged fine replay. The underscored API is explicitly
+version-pinned and tested for units/propagation. All other numerical and
+physical parameters and per-worker caps stay fixed. The finite cutoff
+sequence is a separate sensitivity experiment, not an equivalent substitute
+for the failed full-bandlimit arm and not a declaration of convergence.
+Full rationale, sources and fixed criteria are in `C5K_PROTOCOL.md`.
+
+The historical C5j failure is not hidden or rerun with weaker criteria.
+Follow **gate-c-agn-fourier-grid** at its implementing commit, using actual
+C5i run 33766246396 as the CI input parent and the separate C5j local audit
+as design provenance. C5k requires all its own frozen products and the
+unchanged replay/bookkeeping checks. No missing image is accepted, and no
+physical or morphology acceptance threshold has been added.
+
+### C5k local verification before dispatch — 2026-09-03 UTC
+
+All **56 Sersic images, 28 Gaussian controls, 56 direct amplitude starts,
+168 pairwise comparisons and 896 new arrays** were read back and audited
+with `scripts/audit_agn_fourier_grid.py`. There were no failed render
+processes or zero amplitudes. Both original-fine replays passed the inherited
+bookkeeping check; all saved predictions, residuals, Fourier products,
+costs, gradients and array/file identities were checked. The machine-readable
+record is `c5k_local_20260903.json`; its GitHub run IDs are null. This is
+**LOCAL verification, not a GitHub success receipt**.
+
+Retained all **16 GalSim FFT-size warnings** (eight per shard). The largest
+requested FFT was 12300 square; maximum child RSS was 2603736 KiB, within
+the unchanged six-GiB cap. Original shard runtimes were 100.43 and 130.99
+seconds; warning thresholds and worker limits were not raised.
+
+The audit also rejected two incomplete original FFT logs: the round n=0.5,
+`grid1024_k4` A/B image bundles existed, but only one of the two required
+draw receipts survived. Their cause is not established. Separate, same-setting
+worker rechecks produced both receipts and **bitwise-identical images and
+Fourier probes**. Original files were not replaced; the audit retains both
+the incomplete logs and separate recheck identities. A new completeness-only
+guard now fails a worker if any draw receipt is missing, preserving the
+rendered data and the failure rather than accepting an incomplete record.
+The original local producer SHA256 is recorded separately from this guard.
+
+The full local suite passed **148 tests**; one dedicated external-Imfit-binary
+test was skipped and one deliberate failure-capture warning was retained.
+Pinned actionlint 1.7.12 accepted all workflows. No C5k image was used to
+change its frozen settings, bounds or acceptance rules. Next: launch the
+two-job C5k workflow, inspect its actual receipts/products, and only then
+decide whether further numerical controls or free-shape fits are justified.
