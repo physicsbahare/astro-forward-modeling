@@ -1,6 +1,7 @@
 # C5 — Zhuang & Shen PSF-mismatch verification
 
-Status: IN PROGRESS. C5a–C5d reviewed; C5e subpixel-phase/interpolation
+Status: IN PROGRESS. C5a–C5e reviewed; C5f frozen in `C5F_PROTOCOL.md`.
+Historical status: C5e subpixel-phase/interpolation
 diagnostic frozen 2026-09-03 UTC before its execution. No nonlinear
 empirical-PSF or physical-injection acceptance is implied.
 
@@ -537,3 +538,25 @@ license and checksum, and `ci_validation_33727184271.json` for the separate
 failure/repair record. The earlier routing audit and historical science
 results remain intact. Only the affected calibration rerun and normal push
 regression are expected from this repair; C5e must remain a single active run.
+
+## C5e reviewed / C5f frozen — 2026-09-03
+
+GitHub explicitly confirmed C5e run `33727185586` completed/success in both
+module jobs. Reviewed all 96 direct fit/start rows, 192 analytic Gaussian
+control rows, 576 aperture rows and 964 arrays, including algebra, parent/source
+hashes and negative wings. See `phase_33727185586.json` for the machine-readable
+audit and complete artifact hashes. Module B native signed sums range from
+0.976862 to 1.048114; crop loss is too small to explain this phase variation.
+Fixed-position cubic amplitudes relative to Quintic remain within 0.19% of
+unity. This is interpolation agreement, not physical PSF validity.
+
+The calibration repair also succeeded (`33727866409`); ordinary regression
+`33727866435` passed on both Python versions (65 passed, 4 skipped each).
+Earlier failed records remain intact. See `C5F_PROTOCOL.md` for artifact
+provenance, limitations and the frozen next experiment: bounded point-source
+centroid fits with the existing Photutils cubic model and SciPy TRF/NNLS.
+The protocol was recorded before executing its fits. No galaxy parameters,
+noise, signed-wing clipping, or post-hoc recovery band is introduced.
+All 91 local tests pass with the pinned phase environment; these are not a
+claim of C5f GitHub success. Follow the next `gate-c-agn-empirical-psf-centroid`
+run at the implementing commit, not a repeat of C5e.
