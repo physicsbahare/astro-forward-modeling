@@ -1,7 +1,7 @@
 # C5 — Zhuang & Shen PSF-mismatch verification
 
-Status: IN PROGRESS. C5a/C5b reviewed; C5c package-search diagnostic frozen
-2026-09-03 UTC. C5c CI results have not yet been reviewed.
+Status: IN PROGRESS. C5a/C5b/C5c reviewed; C5d empirical-PSF transfer and
+fixed-shape flux diagnostic frozen 2026-09-03 UTC before its execution.
 
 Primary reference: Zhuang & Shen (2024), ApJ 962, 139,
 https://arxiv.org/abs/2304.13776 (abstract checked 2026-09-03).
@@ -209,3 +209,157 @@ The n=4 execution smoke check reproduces the archived C5b objective with
 zero recorded cost drift; its partial trial/population trace was checked.
 This is NOT a completed local search or GitHub success. Full two-seed,
 two-host outcomes must come from the new workflow and be reviewed separately.
+
+## C5c GitHub review — 2026-09-03 UTC
+
+Run `33709361250`, commit `ce53c12e50a907c343b067c25545555bec143dcc`,
+explicitly completed/success at 04:30:40Z. Both jobs (`100505353079`,
+`100505353157`) succeeded. Downloaded artifacts `agn-psf-de-n1`
+(`9876858846`) and `agn-psf-de-n4` (`9878277937`); ZIP digests, exact
+source image/file hashes and detailed results are in `de_33709361250.json`.
+Reviewed every one of 6,816 objective evaluations, 209 generation populations,
+eight DE/TRF candidates and four image bundles. Checks include all trial bounds
+and flags, population members' evaluated ancestors/energies, CSV/JSON identity,
+source and runtime pins, residual/cost/L1 identities and unfiltered selection.
+Recomputed C5b costs have zero recorded drift. No historical result is replaced.
+
+Both DE seeds terminate successfully for each host (n=1: 52/59 generations,
+1,696/1,920 evaluations; n=4: 50/48 generations, 1,632/1,568 evaluations).
+All four inherited TRF refinements succeed. All eight candidates retain the
+lower-n boundary; none has zero host flux. The refined n=1 seed costs differ by
+5.44e-11 and radii by 0.000247 pixels; for n=4 the differences are 1.92e-12
+and 0.0000466 pixels. These are observed spreads, not new acceptance bands.
+
+The n=4 winner has Re=31.2824463 pixels, n=0.5, q=0.58898767, host flux
+0.47542100 and nuclear flux 10.41363158. Its signed cost difference from C5b
+is -2.58e-12, not a substantive new physical improvement. The n=1 winner has
+Re=26.1270433, n=0.5 and host flux 0.73727560. Independent search seeds and
+the finite grid agree on these biased basins: the zero-host plateau diagnosis
+is sufficiently characterized for this scoped width test, without a claim of
+global optimality. Better optimization does not correct PSF/model mismatch.
+
+## Empirical PSF reuse decision — 2026-09-03 UTC
+
+The next question is how to transfer published effective PSFs without changing
+their pixel-response convention. Inspected the authors' existing BDATA-001
+commit `0a55283e973e2dc055ab807e29a04d89733fee48`, `CEERS_PSF/PSF_statistics.ipac`,
+MIT license and the two Pointings12 F444W module A/B FITS headers. These contain
+401x401 primary arrays without WCS; the accompanying metadata and paper specify
+15-mas model sampling, twice the sampling of the 30-mas mosaics. The metadata
+comment's "has/pixel" typo is not a new unit. Its quoted FWHMs are 0.165/0.163
+arcsec, not the mock-table fiducial/broader/narrower models. No new fit outcome
+was inspected to select this pair.
+
+Sources: https://github.com/mingyangzhuang/JWST-NIRCam-Data-Product/tree/0a55283e973e2dc055ab807e29a04d89733fee48/CEERS_PSF,
+https://arxiv.org/pdf/2304.13776 (v1, section 2.3), and
+https://psfex.readthedocs.io/en/latest/Working.html (pixel-basis interpolation).
+The PSFEx model describes pixel-response-convolved star samples, not a purely
+optical kernel. A second detector-pixel integration would change the PSF.
+
+Reuse GalSim 2.8.4 `InterpolatedImage`/`Convolve` and `drawImage(no_pixel)`:
+https://galsim-developers.github.io/GalSim/_build/html/arbitrary.html and
+https://galsim-developers.github.io/GalSim/_build/html/gsobject.html. Keep
+`depixelize=False`; do not deconvolve, sharpen or reconstruct missing frequencies.
+Use its default Quintic interpolation as the baseline and its Lanczos-4 option
+as a separately labelled sensitivity diagnostic, motivated by PSFEx's documented
+interpolation. Neither setting is asserted to reproduce the authors' fitter.
+GalSim is BSD-licensed and already used in C4; retain that version although
+2.8.5 is available. Astropy 8.0.1 (BSD-3-Clause, matching the existing table
+workflow) reads FITS/metadata. NumPy 2.5.2 / SciPy 1.18.1 retain C5c pins.
+Linux CPython 3.12 wheels install locally. Record the full dependency freeze.
+
+PSFEx/photutils rebuilding would require the original selected star cutouts,
+weights and rejection settings and would introduce a second construction
+experiment. The available licensed author products are the appropriate reuse
+here. Imfit/PyImfit remains the later cross-fitter candidate, not a prerequisite
+for this transfer check. Custom code is limited to checksums, a thin GalSim
+adapter and diagnostic bookkeeping; NNLS reuses the existing SciPy helper.
+
+## C5d frozen experiment — before inspecting new results
+
+Use only the two author Pointings12 F444W module A/B PSFs above. Pin/check their
+Git blob hashes, the statistics table and license; save original bytes and
+SHA256 provenance. Cast to float64, divide each FULL signed 401x401 array by
+its signed sum, and record that normalization. Do not clip negative pixels,
+smooth, shift/recenter, rotate, rescale widths or renormalize the output stamp.
+The finite model is zero outside the published support; unprovided physical
+wings remain unknown. Nonfinite arrays or nonpositive total normalization are
+input errors. Negative values, signed centroids, core/wing aperture sums and
+finite-output flux loss are diagnostics, not reasons to repair the data.
+
+Treat the 15-mas grid as samples of a 30-mas effective response. GalSim
+`InterpolatedImage(normalization='flux', depixelize=False, pad_factor=4,
+use_true_center=True)` with explicit 0.015-arcsec scale represents that response.
+Convolve the intrinsic source and draw at 0.03 arcsec using `no_pixel` on a
+201x201 stamp, centered geometrically. No additional Pixel or block integration
+is used in science images. The output stamp is deliberately larger than C5a's
+129 pixels to cover the supplied PSF support; this is a new baseline, not a
+one-variable numerical comparison with C5a. Preserve registration differences
+between the supplied models; no claim of isolated pure width or core/wing change.
+
+Use n=1/4, semi-major Re=16 native pixels (0.48 arcsec), q=0.6, PA=45 degrees,
+unit analytic intrinsic host flux and nuclear/host ratios 0.1/1/10. Reuse the
+existing GalSim circular-HLR conversion Re*sqrt(q) and C4 coarse/fine GSParams.
+Render host/point templates for coarse-Quintic, fine-Quintic and fine-Lanczos4.
+Fine-Quintic defines each A/B truth scene. Report image/flux/centroid differences
+from numerical refinement and interpolation; neither proves independent
+convergence or recovers information absent from the empirical models.
+
+For each truth module and ratio, fit only nonnegative host/nuclear amplitudes
+using the inherited `profile_flux` (SciPy NNLS), with each A/B adopted PSF and
+each fine interpolation choice. Hold shape and intrinsic centers/PA fixed at
+truth to isolate amplitude effects before introducing nonlinear ambiguity.
+There are 24 direct linear solves per host, 48 total, and 12 truth image bundles.
+`fit_starts.csv` has one row per direct solve, not invented nonlinear starts.
+There is no change to historical structural bounds, starts or optimizer budgets;
+this experiment makes NO structural-recovery or free-centroid inference.
+Retain all flux-zero constraints, costs, residuals, template singular values
+and failures. No bias-sign or truth-recovery threshold is applied.
+
+Before empirical output review, validate pixel convention with closed-form
+Gaussian effective PSFs of optical FWHM=0.09/0.165 arcsec and a Gaussian source
+sigma=0.12 arcsec. Sample the known 30-mas integrated response on the 15-mas
+grid. Compare native redraws and convolution with the corresponding analytic
+Gaussian pixel integrals. Save an intentionally double-integrated negative
+control separately; NEVER use it as an empirical science model. The inherited
+Gaussian point-template unit check remains L1<1e-6; numerical convolution
+errors are reported without inventing a general empirical acceptance band.
+
+Workflow `gate-c-agn-empirical-psf-transfer`, two host shards, maximum two
+concurrent. CI verifies pins, finite complete products and bookkeeping, not
+survey accuracy. Review all templates, controls, 48 rows and residual products
+before selecting nonlinear empirical-PSF fits. C5, Dewsnap, chromatic/SED,
+real-survey and production decisions remain open.
+
+### C5d local checks and resource assessment (not GitHub results)
+
+Fifteen targeted tests passed with the frozen dependency pins, including the
+inherited Gaussian integration checks, signed-input preservation, immutable
+download/cache verification and NNLS zero-amplitude bookkeeping. Both LOCAL
+host executions completed (48 direct solves and 12 truth bundles); source
+checksums, CSV/JSON fields, all data hashes and residual/cost/L1 identities
+were checked. Gaussian native-redraw L1 differences are about 1e-14; the
+Gaussian-convolution controls differ by 0.6–1.1e-7. These are local diagnostics,
+not a new empirical tolerance or a claim that the workflow has passed.
+
+The unmodified published inputs contain negative wings (negative absolute
+mass fractions about 3.28%/9.31% for A/B), and native-sampled signed sums are
+about 1.00559/0.99009. These are retained as part of the signed empirical-model
+diagnostic; neither clipping nor native-stamp renormalization is justified
+post hoc. Negative model scenes cannot be used as Poisson intensity maps.
+Before a later physical injection or nonlinear extension, review these input
+limitations together with the actual CI transfer controls. This is not a
+validated nonnegative optical PSF or a newly closed survey/centroid gate.
+
+The n=4 local run emits GalSim's large-FFT warning for size 12300x12300.
+Checked the official GSParams documentation:
+https://galsim-developers.github.io/GalSim/_build/html/gsparams.html.
+`maximum_fft_size` is a warning threshold, not permission to truncate or
+loosen accuracy. No GSParams, support, interpolation or scientific setting was
+changed. The instrumented local repeat produced identical scientific outputs,
+used 2,547,332 KiB peak RSS and completed in about 65 seconds. Standard public
+repository ubuntu-24.04 runners currently provide 16 GB RAM according to
+https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+(checked 2026-09-03). Retain that standard runner, not a paid/larger resource.
+`runtime.json` and `warnings.json` record observed resource use and every
+warning; actual CI installation, execution and artifacts still need review.
