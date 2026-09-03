@@ -606,3 +606,113 @@ which is retained without altering bounds or selecting another winner.
 These local observations are NOT GitHub results or physical recovery.
 Runtime was about 25–26 seconds per host with about 244000 KiB peak RSS;
 no warning was recorded. Scientific settings remain as frozen.
+
+## C5g CI reviewed / C5h independent host-renderer preflight — 2026-09-03
+
+GitHub explicitly confirms run `33740141863` at
+`de3ed949d3497263c458a897f703d5a5e9a6f295` completed/success in both host
+jobs (`100599888971`, `100599888716`). Ordinary regression `33740141703`
+also succeeded. Downloaded artifacts `9887407188` and `9887408196` were
+verified against GitHub ZIP SHA-256 digests. These are actual CI products,
+not a substitution of the earlier local execution. No newer active experiment
+was present when selecting C5h.
+
+The reproducible audit `scripts/audit_agn_empirical_agn_centroid.py` reviews
+24 fixed baselines, 24 free-position winners, all 72 starts and all 384 new
+arrays, with complete C5d parent provenance. It verifies CSV/JSON identity,
+saved Photutils templates at every start, prediction/residual/cost/KKT and
+singular-value algebra, minimum-cost winners, finite values and zero/bound
+flags. `nuclear_centroid_33740141863.json` preserves the full review, source
+file hashes, explicitly queried job conclusions and numerical summaries.
+
+Every start reports convergence; no centroid bound is active. Wrong-PSF
+apparent radial offsets reach 0.266074 native pixel (0.03 arcsec/pixel).
+The maximum per-coordinate start spread is about 3.70e-6 pixel, and the
+maximum absolute cost spread is about 3.43e-9. For n=4, true B / fit A,
+AGN/host=10, the fixed host amplitude 0.849526 becomes exactly zero with the
+released nucleus. Reversing the mismatch changes host amplitude from
+3.331675 to 1.744172; the true amplitude is one. The matched-PSF controls
+retain floating-precision recovery. The fixed baseline differs from the C5d
+host amplitude by at most 7.6e-14, so the release did not silently alter the
+zero-phase convention. CI runtime was 29.03/27.39 seconds (n=1/4), with peak
+RSS 247160/245268 KiB and no recorded warnings.
+
+These are conditional fixed-host-shape solutions, not physical offsets or
+host morphology. Search agreement and a lower cost cannot validate a noisy
+signed PSF; negative wings and phase-dependent normalization remain. The
+zero-host result is retained without changing bounds or selecting another
+winner. C5g and its historical predecessors are not overwritten or rerun.
+
+### Software-first choice and frozen next question
+
+Freeing host Re,n,q is the next scientific goal. However, the archived n=4
+GalSim reference already required a roughly 12300-square FFT and 2.56 GB
+peak RSS. A new renderer needs convention and full-bound resource checks
+before its behavior can enter a shape optimizer. `C5H_PROTOCOL.md` freezes
+these checks before any C5h science-image evaluation: Imfit 1.9.0 rendering
+at 2x/4x/8x numerical sampling, the existing truth shapes, all eight corners
+of the unchanged Re/n/q box, exact Gaussian controls, and fixed-shape flux
+sensitivity on the original C5d images. No host-shape inference yet.
+
+Consulted the author's Imfit paper, tagged source, CLI documentation and
+PyImfit installation/convolution documentation (links and checksums in the
+protocol). Reuse the checksum-pinned Linux makeimage executable and its
+existing profile subsampling/convolution; no new renderer or optimizer is
+written. PyImfit uses the same engine but adds a Linux source-build/ABI
+requirement, so it is not necessary for this preflight. Imfit's GPL-3.0-or-
+later license and bundled source metadata are recorded; no executable is
+vendored or adopted as a production dependency. The small adapter translates
+1-based centers, PA/ellipticity, analytic flux units and already-integrated
+effective-PSF sampling. The original GalSim PSF interpolant is shared, so
+only the host renderer/convolution is independently compared. Do not infer
+independent physical PSF truth, universal numerical convergence or readiness
+for photon injection from package agreement.
+
+### Local implementation checks and setup diagnoses (not CI results)
+
+All 112 local tests pass with the frozen dependency pins and the real
+checksum-verified Imfit binary, including 18 targeted renderer/transfer
+tests. Pinned actionlint 1.7.12 accepts all workflows. The ordinary regression
+suite remains enabled and the new workflow has narrow push paths and two
+host jobs; no historical heavy science batch is intentionally relaunched.
+
+An interrupted local package installation left the NumPy OpenBLAS library
+truncated at 8388608 instead of the wheel RECORD's 25210641 bytes. Offline
+RECORD/hash comparison identified that one corrupt binary. Re-extracting the
+same library from the cached pinned wheel restored imports; no numerical
+dependency version or scientific setting was changed. Consulted NumPy's
+official import-troubleshooting guidance and the documented truncated-file
+SIGBUS case, rather than diagnosing this as a numerical failure:
+https://numpy.org/devdocs/user/troubleshooting-importerror.html
+https://bugs.python.org/issue40720
+
+The first external-binary smoke checks also caught a missing local GNU time
+utility and then Imfit 1.9's documented `--print-fluxes` behavior: that mode
+disables image saving, even with an output filename. Used the official
+Ubuntu time package locally (relocatable path, hash/version recorded), and
+removed that reporting-only flag so makeimage actually saves the requested
+FITS. A regression assertion prevents its return. These pre-science setup
+failures did not evaluate, discard or tune any C5h science result. Sources:
+https://packages.ubuntu.com/noble/time
+https://imfit.readthedocs.io/en/latest/frequently_asked_questions.html
+https://www.mpe.mpg.de/~erwin/resources/imfit/CHANGELOG.html
+
+Follow `gate-c-agn-imfit-renderer` at the commit implementing C5h, not an old
+centroid run. Its config records the actual GitHub run ID/SHA, prerequisite
+audit/protocol hashes, software identities and every frozen case. Only after
+explicit completed/success and review of all renderer, flux, residual and
+resource products may C5h inform the free-shape implementation decision.
+No acceptance band, morphology bound or production gate is changed here.
+
+Both full LOCAL C5h executions subsequently completed under that frozen
+protocol: 72 render cases (including all structural corners and Gaussian
+controls), 72 direct fits/start records and 600 new NPZ/FITS image arrays.
+All were audited for complete finite products, source identity, native/fine
+grid and area mapping, CSV/JSON identity, comparison/refinement bookkeeping,
+amplitude-zero flags and prediction/residual/cost/KKT algebra. No renderer
+timed out; no warning was recorded. Each host job took about 485 seconds;
+maximum measured child RSS was 2301872 KiB. The author CLI writes float32
+FITS, which is explicitly retained in the record rather than presented as
+double-precision independent agreement. No setting was changed in response
+to these outputs. These local checks are NOT GitHub Actions success, a
+physical PSF validation, or approval to advance to free-shape fitting yet.
