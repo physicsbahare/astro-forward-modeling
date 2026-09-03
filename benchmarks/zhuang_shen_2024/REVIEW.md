@@ -1,6 +1,7 @@
 # C5 — Zhuang & Shen PSF-mismatch verification
 
-Status: IN PROGRESS. C5a width-only experiment frozen 2026-09-03 UTC.
+Status: IN PROGRESS. C5a/C5b reviewed; C5c package-search diagnostic frozen
+2026-09-03 UTC. C5c CI results have not yet been reviewed.
 
 Primary reference: Zhuang & Shen (2024), ApJ 962, 139,
 https://arxiv.org/abs/2304.13776 (abstract checked 2026-09-03).
@@ -113,3 +114,98 @@ a nonzero-host candidate with cost 4.5178548622 (difference -0.0735639857
 from C5a), Re about 31.282 pixels and n at its lower bound 0.5. This supports
 running the diagnostic, not morphology recovery. It is NOT GitHub success;
 both CI host shards must be inspected before advancing dependent science.
+
+## C5b GitHub review — 2026-09-03 UTC
+
+GitHub confirms run `33705072892` completed/success on commit
+`9159a6342880d5b2d21eee7371ba577736a923bc`, both jobs successful. Downloaded
+artifacts `agn-psf-plateau-n1` (`9874939966`, ZIP SHA256
+`096daa27745511a54a28d2f710a128cffa9bb6d2d440c632eee62b96b03b965b`)
+and `agn-psf-plateau-n4` (`9874933610`, ZIP SHA256
+`cacdae7157199d2e95a752dae88cb1a918734961dfcafd67aff04d090ad7537c`).
+Reviewed all 400 grid evaluations, six refinements and both image bundles:
+CSV/JSON equality, frozen grids/seeds, provenance/config, exact data hashes,
+finite arrays, original/new residual identities, every refinement cost and
+the minimum-cost selection. The CI environment records NumPy 2.5.2 and
+SciPy 1.18.1. All six refinements report success, nonzero host flux and the
+lower n boundary. Zero host flux occurs at 155/200 and 162/200 grid points
+for true n=1 and n=4 respectively; these are grid counts, not probabilities.
+
+The n=1 winner remains the C5a basin (cost 5.538659271932353 versus
+5.538659271948071; signed difference -1.5718e-11 retained). For n=4 the
+best grid point already improves the old zero-host result, and refinement
+reduces cost from 4.5914188479068105 to 4.5178548622094645, difference
+-0.07356398569734601. The corrected diagnostic has Re=31.28269785 pixels,
+n=0.5, q=0.58898643, host flux=0.47542425, nuclear flux=10.41363161.
+Thus the historical n=4 zero-host result is start-limited, NOT evidence that
+the image contains no host. The better fit still badly misrecovers a true
+Re=16, n=4, unit-flux host; wrong PSF physics remains after optimizer repair.
+This finite search establishes a counterexample, not a global-optimum proof.
+
+## Literature/software decision — 2026-09-03 UTC
+
+The user's literature/software-first policy applies before further custom
+algorithm development. Checked the SciPy public differential_evolution API
+(https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html)
+and its installed documentation: bounded population search, seeded RNG,
+Sobol initialization and iteration callbacks are already provided. The
+SciPy source distribution uses BSD-3-Clause licensing; it is an existing
+dependency. Choose a thin public-API adapter, not a custom global optimizer.
+Pin NumPy 2.5.2 / SciPy 1.18.1 to the actual C5b CI environment, avoiding
+a deliberate dependency-version change in this comparison.
+
+Also checked Erwin (2015), https://arxiv.org/abs/1408.1097, and the author's
+Imfit documentation https://www.mpe.mpg.de/~erwin/code/imfit/. Imfit offers
+Sersic plus PointSource models, supplied PSFs, multiple minimizers including
+DE, variance-map choices and PyImfit integration. It remains an independent
+image-fitter candidate, not the immediate replacement here: adopting it
+now would change rendering/pixel-integration/PSF-interpolation conventions
+at the same time as search. Its GPL-3 license and compiled dependencies
+require explicit review before any future integration; no production
+dependency is introduced. Separate convention-controlled cross-fitter tests
+remain on the roadmap. Neither package can recover information missing from
+the data or make a wrong PSF physically correct.
+
+## C5c frozen experiment — before inspecting new results
+
+Question: does a population-based, non-gradient search independently of the
+C5b grid discover the same or a better basin? Reuse ONLY the two actual C5b
+ratio=10, width-factor=1.03 images; verify source commit/host/data hashes and
+fitted point-template identity. Save source summary plus file SHA256 manifest.
+Keep 129-pixel stamp, 8x renderer, NNLS nonnegative amplitudes, RMS-normalized
+noiseless objective, fixed centers/PA/sky, and Re=[0.5,60], n=[0.5,6],
+q=[0.15,1]. Recompute the archived C5b winner's objective and report numerical
+drift explicitly. No new PSF/noise/scene effect and no new recovery band.
+
+Use scipy.optimize.differential_evolution in (ln Re, ln n, q), best1bin,
+Sobol initialization, popsize=10 (32 members after Sobol rounding),
+maxiter=60, tol=1e-7, atol=0, mutation=(0.5,1), recombination=0.7,
+updating='deferred', workers=1, vectorized=False, polish=False and x0=None.
+Two fixed numpy default_rng seeds 20260903/20260904, NOT noise realizations;
+no C5b winner or truth seed is injected. At most 1952 DE objective evaluations
+per seed, four searches total in two host jobs. DE's population-energy
+stopping test is an algorithm criterion, not morphology acceptance or proof
+of global optimality. Retain budget exhaustion and all success/failure flags.
+
+After each search, perform exactly one inherited C5b TRF refinement with
+unchanged tolerances/bounds/max_nfev; save raw DE and refined outcomes
+separately. Keep every evaluated DE trial (including initial members), every
+generation's population/energies, final populations, all four candidates per
+host, truth/prediction/residual products, and signed costs versus C5a/C5b.
+CI only checks complete finite records and bookkeeping identities. Retain
+the minimum-cost candidate even if an optimizer did not report success.
+Do not retune if seeds disagree or the finite budget is exhausted.
+
+Workflow `gate-c-agn-psf-de`, identified by its implementation commit;
+maximum two concurrent jobs. After review, decide whether the width-only
+optimizer diagnostic is sufficient to proceed to empirical/core-wing PSF
+tests, or document a specific unresolved search discrepancy. No claim of
+global optimality, independent renderer agreement or production readiness.
+
+Local C5c implementation checks: thirteen targeted tests pass under the exact
+NumPy 2.5.2 / SciPy 1.18.1 pins. Tests cover seeded repeatability, callback
+population/energy bookkeeping, bounds and retained budget-exhaustion status.
+The n=4 execution smoke check reproduces the archived C5b objective with
+zero recorded cost drift; its partial trial/population trace was checked.
+This is NOT a completed local search or GitHub success. Full two-seed,
+two-host outcomes must come from the new workflow and be reviewed separately.
