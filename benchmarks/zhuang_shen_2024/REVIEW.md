@@ -1,6 +1,6 @@
 # C5 — Zhuang & Shen PSF-mismatch verification
 
-Status: IN PROGRESS. C5a–C5e reviewed; C5f frozen in `C5F_PROTOCOL.md`.
+Status: IN PROGRESS. C5a–C5f reviewed; C5g frozen in `C5G_PROTOCOL.md`.
 Historical status: C5e subpixel-phase/interpolation
 diagnostic frozen 2026-09-03 UTC before its execution. No nonlinear
 empirical-PSF or physical-injection acceptance is implied.
@@ -560,3 +560,49 @@ noise, signed-wing clipping, or post-hoc recovery band is introduced.
 All 91 local tests pass with the pinned phase environment; these are not a
 claim of C5f GitHub success. Follow the next `gate-c-agn-empirical-psf-centroid`
 run at the implementing commit, not a repeat of C5e.
+
+## C5f reviewed / C5g nuclear-centroid release — 2026-09-03
+
+GitHub explicitly confirms C5f `33734876563` at
+`0cc3f757a1746d1801d06b71e09a41f58e130d0c` completed/success, both A/B
+jobs, as did regression `33734876499`. Artifacts `9885650816` and
+`9885656093` were downloaded and verified against GitHub ZIP digests.
+The complete review of 128 winners, 384 starts and 1282 arrays includes
+parent/source hashes, frozen configuration, CSV/JSON identity, template
+evaluation, residual/cost/KKT algebra and minimum-cost winner selection.
+See `centroid_33734876563.json` for exact artifact/file hashes and all groups.
+
+No start reported failure, zero flux or an active centroid bound. Largest
+cross-interpolator radial offsets: 0.006804 pixel (A), 0.009953 pixel (B).
+The largest amplitude change from freeing the position is 0.002647 in B.
+Same-interpolator winners recover to floating precision; cross-interpolator
+starts agree to about 1.75e-8 pixel per coordinate. This does not certify a
+global optimum or physical PSF/astrometric validity; signed wings remain.
+
+The next bounded nonlinear experiment isolates the nuclear centroid inside
+the existing C5d AGN+host scenes. Host Re,n,q,PA and center stay fixed; both
+amplitudes are profiled with NNLS. This measures apparent nucleus–host offsets
+and conditional host-flux changes, NOT free-shape morphology recovery.
+`C5G_PROTOCOL.md` freezes all cases, starts, bounds, outputs and software reuse
+before any C5g result. It documents why adding host-shape freedom or changing
+cross-fitter/convolution simultaneously would confound the comparison.
+
+The implementation reuses pinned Photutils/SciPy and archived GalSim host
+templates, without any new interpolation/optimization algorithm. All 100
+local tests passed, including explicit zero-amplitude plateaus, fixed-baseline
+identity and retention of an injected failed start. Pinned actionlint 1.7.12
+accepts the narrow two-job workflow. These checks are not GitHub success.
+Follow `gate-c-agn-empirical-agn-centroid` at its implementation commit, with
+the run ID and SHA saved by the workflow into the output config. No duplicate
+C5d/C5e/C5f run or production implementation is required.
+
+Both full LOCAL C5g host executions completed: 24 paired comparisons, 72
+nonlinear starts and 384 newly saved arrays audited. All data hashes,
+CSV/JSON values, prediction/residual/cost/KKT identities, singular values and
+winner choices were checked. Fixed-baseline host flux differs from C5d by
+at most 7.6e-14; the comparison did not silently change the zero-phase model.
+Every local start reports success; one n=4 winner has zero host amplitude,
+which is retained without altering bounds or selecting another winner.
+These local observations are NOT GitHub results or physical recovery.
+Runtime was about 25–26 seconds per host with about 244000 KiB peak RSS;
+no warning was recorded. Scientific settings remain as frozen.
