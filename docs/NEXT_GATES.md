@@ -78,6 +78,11 @@ The uniform numerical cell does not consistently explain the discrepancy.
 C5m's LOCAL Imfit16 calls all failed allocation under the six-GiB cap; that
 incomplete stage was not dispatched. C5n separately freezes Imfit8/10 with
 source-derived memory headroom, preserving all prior settings and failures.
+C5n `33806193712` succeeded and all 32 starts/168 arrays were audited, but
+general regression `33806193588` failed optional-dependency test collection.
+Repair the minimal-environment test guards while requiring exact pins in
+the dedicated workflow; await both repair reruns before dependent science.
+Sampling drift still reaches 0.273%, with cross-code differences up to 1.940%.
 See `benchmarks/zhuang_shen_2024/C5N_PROTOCOL.md` and the C5 review; follow
 `gate-c-agn-imfit-bounded` on its implementing commit, not an older renderer
 run or the undispatched C5j plan. No physical PSF,

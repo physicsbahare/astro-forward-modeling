@@ -51,7 +51,10 @@ jobs:
           printf '4fe27a3d3e48f0c4931ee3fb5ad571330fdbf27f6c327f48990418bdcb965984  %s\n' \
             "$binary" | sha256sum --check -
           echo "IMFIT_MAKEIMAGE=$binary" >> "$GITHUB_ENV"
-      - run: python -m pytest -q tests/test_agn_imfit_bounded.py tests/test_agn_imfit_renderer.py
+      - name: Require the pinned science environment before testing
+        run: |
+          python -c "import importlib.metadata as m; import astropy, galsim, photutils; import sys; sys.path.insert(0, 'scripts'); from run_agn_imfit_renderer import PINS; assert {k:m.version(k) for k in PINS} == PINS"
+      - run: python -m pytest -q tests/test_agn_imfit_bounded.py tests/test_agn_imfit_refinement.py tests/test_agn_imfit_renderer.py
       - uses: actions/download-artifact@v4
         with:
           name: agn-cell-response-n${{ matrix.host_n }}

@@ -1122,3 +1122,46 @@ change was made. `c5n_local_20260903.json` distinguishes these audit scopes.
 Full local suite: **167 passed**, including the pinned external-binary smoke
 test; one deliberate failure-capture warning remains. Pinned actionlint
 1.7.12 accepted all workflows. Actual CI outputs still require review.
+
+### C5n actual CI and minimal-environment regression repair — 2026-09-03 UTC
+
+Run **33806193712**, commit `69f9037a116ca5dd75e7f941c38fe6542d91b547`,
+explicitly completed/success for both jobs, including their strict output
+audits. Downloaded artifacts 9913113504/9913113898, verified ZIP SHA256,
+and independently reran the unchanged read-only audits on both original
+CI artifacts. All 16 renders, 32 direct amplitude starts, eight sampling
+pairs, 16 fine FITS/native reductions and **168 new NPZ arrays** passed.
+No original CI artifact contains the local leftover-partial anomaly.
+The complete receipt is `imfit_bounded_33806193712.json`.
+
+Imfit8-to-10 normalized L1 drift is **0.234–0.250%** for flattened n=0.5,
+**0.0130–0.0177%** for round n=0.5, **0.271–0.273%** for flattened n=6,
+and **0.0620–0.0695%** for round n=6. At sampling10, differences relative
+to canonical GalSim no_cell are **1.916–1.940%**, **0.1034–0.1038%**,
+**0.0602–0.0689%**, and **0.1891–0.2038%**, respectively. These are
+descriptive, with the reference image defining each denominator; C5l used
+Imfit as its reference for its cross-code comparison. Neither better nor
+worse agreement establishes truth, and full-range convergence remains open.
+
+The separate general regression run **33806193588 failed on Python3.11
+and3.12 during collection**, not during a science fit. Actual logs show
+`ModuleNotFoundError: No module named 'astropy'` in the two newly added
+Imfit test modules. The minimal harness intentionally does not install
+the optional astronomy stack; existing astronomy tests already use pytest's
+documented importorskip. Apply that same module-level dependency guard to
+the two new files. Do not add an xfail, alter an assertion, or relax a
+scientific criterion. In the dedicated C5n workflow, add mandatory imports
+and **exact pin equality before tests**, and include the C5m adapter tests
+alongside the bounded and author-renderer tests. Missing dependencies there
+remain a hard failure, not a skip. Scientific scripts/protocols are unchanged.
+Source: https://docs.pytest.org/en/stable/how-to/skipping.html#skipping-on-a-missing-import-dependency
+
+Local verification: a fresh minimal environment passes **65 tests**, with
+13 optional modules explicitly skipped; the pinned full environment passes
+**167 tests**, none skipped, including the author-binary smoke test. The
+new mandatory guard rejects the minimal environment and accepts the exact
+pinned one. Pinned actionlint1.7.12 passes. Preserve both failed regression
+jobs and the successful original C5n. The repair commit triggers the
+regression and same-setting C5n verification reruns; do not advance to new
+dependent science before these necessary checks succeed. Follow the newest
+`verification-suite` and `gate-c-agn-imfit-bounded` on the repair commit.

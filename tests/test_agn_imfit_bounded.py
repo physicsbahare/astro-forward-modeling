@@ -1,6 +1,9 @@
 from pathlib import Path
 import sys
 import pytest
+pytest.importorskip('galsim')
+pytest.importorskip('astropy')
+pytest.importorskip('photutils')
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 import run_agn_imfit_bounded as b
 
