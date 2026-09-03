@@ -1,6 +1,7 @@
 # C5 — Zhuang & Shen PSF-mismatch verification
 
-Status: IN PROGRESS. C5a–C5f reviewed; C5g frozen in `C5G_PROTOCOL.md`.
+Status: IN PROGRESS. C5a–C5h reviewed from actual CI artifacts; C5i compact-
+boundary diagnosis is frozen in `C5I_PROTOCOL.md`. Host shape is not freed yet.
 Historical status: C5e subpixel-phase/interpolation
 diagnostic frozen 2026-09-03 UTC before its execution. No nonlinear
 empirical-PSF or physical-injection acceptance is implied.
@@ -716,3 +717,113 @@ FITS, which is explicitly retained in the record rather than presented as
 double-precision independent agreement. No setting was changed in response
 to these outputs. These local checks are NOT GitHub Actions success, a
 physical PSF validation, or approval to advance to free-shape fitting yet.
+
+## C5h actual GitHub review and C5i freeze — 2026-09-03
+
+GitHub explicitly confirms run **33759931812**, commit
+`391efc236c440e76ed5dcd7c7b7e71e444fea012`, completed/success at
+13:18:02Z. Both jobs (`100663437845`, `100663438269`) and all their steps
+succeeded; regression `33759932043` also succeeded. The branch/PR were checked
+for replacements and active work before selecting the next experiment.
+Downloaded artifacts `9895134048` and `9895141857` match GitHub's ZIP SHA-256
+digests. `scripts/audit_agn_imfit_renderer.py` and
+`imfit_renderer_33759931812.json` preserve the reproducible review and the
+separately queried GitHub conclusions.
+
+The review covers **72 renders, 72 direct amplitude fits/start records and
+600 new NPZ/FITS arrays**. It verifies complete parent provenance, binary
+identity, model/PSF/native-grid conventions, all CSV/JSON rows, refinement
+and image statistics, saved predictions/residuals, amplitude-zero flags,
+cost, singular values and KKT bookkeeping. No render failed or timed out,
+no fit had zero amplitude, and no warning was recorded. The maximum saved
+prediction reconstruction difference was 2.78e-17; these are algebra checks,
+not new science acceptance bands. Job runtimes were 126.32/147.31 seconds
+(parent n=1/4 shards), maximum individual render 9.37 seconds, and maximum
+child RSS 2301884 KiB. Imfit's output FITS are float32, retained explicitly.
+
+At the original n=4, Re=16, q=0.6 shape, the 8x Imfit/GalSim image L1
+difference is 0.02052% (A) / 0.02779% (B). For n=1, 4x and 8x differences
+are near a nonmonotonic 0.0021--0.0022% floor. The largest change in fitted
+host flux from C5d is -0.011124 in unit-true-host-flux units, for n=4, true
+A / fit B, AGN/host=10 at 2x; the maximum absolute 8x change is 0.006358.
+These comparisons do not remove the original physical PSF mismatch. Exact
+Gaussian-control 8x L1 differences are 3.09--3.17e-6.
+
+The compact structural boundary is materially less stable. At **n=6,
+Re=0.5, q=0.15**, 4x-to-8x L1 changes are **1.614% (A), 1.630% (B)**;
+2x-to-8x changes reach 5.207%. Even the smooth n=0.5, Re=0.5, q=0.15
+case changes by 0.447%/0.478% at 4x-to-8x. Signed-flux changes and all other
+corners are recorded, not discarded. Thus C5h operational success is not
+full-bound numerical convergence. No bound is narrowed or widened, no
+sampling level is declared universally sufficient, and no shape optimizer
+is launched on an unreviewed renderer.
+
+### Next diagnostic: reuse GalSim, separate convention from sampling
+
+`C5I_PROTOCOL.md` was written before any C5i images. It fixes all four
+compact Re=0.5 corners, both signed empirical PSFs, the original detector
+convention/crop and existing coarse/fine GalSim settings. Two labelled
+radius conventions distinguish nominal half-light radius from the exact
+analytic conversion matching Imfit's approximate b_n. The n=0.5 Gaussian
+identity is an additional existing-package control. All archived Imfit
+2x/4x/8x images remain unchanged; 48 one-amplitude projections describe
+flux/shape differences, not recovered morphology or independent truth.
+
+The focused software/source review and reuse decision are recorded in the
+protocol: tagged Imfit source identifies finite central subsampling and
+approximate b_n as candidate contributions, while GalSim supplies a different
+Sersic Hankel/Fourier implementation. PyImfit shares Imfit's engine and would
+not isolate this question merely by changing wrappers. Reuse GalSim 2.8.4
+and SciPy 1.18.1; no new integration or optimization algorithm is written.
+Signed PSFs remain non-photon-ready, and GalSim shares their interpolation.
+Inspect independent-implementation differences relative to each method's
+own refinement before any free-shape decision. C5 and later gates remain open.
+
+### Local verification and serialization diagnostic (not CI)
+
+The complete local test suite passes **123 tests**, with one Imfit-binary
+smoke test skipped because that external binary is only installed in its
+dedicated C5h job. The intentional warning in the failure-retention test is
+expected. Checksum-pinned actionlint 1.7.12 validates every workflow. C5i
+keeps narrow push paths and two jobs; no prior heavy experiment is relaunched.
+
+Both initial local computations finished, but the subsequent read-only
+image audit rejected one n=6 round-host comparison NPZ: it contained exactly
+the first 488590 bytes of the expected 1098440-byte ZIP and lacked the end
+directory. This is an incomplete local file, not a numerical recovery result;
+the underlying truncation cause is not established. The original is retained,
+with hashes and the separate diagnosis in
+`c5i_local_serialization_20260903.json`. Re-serializing the already-saved
+reference/template and amplitude, without rendering or refitting, produced
+that byte-identical prefix and exactly the stored cost. It does not silently
+repair or replace the historical file.
+
+Consulted NumPy's compressed-NPZ documentation and Python's ZIP/atomic-rename
+documentation. Reuse those implementations: write a temporary NPZ, flush,
+read back every array, then atomically rename it; reject existing destinations.
+Retain failed temporary files. A final per-file/per-array manifest and a
+truncated-write regression check prevent a corrupt archive from being counted
+as complete. No scientific parameter, timeout, bound or criterion changed.
+Sources checked 2026-09-03:
+https://numpy.org/doc/stable/reference/generated/numpy.savez_compressed.html
+https://docs.python.org/3.12/library/zipfile.html
+https://docs.python.org/3.12/library/os.html#os.replace
+
+The original n=0.5 local output and a separate, serialization-checked n=6
+local execution were then fully audited: 32 Sersic images, 16 Gaussian
+controls, 48 direct starts and 308 new arrays, with no worker failures or
+warnings. Original failed-file evidence remains separate. Local runtimes
+were 30.19/43.55 seconds, with maximum child RSS 221544 KiB. All saved
+prediction, residual, gradient, cost, CSV/JSON and parent identities check.
+GalSim's local coarse/fine L1 difference reaches **0.903% for n=6**; the
+n=0.5 maximum is 1.08e-5, and its Gaussian-identity maximum is 1.07e-5.
+These descriptive LOCAL differences are retained without tuning either
+accuracy setting. They neither establish convergence nor replace pending
+CI inspection; both implementations' numerical behavior must be reviewed.
+
+Follow workflow **gate-c-agn-compact-renderer** on the commit containing this
+protocol. Its config records the actual run ID/SHA, C5h audit hash and protocol
+hash; it downloads run 33759931812 rather than an older centroid experiment.
+Do not infer GitHub success from local tests or outputs. Review all workers,
+radius conventions, Gaussian controls, amplitude starts and residual/image
+products after explicit completed/success before selecting another stage.

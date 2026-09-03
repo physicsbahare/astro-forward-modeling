@@ -63,11 +63,14 @@ explicitly completed/success. Actual regression logs: 65 passed, 4 skipped on
 each Python arm. C5e `33727185586` also succeeded; complete artifact review is
 recorded in `benchmarks/zhuang_shen_2024/phase_33727185586.json`.
 C5f `33734876563` subsequently succeeded; all 128 winners/384 starts and
-image products were reviewed. C5g now freezes nuclear-centroid release in the
-existing AGN+host scenes, with host shape and center fixed. See
-`benchmarks/zhuang_shen_2024/C5G_PROTOCOL.md`; follow workflow
-`gate-c-agn-empirical-agn-centroid` on its implementing commit. No physical
-PSF, free-shape morphology, or survey-readiness claim follows.
+image products were reviewed. C5g `33740141863` subsequently succeeded for
+nuclear-centroid release with host shape fixed. C5h `33759931812` also
+succeeded, but the actual Imfit artifacts retain 1.63% 4x-to-8x sampling
+drift at a compact structural corner. C5i now isolates this numerical and
+radius-convention question using pinned GalSim before freeing host shape.
+See `benchmarks/zhuang_shen_2024/C5I_PROTOCOL.md` and the C5 review; follow
+`gate-c-agn-compact-renderer` on its implementing commit. No physical PSF,
+free-shape morphology, or survey-readiness claim follows.
 
 The controlled drizzle experiment also passes the flux/centroid/size and pixel-
 area checks. A separate white-noise experiment shows why covariance must remain
@@ -95,7 +98,7 @@ Gate D.
 - [x] Paulino-Afonso/DOPTERIAN-style degradation benchmark — controlled synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**. The high-`n` numerical blocker was resolved by separating detector-pixel integration from the historical point-sampled fitter, the transfer centering phase was corrected, and the full noiseless pixel-integrated single-Sérsic set recovers truth cleanly. The remaining target-noise pathologies persist at low extended-source information and are classified as identifiability loss rather than a reason to widen bounds. Exact Table-2 correction factors are not claimed; see `benchmarks/paulino_afonso_2017/REVIEW.md`.
 - [x] Yu et al. (2023) resolvedness/morphology trends — controlled synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**. Circular-PSF smoothing reproduces the expected concentration/asymmetry suppression, the controlled noise stage preserves low-information failures and bound hits, and the pinned STPSF F444W diagnostic recovers the expected small positive asymmetry contribution from a realistic non-180-degree-symmetric PSF. No universal `R_p/FWHM` cut is inferred; see `benchmarks/yu_2023/REVIEW.md`.
 - [x] AGN nuclear-fraction morphology contamination benchmark — controlled synthetic-equivalent scope complete with explicit limitations. Ensemble run `33691443555` succeeded; all 216 winners/648 starts reviewed. Final bound hits persist (1/36, 12/36, 32/36 at SNR=100/20/5). No low-SNR accuracy, universal acceptance, or production claim. See `benchmarks/agn_nuclear_fraction/REVIEW.md` and its machine-readable ensemble summary.
-- [ ] Zhuang & Shen PSF-mismatch AGN-host benchmark — C5d–C5g succeeded and actual artifacts were reviewed. C5g run `33740141863` retains apparent nuclear offsets up to 0.266 native pixel and one zero-host winner; all 72 starts converged, which is not physical recovery. Before host-shape freedom, C5h freezes an Imfit 1.9.0 host-renderer/refinement/resource preflight against the archived GalSim images and all corners of the unchanged structural box. See `benchmarks/zhuang_shen_2024/C5H_PROTOCOL.md`, `nuclear_centroid_33740141863.json` and `REVIEW.md`. Signed empirical wings remain non-photon-ready. Free-shape, physical core/wing and chromatic questions remain open; C5h is not yet a GitHub-success claim.
+- [ ] Zhuang & Shen PSF-mismatch AGN-host benchmark — C5d–C5h succeeded and actual artifacts were reviewed. C5g retains apparent nuclear offsets and a zero-host solution. C5h `33759931812` has 1.63% compact-boundary 4x-to-8x sampling drift despite successful execution. C5i freezes a GalSim accuracy/convention comparison of the archived compact Imfit images before free-shape fitting; all structural bounds remain unchanged. See `benchmarks/zhuang_shen_2024/C5I_PROTOCOL.md`, `imfit_renderer_33759931812.json` and `REVIEW.md`. Signed wings remain non-photon-ready. Free-shape, physical core/wing and chromatic questions remain open; C5i is not yet a GitHub-success claim.
 - [ ] Dewsnap et al. JWST AGN-host cross-fitter/PSF-construction benchmark: compare at least two PSF constructions and independent fitting implementations on controlled common scenes; do not use fit quality alone as a morphology-validity criterion.
 - [ ] Kawase, Shibuya & Matsuda (2026) controlled AGN-host synthetic validation case using smooth-host + sparse-point-source decomposition and the point-source-balance constraint; compare against the standard Sérsic+PSF stress test before considering production use.
 - [ ] Explicit source-SED / chromatic-PSF mismatch stress test including a color-gradient source. The PSF must be allowed to depend on the source SED within the bandpass; a single source-independent broadband PSF is not sufficient as the only verified mode.
