@@ -2,8 +2,9 @@
 
 Status: IN PROGRESS. C5a–C5i reviewed from actual CI artifacts. C5j remains
 an incomplete LOCAL diagnostic with four retained resource failures; it was
-not dispatched. C5k's separate bounded-grid question is frozen in
-`C5K_PROTOCOL.md`. Host shape is not freed yet.
+not dispatched. C5k subsequently succeeded and its actual artifacts are
+reviewed below. C5l's finite-cell convention test is frozen in
+`C5L_PROTOCOL.md`. Host shape is not freed yet.
 Historical status: C5e subpixel-phase/interpolation
 diagnostic frozen 2026-09-03 UTC before its execution. No nonlinear
 empirical-PSF or physical-injection acceptance is implied.
@@ -973,3 +974,68 @@ Pinned actionlint 1.7.12 accepted all workflows. No C5k image was used to
 change its frozen settings, bounds or acceptance rules. Next: launch the
 two-job C5k workflow, inspect its actual receipts/products, and only then
 decide whether further numerical controls or free-shape fits are justified.
+
+### C5k actual CI review and C5l freeze — 2026-09-03 UTC
+
+GitHub explicitly confirms run **33788705952**, commit
+`7ad6e1ca1b6a78dcde83d6cdea9e3c1bc26bd33b`, completed/success at
+18:56:30Z. Both jobs 100759718795/100759719068 and every step succeeded.
+Artifacts 9908021400 (n1) and 9908228320 (n4) were downloaded and their
+ZIP SHA256 values verified. `fourier_grid_33788705952.json` retains the
+receipt and reproducible full audit: 56 renders/direct starts, 28 Gaussian
+controls, 168 arm-pair comparisons and **896 new arrays**. All CSV/JSON,
+parent identities, predictions, residuals, costs, KKT quantities, Fourier
+products and actual FFT receipts were checked. No failed worker, zero
+amplitude or incomplete FFT log occurs in these CI artifacts. All **16
+large-FFT warnings** remain; maximum child RSS was 2613888 KiB. The two
+science-script runtimes were 65.35 and 117.02 seconds.
+
+The first read-only audit exposed a portability issue, not a CI failure:
+11/260 regenerated n4 kx coordinates differed from the saved values by at
+most 7.11e-15 (relative differences at floating-point rounding scale).
+Following NumPy's documented CPU-dispatch controls, restricting the audit
+process with `NPY_DISABLE_CPU_FEATURES=X86_V4,AVX512_ICL` reproduced the
+saved n4 coordinates exactly. The n1 audit used default dispatch. Both full
+audits then passed the **original exact assertions**, without changing any
+tolerance, image, coordinate file or scientific setting. The original
+failure and audit environments are recorded; this does not establish that
+all floating-point outputs are portable across every platform.
+https://numpy.org/doc/stable/reference/simd/build-options.html#runtime-dispatch
+https://numpy.org/doc/stable/reference/generated/numpy.geomspace.html
+Reproduce with `scripts/review_agn_fourier_grid_ci.py` and the two ZIPs.
+
+At the fourfold cutoff, increasing the grid from 1024 to1536 changes the
+eight images by 8.66e-7--3.29e-6 L1. Yet at grid1536, increasing the cutoff
+from 2x to4x changes n6 by **0.0660--0.1067%**; n0.5 flattened cases change
+by 0.00113--0.00140%, and round cases are identical at those two cutoffs.
+Thus small spacing sensitivity alone does not prove Fourier convergence.
+At grid1536/k4, Imfit8 differences are **0.214--0.273% for n6**,
+**1.699--1.740% for flattened n0.5**, and 0.0941--0.0991% for round n0.5.
+Neither code is independently established as truth. No tolerance or bound
+was changed and no host-shape or physical-recovery claim follows.
+
+The next specific question is whether finite intrinsic numerical-cell
+integration contributes to the cross-code difference. Checked Imfit's
+tagged GetValue/CalculateSubsamples implementation and GalSim's existing
+Pixel/convolution objects before freezing `C5L_PROTOCOL.md`. Reuse the
+published Imfit2/4/8 arrays from C5i; do not rerender that historical stage.
+Compare canonical no_cell and separately labelled square-cell responses
+of width 1/2, 1/4 and 1/8 native pixel, with all four arms compared against
+all three Imfit samplings. This uniform-cell surrogate is deliberately NOT
+asserted to equal adaptive Imfit integration or a new physical PSF model.
+Pins, bounds and resource caps remain unchanged. No bespoke numerical
+integrator/renderer or production code is introduced. Follow
+**gate-c-agn-cell-response** at its implementing commit; its configs record
+the actual new run/SHA. C5l is not yet a GitHub-success claim.
+
+C5l local verification before dispatch: all 32 Sersic renders, 16 Gaussian
+controls, 96 direct starts, 48 arm-pair comparisons and 720 new arrays were
+read back and audited. No failed worker, zero amplitude, missing FFT receipt
+or bookkeeping discrepancy was found. All 32 large-FFT warnings remain;
+maximum child RSS was 4371168 KiB under the unchanged six-GiB cap. Shard
+runtimes were 131.30 and 159.21 seconds. `c5l_local_20260903.json` explicitly
+is not a GitHub receipt; reproduce with `scripts/audit_agn_cell_response.py`.
+No settings were changed after these images. Full local tests: **157 passed,
+one external-Imfit-binary test skipped**, one intentional failure-capture
+warning. Pinned actionlint 1.7.12 accepted all workflows. The prerequisite
+ordinary regression run 33788706072 also explicitly completed/success.
