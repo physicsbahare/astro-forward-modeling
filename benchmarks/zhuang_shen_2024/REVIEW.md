@@ -1257,3 +1257,29 @@ objective and 180-second cap. Existing SciPy DE was not substituted because
 that would change the engine/objective interface, and PyImfit would not add an
 independent engine. Timeouts remain results; no post-hoc fit band is added.
 See `C5Q_PROTOCOL.md`. Actual C5q outputs must be reviewed before proceeding.
+
+### C5q actual CI and C5r freeze — 2026-09-04 UTC
+
+Run **33830661656** at
+`ff39701f7ec5b9f698873064bd85da53ca417544` explicitly completed/success for
+both modules. The downloaded artifacts (IDs 9921687659 and 9921689299) passed
+their strict audits and their ZIP hashes are recorded in
+`c5q_33830661656.json`. All four DE-LHS processes—two predeclared seeds for
+each module—reached the unchanged 180-second cap without complete fit
+products. Thus C5q is a complete diagnostic execution but provides no finite
+global-search solution or agreement claim. The cap is not expanded.
+
+C5o--C5q now characterize the nominal matched-PSF problem as start-, solver-
+and module-dependent: finite lower-cost extended-host solutions exist, but
+the compact module-A LM path and all bounded population paths fail within the
+declared resource envelope. This limitation is sufficiently explicit to carry
+forward as an observable; it is not converted into a matched-PSF pass.
+
+Following Zhuang & Shen's published prediction that PSF mismatch changes host
+flux and concentration, `C5R_PROTOCOL.md` freezes the separate wrong-PSF
+free-shape diagnostic. It exchanges A/B PSFs only at noiseless AGN/host=10,
+reuses the exact C5o starts, bounds, objective and resource cap, and records
+timeouts and boundaries without requiring convergence. Noise remains absent.
+No recovery band, renderer change or physical-PSF claim is introduced. Follow
+`gate-c-agn-imfit-wrong-psf-free-shape`; review its actual artifacts before
+choosing a noise or morphology gate.
