@@ -1234,3 +1234,26 @@ Evolution is deferred because its population cost is materially larger; it
 may be justified only after the bounded paths are reviewed. See
 `C5P_PROTOCOL.md`. Do not start the wrong-PSF free-shape arm before actual C5p
 artifacts are audited.
+
+### C5p actual CI and C5q freeze — 2026-09-04 UTC
+
+Run **33823405733** at `b5644c92fa1efc7204cd267acdc098636cf437b2`
+explicitly completed/success for modules A and B. Both strict audits were
+rerun on the downloaded original artifacts; ZIP SHA256 and artifact IDs are
+recorded in `c5p_33823405733.json`. Module A's LM replay again reached the
+unchanged 180-second cap after 498 logged iterations. Nelder--Mead completed
+in 8.21 seconds at n=2.171, Re=9.414, q=0.642 and an SSE **89.04 times** the
+finite C5o solution. For module B, LM completed in 10.13 seconds at n=4.227,
+Re=16.130, q=0.599, while Nelder--Mead completed in 7.84 seconds at n=2.446,
+Re=9.154, q=0.685 and an SSE **32.14 times** worse. No reported solution hit
+a bound. Imfit's formal module-B LM uncertainties are extremely large, which
+is retained as identifiability evidence rather than interpreted as precision.
+
+C5p therefore confirms a module- and solver-dependent local-basin problem;
+an optimizer success label does not establish recovery. Before any PSF
+mismatch, C5q freezes the checksum-pinned Imfit `--de-lhs` global solver with
+two deterministic seeds on the exact same difficult A/B inputs, bounds,
+objective and 180-second cap. Existing SciPy DE was not substituted because
+that would change the engine/objective interface, and PyImfit would not add an
+independent engine. Timeouts remain results; no post-hoc fit band is added.
+See `C5Q_PROTOCOL.md`. Actual C5q outputs must be reviewed before proceeding.
