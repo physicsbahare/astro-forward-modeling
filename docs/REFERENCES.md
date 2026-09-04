@@ -1,76 +1,92 @@
 # Reference Map
 
-This list records the methodological sources currently shaping the pre-implementation design. It is intentionally broader than the citations that will eventually appear in a software paper.
+This file records methodological sources shaping the verification and future design. **It is not a checklist of papers that must each be reproduced in full.** A source becomes a benchmark only when it contributes a distinct scientific operator, failure mode, maintained independent implementation, or survey-reality check. When several papers probe the same phenomenon, the project should use the smallest controlled set that spans the non-redundant claims.
 
 ## Cosmological radiometry and K-corrections
 
-- Hogg, D. W. (1999), **Distance measures in cosmology**, arXiv:astro-ph/9905116.
-- Hogg, D. W. et al. (2002), **The K correction**, arXiv:astro-ph/0210394.
+- Hogg (1999), *Distance measures in cosmology*.
+- Hogg et al. (2002), *The K correction*.
+
+These define conventions/reference equations; they do not require paper-level image reproduction.
 
 ## Artificial redshifting and morphology bias
 
-- Barden, M., Jahnke, K., & Haeussler, B. (2008), **FERENGI: Full and Efficient Redshifting of Ensembles of Nearby Galaxy Images**, arXiv:0812.1022.
-- Paulino-Afonso, A. et al. (2017), **The structural and size evolution of star-forming galaxies over the last 11 Gyr**, MNRAS 465, 2717. Includes a Python translation of the FERENGI core and generalized luminosity evolution treatment. DOI: 10.1093/mnras/stw2939.
-- Yu, S.-Y. et al. (2023), **Redshifting galaxies from DESI to JWST CEERS: Correction of biases and uncertainties in quantifying morphology**, arXiv:2307.04753.
-- Ferrari, F. et al. (2017/2018), **The impact of redshift on galaxy morphometric classification: case studies for SDSS, DES, LSST and HST with Morfometryka**, MNRAS 473, 2701.
-- Salvador et al. (2024), **The debiased morphological transformations of galaxies since z ~ 3 in CANDELS** (DOPTERIAN-based degradation analysis).
+- Barden, Jahnke & Haeussler (2008), FERENGI.
+- Paulino-Afonso et al. (2017), DOPTERIAN/FERENGI-style degradation and structural recovery.
+- Yu et al. (2023), DESI-to-JWST morphology-bias/resolvedness tests.
+- Ferrari et al. (2017/2018), redshift effects on morphometric classification.
+- Salvador et al. (2024), DOPTERIAN-based degradation analysis.
+
+The completed FERENGI, Paulino-Afonso, and Yu benchmarks already cover the main non-redundant artificial-redshift, pixel-integration/identifiability, and resolvedness/morphology-loss questions. Ferrari/Salvador remain supporting references unless a later gap requires a specific additional observable.
 
 ## Morphological K-corrections / chromatic structure
 
-- Kuchinski et al. (2001), UV/optical morphology and artificial redshifting work.
-- Voigt, L. M. et al. (2012), **The impact of galaxy colour gradients on cosmic shear measurement**.
-- GalSim documentation and chromatic-object implementation.
-- Berlfein et al. (2025), **Chromatic Effects on the PSF and Shear Measurement for the Roman Space Telescope High-Latitude Wide Area Survey**; companion public RomanChromaticPSF repository.
+- Kuchinski et al. (2001), UV/optical morphology and artificial redshifting.
+- Voigt et al. (2012), galaxy colour-gradient biases.
+- GalSim chromatic-object implementation and documentation.
+- Berlfein et al. (2026), chromatic PSF effects in Roman simulations.
+
+The required project-level test is an explicit source-SED/chromatic-PSF mismatch on a color-gradient scene, not reproduction of every weak-lensing result.
 
 ## PSF matching and PSF systematics
 
-- Aniano, G., Draine, B. T., Gordon, K. D., & Sandstrom, K. (2011), **Common-resolution convolution kernels for space- and ground-based telescopes**, PASP 123, 1218. DOI: 10.1086/662219.
-- Boucaud et al. / PyPHER — regularized PSF homogenization.
-- Photutils `psf_matching` documentation, including Wiener/Tikhonov regularization.
-- Zhuang, M.-Y. & Shen, Y. (2023), **Characterization of JWST NIRCam PSFs and Implications for AGN+Host Image Decomposition**, arXiv:2304.13776.
-- Zhuang, Li & Shen (2023), **AGNs and Host Galaxies in COSMOS-Web. I. NIRCam Images, PSF Models and Initial Results**, arXiv:2309.03266.
+- Aniano et al. (2011), common-resolution convolution kernels.
+- Boucaud et al. / PyPHER, regularized PSF homogenization.
+- Photutils PSF-matching implementation/documentation.
+- Zhuang & Shen (2023), JWST/NIRCam PSFs and AGN-host decomposition.
+- Zhuang, Li & Shen (2023), COSMOS-Web NIRCam PSF models and AGN hosts.
+- Dewsnap, Barmby & Gallagher (2025/2026), JWST AGN-host decomposition across PSF constructions and fitters.
 
-## AGN-host morphology stress cases
+The unique required claims here are PSF-mismatch sensitivity, PSF provenance/construction dependence, and independent-fitter morphology ambiguity. Exact reproduction of every source catalog or survey statistic is unnecessary for the framework.
 
-- Pierce et al. (2010), **The effects of an active galactic nucleus on host galaxy colour and morphology measurements**, MNRAS 405, 718.
-- Gabor et al. (2009), **Active Galactic Nucleus Host Galaxy Morphologies in COSMOS**, ApJ 691, 705.
-- Vijarnwannaluk, B. et al. (2025), **The Stellar Morphology and Size of X-Ray-selected Active Galactic Nucleus Host Galaxies Revealed by JWST**, ApJ 994, 265. DOI: 10.3847/1538-4357/ae102a. This is the paper supplied by the project owner as a required design input.
+## AGN-host morphology / decomposition stress cases
+
+- Pierce et al. (2010), AGN contamination of colour/morphology.
+- Gabor et al. (2009), AGN host morphology in COSMOS.
+- Vijarnwannaluk et al. (2025), JWST morphology of X-ray-selected AGN hosts.
+- Kawase, Shibuya & Matsuda (2026), smooth-host + sparse-point-source decomposition with a point-source-balance constraint.
+
+The nuclear-fraction contamination stress test is already complete. Kawase is retained as a conditional method-validation target because its decomposition constraint is genuinely different; a minimal controlled comparison should decide whether it adds production value before any implementation commitment.
 
 ## Source injection / survey transfer functions
 
-- Huang et al. (2018), HSC **SynPipe** synthetic-source injection and pipeline characterization.
-- Suchyta et al. / Everett et al. / DES Balrog work, especially **Dark Energy Survey Year 3 Results: Measuring the Survey Transfer Function with Balrog**, ApJS, DOI: 10.3847/1538-4365/ac26c1.
-- Anbajagane et al. (2025), **Dark Energy Survey Year 6 Results: Synthetic-source Injection Across the Full Survey Using Balrog**, Open Journal of Astrophysics 8, DOI: 10.33232/001c.138627.
-- Bottrell et al., **RealSim**, public code for realistic insertion/degradation of galaxy images into survey imaging.
+- HSC SynPipe synthetic-source injection work.
+- DES Balrog transfer-function and full-survey injection work.
+- Bottrell et al., RealSim.
+
+These motivate Gate D's required real-mosaic/exposure injection architecture. Here the important target is an actual survey-level injection/recovery experiment, not paper-by-paper reproduction.
 
 ## Resampling / coaddition / calibration
 
-- Fruchter & Hook (2002), **Drizzle: A Method for the Linear Reconstruction of Undersampled Images**, PASP.
-- Astropy-affiliated `reproject` documentation: exact-overlap, adaptive anti-aliased, and interpolation algorithms; explicit distinction between surface-brightness and flux-per-pixel semantics.
-- JWST Calibration Pipeline `resample` documentation: drizzle, weights, and approximate variance propagation.
-- JWST Calibration Pipeline `photom` and PHOTOM reference documentation: PHOTMJSR and pixel-area metadata.
+- Fruchter & Hook (2002), Drizzle.
+- Astropy-affiliated `reproject` exact/adaptive/interpolation implementations.
+- JWST Calibration Pipeline `resample` documentation.
+- JWST Calibration Pipeline `photom`/PHOTOM reference documentation.
 
 ## Instrument PSF / rendering infrastructure
 
-- STPSF documentation: source-spectrum-weighted polychromatic PSFs, wavelength sampling, detector-position dependence, oversampling, detector-effect products.
-- GalSim documentation: chromatic profiles, SEDs, bandpasses, wavelength-dependent profiles, correlated noise.
+- STPSF documentation and pinned data products.
+- GalSim chromatic profiles, SEDs, bandpasses, wavelength-dependent profiles, and correlated noise.
+- PyAutoGalaxy/PyAutoArray maintained morphology/PSF-convolution stack as an independent Gate-B extension.
 
 ## Spatial-spectral reconstruction
 
-- Blanton & Roweis (2007), **K-corrections and filter transformations in the ultraviolet, optical, and near-infrared**, kcorrect/template basis methodology.
-- Melchior et al., scarlet / scarlet2 scene modeling.
-- piXedfit documentation and papers for spatially resolved multi-band SED preparation, PSF matching, and adaptive pixel binning.
+- Blanton & Roweis (2007), kcorrect/template-basis methodology.
+- scarlet/scarlet2 scene modeling.
+- piXedfit spatially resolved multi-band SED preparation and PSF matching.
+
+These are design references. They become production dependencies only if later architecture/testing shows that a specific implementation is needed.
 
 ## High-redshift attenuation
 
-- Inoue et al. (2014), analytic intergalactic attenuation model, MNRAS 442, 1805, arXiv:1402.0677.
+- Inoue et al. (2014), analytic intergalactic attenuation model.
 
 ## Synthetic observations from physical simulations
 
-- Recent TNG50-to-JWST forward-modeling work generating dust-aware synthetic JWST observations with survey depth/resolution matching; relevant for later validation of physically generated latent scenes.
+Recent simulation-to-survey work remains useful for future validation of physically generated latent scenes, but it is not currently a blocking gate.
 
 ---
 
-### Documentation sources to pin by version in the future public package
+### Evidence and dependency policy
 
-The public package must store or cite exact versions of: Astropy, Photutils, reproject, GalSim, STPSF, JWST Calibration Pipeline/CRDS context, and any survey-specific measurement software. Web documentation is mutable; release validation should pin versions and, where possible, DOI-tagged software releases.
+The public package must record exact versions/provenance of scientific software that actually participates in a forward model or validation result. Reference literature and verification-only packages are not automatically production dependencies. Web documentation is mutable; release validation should pin versions and, where possible, DOI-tagged releases or immutable source commits.

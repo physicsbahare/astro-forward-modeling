@@ -1,55 +1,49 @@
 # Pre-implementation Forward-Modeling Verification Suite
 
-This repository snapshot is **not the production astronomy package**. It is an independent scientific verification harness used to freeze equations, numerical semantics, and later acceptance criteria before production implementation begins.
+This repository is **not the production astronomy package**. It is the pre-production scientific verification harness used to freeze physical conventions, numerical semantics, cross-code behavior, benchmark evidence, and later acceptance criteria before the public framework is implemented.
 
 ## Why this exists
 
-The intended public framework will eventually answer questions such as:
+The intended framework will answer questions such as:
 
-> If the same astrophysical source were observed at a different redshift, through a different bandpass/PSF/pixel grid/survey, what would be observed, what would a real measurement pipeline recover, and what biases or completeness losses would result?
+> If the same astrophysical source were observed at a different redshift, through a different bandpass, PSF, pixel grid, or survey, what would be observed, what would a real measurement pipeline recover, and what biases or completeness losses would result?
 
-The core is intended to remain science-neutral: spiral structure, bars, mergers, AGN-host decomposition, photometric completeness, and other tasks belong to measurement/recovery plugins rather than the forward-rendering core.
+The desired scientific product is therefore not only a synthetic image but a documented transfer function between source/observation truth and recovered measurements. The forward-rendering core is intended to remain science-neutral; spiral structure, bars, mergers, AGN-host decomposition, completeness, and similar science cases belong to measurement/recovery adapters and validation plugins.
 
-## Current verification modules
+## Repository structure
 
-- `verification/reference.py` — independent flat-LCDM and radiometric reference formulas.
-- `verification/radiometry.py` — `F_nu/F_lambda`, luminosity distance, photon-count and Tolman consistency checks.
-- `verification/psf.py` — analytic Gaussian PSF matching, Wiener reference implementation, `D`/`W_-` diagnostics, impossible-resolution case.
-- `verification/resampling.py` — exact overlap transfer versus direct continuous Gaussian pixel integration.
-- `verification/chromatic.py` — two-component color-gradient + wavelength-dependent PSF experiment.
-- `verification/noise.py` — correct detector-order source Poisson statistics and real-background double-noise check.
-- `verification/spectral_support.py` — inverse-problem demonstration that wavelength overlap is not equivalent to spectral information support.
+- `verification/` — independent physics/numerical reference implementations and synthetic experiments.
+- `crosscode/` — comparisons against maintained astronomy packages such as Astropy, reproject, Photutils, GalSim, STPSF, and the JWST calibration stack.
+- `benchmarks/` — frozen protocols, archived benchmark receipts, reviews, and literature-motivated stress tests.
+- `scripts/` — reproducible experiment runners and read-only artifact audits.
+- `tests/` — regression and physics tests for the verification harness.
+- `.github/workflows/` — isolated CI workflows for expensive or specially pinned verification stages.
 
-## Run
+The lightweight package itself still depends only on Python, NumPy, SciPy, and Matplotlib; benchmark-specific environments are pinned separately so optional scientific software is not silently imported into the core verification environment.
 
-The current standalone suite needs only Python, NumPy, SciPy, Matplotlib, and pytest.
+## Current status — 2026-09-04
 
-```bash
-python run_verification.py
-pytest -q
-```
+Gate A (independent numerical physics) is substantially complete. The original Gate B cross-code set is complete, including Astropy/reproject/Photutils/GalSim/STPSF/JWST-pipeline/CRDS/drizzle checks; a new PyAutoGalaxy/PyAutoArray morphology cross-code extension remains before architecture freeze.
 
-Results are written to `results/` and diagnostic plots to `figures/`.
+Gate C has completed the FERENGI, Paulino-Afonso/DOPTERIAN, Yu et al. (2023), AGN nuclear-fraction, and Zhuang & Shen PSF-mismatch scopes. The Zhuang & Shen wrong-PSF stage is intentionally retained as a **scientific morphology-recovery failure** even though its diagnostic workflow completed successfully; CI success is never treated as scientific success.
 
-## Current status
+The active Gate-C line is Dewsnap-style independent-fitter/PSF-construction validation. C6a, the AstroPhot 0.18.0 signed-PSF installation and coordinate-convention preflight, completed successfully in run `33849387267`. The next controlled step is C6b: reuse a clean matched-PSF, noiseless common scene and compare AstroPhot against the archived Imfit result before introducing PSF-construction mismatch or noise.
 
-Seven regression/physics tests pass in the present snapshot. The current results establish physical/numerical behavior but **do not yet define universal public-package tolerances**. Those limits will be frozen only after cross-code checks against maintained astronomy libraries and reproduction of literature benchmarks such as FERENGI, Yu et al. (2023), PSF-mismatch AGN simulations, and real survey injection/recovery.
+Gate D real-survey injection, Gate E numerical acceptance freeze, and Gate F production architecture review have not started. Production framework code must not be introduced before those gates are closed.
 
-See:
-
-- `docs/MATHEMATICAL_VERIFICATION.md`
-- `docs/REFERENCES.md`
-- `docs/NEXT_GATES.md`
+See `docs/NEXT_GATES.md` for the current roadmap and `benchmarks/dewsnap_2025/C6A_RESULT.md` for the latest completed gate receipt.
 
 ## Important scientific rules already frozen
 
-1. No duplicated K-correction/dimming factors in the forward model.
-2. Wavelength-dependent PSF belongs inside the spectral integration.
-3. Flux-per-pixel and surface-brightness semantics are never inferred silently.
+1. Do not apply duplicated K-correction or Tolman-dimming factors when the forward spectral operator already contains the corresponding redshift physics.
+2. Wavelength-dependent PSF belongs inside spectral integration; source-SED dependence must be representable.
+3. Flux-per-pixel, surface brightness, calibrated image units, and detector counts are explicit semantics and are never inferred silently.
 4. Direct mode may degrade information but may not invent unsupported spatial frequencies.
-5. Spectral support is judged by predictive information/uncertainty, not wavelength overlap alone.
-6. Source Poisson noise is generated at the detector-order stage, after optical redistribution.
-7. Real-image injection does not add a second realization of the already-existing sky noise.
-8. Intrinsic evolution is an explicit operator, never silently mixed with observational degradation.
+5. Spectral support is judged by predictive information/uncertainty and prior dominance, not wavelength overlap alone.
+6. Source Poisson noise is generated after optical redistribution at the detector-order stage.
+7. Real-image injection does not add a second realization of the already-existing sky/background noise.
+8. Intrinsic evolution is an explicit operator and is never silently mixed with observational degradation.
+9. Optimizer convergence or a successful CI job is not sufficient evidence of physical/morphological recovery.
+10. Acceptance thresholds are not widened or invented after observing a difficult benchmark; unresolved failures remain part of the verification record.
 
-Development is currently private and pre-release. The `verification-v0.1` branch contains the scientific verification work before production implementation begins.
+Development is pre-release. The `verification-v0.1` branch and draft PR #5 are the scientific verification record before production implementation begins.

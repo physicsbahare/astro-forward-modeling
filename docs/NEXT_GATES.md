@@ -1,10 +1,10 @@
 # Gates Before Production Implementation
 
-Production package coding should not begin until these gates are closed.
+Production package coding should not begin until these gates are closed. This roadmap tracks **distinct scientific/numerical failure modes**, not a requirement to reproduce every cited paper line by line. A literature case is mandatory only when it contributes a non-redundant operator, failure mode, external implementation, or survey-reality check that is not already covered by a stronger test.
 
 ## Gate A — independent numerical suite
 
-**Status: substantially complete in this snapshot.**
+**Status: substantially complete.**
 
 - [x] Distance-duality and redshift spectral-density checks.
 - [x] `F_nu` / `F_lambda` bolometric consistency.
@@ -20,123 +20,68 @@ Production package coding should not begin until these gates are closed.
 - [x] no-double-background injection check.
 - [x] spectral-information-support counterexample.
 
+These tests freeze physical semantics, not universal application tolerances.
+
 ## Gate B — cross-code verification against maintained astronomy packages
 
-**Status: original Gate-B experiments are complete; one new cross-code morphology extension is pending before production freeze.**
+**Status: original Gate-B set complete; one morphology extension remains before Gate F.**
 
 - [x] Compare cosmological distances and units against `astropy.cosmology`.
 - [x] Compare exact/adaptive reprojection against `reproject`.
-- [x] Compare Wiener kernels against current `photutils.psf_matching.make_wiener_kernel`.
+- [x] Compare Wiener kernels against maintained Photutils PSF matching.
 - [x] Compare chromatic rendering against GalSim on the same analytic scene.
 - [x] Compare polychromatic JWST PSFs against STPSF with controlled input spectra.
 - [x] Verify NIRCam PHOTOM science/error/variance scaling and inverse round trip against `jwst==3.0.0`.
 - [x] Freeze a compatible CRDS context and verify live NIRCam PHOTOM/AREA reference selection with checksummed provenance.
-- [x] Quantify JWST drizzle/resampling behavior for a controlled imaging case (flux, centroid, pixel scale, morphology, variance and covariance).
-- [ ] Add a pinned PyAutoGalaxy/PyAutoArray PSF-convolved morphology cross-code benchmark using identical analytic Sérsic/MGE scenes; compare flux, centroid, profile shape, second moments and recovered structural parameters. Treat this as an independent reference, not ground truth or a production dependency.
+- [x] Quantify JWST drizzle/resampling behavior for a controlled imaging case, including flux, centroid, pixel scale, morphology, variance, and covariance.
+- [ ] Add a pinned PyAutoGalaxy/PyAutoArray PSF-convolved morphology cross-code benchmark using identical analytic Sérsic/MGE scenes; compare flux, centroid, profile shape, second moments, and recovered structural parameters. Treat it as an independent reference, not ground truth or a production dependency.
 
-The STPSF sub-gate is reproducibly frozen to STPSF 2.2.0 plus the exact
-STPSF 2.2.0 data archive (SHA-256
-`bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98`).
-The CI suite passes four JWST/NIRCam checks covering data/software pinning,
-output-extension semantics and detector-effect toggling, chromatic PSF size,
-and detector-position field dependence.
+Frozen JWST evidence includes STPSF 2.2.0 plus its exact data archive, `jwst==3.0.0`, `stcal==1.20.0`, and CRDS context `jwst_1584.pmap`. The NIRCam calibration audit established that PHOTOM lookup must respect FILTER + PUPIL + SUBARRAY when a subarray column is present. Controlled drizzle tests also demonstrated that correlated noise is configuration-dependent and must not be collapsed into one universal correction factor.
 
-The pipeline/CRDS calibration checks pass under `jwst==3.0.0`, `stcal==1.20.0`
-and `jwst_1584.pmap`. For the controlled NRCA-long/F444W/FULL case, CRDS
-selects `jwst_nircam_photom_0168.fits` and `jwst_nircam_area_0261.fits`; both
-are recorded by SHA-256. The test exposed and resolved an important reference-
-table semantic: the PHOTOM table has subarray-specific rows, so NIRCam imaging
-must match FILTER + PUPIL + SUBARRAY when the `subarray` column is present,
-rather than taking the first F444W/CLEAR row.
+Detailed historical workflow/debug records remain in the corresponding benchmark reviews and CI-routing documentation rather than defining current gate state here.
 
-Historical execution-status addendum (2026-09-03): the separate calibration workflow
-needed an infrastructure-only rerun after GitHub rejected an invalid
-job-level `runner.temp` reference (runs `33717897774` and `33727184271`).
-The repair resolves the identical cache path in a runner step, preserving all
-calibration settings and historical results. Local semantic checks and 85
-tests pass; do not infer calibration-CI success until its rerun is reviewed.
-See `docs/VERIFICATION_CI_ROUTING.md`. This does not replace or duplicate the
-then-active empirical-PSF phase run `33727185586` at `b23d2a2`.
+## Gate C — literature-motivated scientific stress tests
 
-Subsequent review: calibration `33727866409` and regression `33727866435`
-explicitly completed/success. Actual regression logs: 65 passed, 4 skipped on
-each Python arm. C5e `33727185586` also succeeded; complete artifact review is
-recorded in `benchmarks/zhuang_shen_2024/phase_33727185586.json`.
-C5f `33734876563` subsequently succeeded; all 128 winners/384 starts and
-image products were reviewed. C5g `33740141863` subsequently succeeded for
-nuclear-centroid release with host shape fixed. C5h `33759931812` also
-succeeded, but the actual Imfit artifacts retain 1.63% 4x-to-8x sampling
-drift at a compact structural corner. C5i `33766246396` subsequently succeeded;
-all 48 direct starts and 308 new arrays were reviewed. GalSim itself retains
-up to 0.903% coarse/fine sensitivity; the n=6 radius-convention difference
-is negligible by comparison. C5j's LOCAL control study retained four
-resource failures and remains incomplete; it was not dispatched. C5k
-`33788705952` succeeded; all 56 starts and 896 arrays were reviewed.
-Spacing sensitivity is small, but cutoff and Imfit differences remain.
-C5l `33798675379` succeeded; all 96 starts and 720 arrays were reviewed.
-The uniform numerical cell does not consistently explain the discrepancy.
-C5m's LOCAL Imfit16 calls all failed allocation under the six-GiB cap; that
-incomplete stage was not dispatched. C5n separately freezes Imfit8/10 with
-source-derived memory headroom, preserving all prior settings and failures.
-C5n `33806193712` succeeded and all 32 starts/168 arrays were audited, but
-general regression `33806193588` failed optional-dependency test collection.
-Repair the minimal-environment test guards while requiring exact pins in
-the dedicated workflow; await both repair reruns before dependent science.
-Sampling drift still reaches 0.273%, with cross-code differences up to 1.940%.
-See `benchmarks/zhuang_shen_2024/C5N_PROTOCOL.md` and the C5 review; follow
-`gate-c-agn-imfit-bounded` on its implementing commit, not an older renderer
-run or the undispatched C5j plan. No physical PSF,
-free-shape morphology, or survey-readiness claim follows.
+**Status: five scopes complete; Dewsnap C6 is active.**
 
-The controlled drizzle experiment also passes the flux/centroid/size and pixel-
-area checks. A separate white-noise experiment shows why covariance must remain
-explicit in later survey work. At native 0.063 arcsec sampling the noise remains
-effectively uncorrelated, whereas drizzling the same field to 0.0315 arcsec
-produces nearest-neighbor correlations of about 0.665. For a 5x5-pixel aperture,
-the true variance is about 5.15 times the value one would infer by treating the
-*empirical output-pixel variance* as independent. At the same time, the JWST
-pipeline's approximate resampled `VAR_RNOISE` plane is conservative in this
-specific experiment: summing its diagonal terms over the aperture overpredicts
-the measured aperture variance by about 36%. This behavior is consistent with
-stcal's documented approximate drizzle error propagation and must not be turned
-into a universal covariance correction factor.
+- [x] **FERENGI-style artificial redshifting** — synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**. This validates the artificial-redshift operator family and prevents duplicated redshift/radiometric factors; see `benchmarks/ferengi_2008/REVIEW.md`.
+- [x] **Paulino-Afonso/DOPTERIAN-style degradation** — reviewed as **PASS WITH EXPLAINED DIFFERENCE**. This exposed detector-pixel integration, subpixel phase, and low-information identifiability issues; see `benchmarks/paulino_afonso_2017/REVIEW.md`.
+- [x] **Yu et al. (2023) resolvedness/morphology trends** — reviewed as **PASS WITH EXPLAINED DIFFERENCE**. This establishes that morphology metrics can fail before flux does and that realistic asymmetric PSFs alter asymmetry; no universal `R_p/FWHM` cut is adopted; see `benchmarks/yu_2023/REVIEW.md`.
+- [x] **AGN nuclear-fraction contamination** — controlled scope complete. Nuclear dominance and low S/N produce real optimizer/identifiability failures that remain observables, not reasons to widen bounds; see `benchmarks/agn_nuclear_fraction/REVIEW.md`.
+- [x] **Zhuang & Shen PSF mismatch** — controlled scope complete with an explicit scientific failure. C5r run `33842347328` completed as a diagnostic, but six of 12 starts timed out and every selected wrong-PSF solution hit a bound. Target noise is not added to a condition that already fails noiseless morphology recovery; see `benchmarks/zhuang_shen_2024/REVIEW.md`.
+- [ ] **Dewsnap-style independent fitter / PSF-construction validation.**
+  - [x] C6a AstroPhot 0.18.0 signed-PSF/runtime/convention preflight — run `33849387267` completed/success; signed samples, unit-sum normalization, public array orientation, and AstroPhot's internal transpose/convolution convention were verified. This is a software/convention pass only, not morphology validation; see `benchmarks/dewsnap_2025/C6A_RESULT.md`.
+  - [ ] C6b matched-PSF, noiseless common-scene AstroPhot-versus-Imfit comparison. Reuse the clean C5o `n=1` scene/result so fitter/renderer behavior is isolated before PSF mismatch. Predeclare diagnostics; record all starts, convergence messages, bounds, image products, objectives, runtime, versions, and parameter differences. Do not invent a recovery band after seeing the result.
+  - [ ] C6c compare independent PSF constructions only after C6b establishes the common-scene baseline. Fit quality alone is not a morphology-validity criterion.
+- [ ] **Kawase, Shibuya & Matsuda (2026) method check — conditional implementation target.** First test the genuinely new smooth-host + sparse-point-source / point-source-balance idea on a minimal controlled scene. It becomes a required production-design input only if it adds recovery robustness or a useful failure diagnostic beyond the Sérsic+PSF stress suite; exact paper reproduction is not required.
+- [ ] **Explicit source-SED / chromatic-PSF mismatch stress test** including a color-gradient source. This is a required operator-level test because the final `PSFProvider` must support bandpass-integrated, source-SED-dependent PSFs; a single source-independent broadband PSF cannot be the only verified mode.
 
-The original Gate-B set is closed as a verification record, not as a claim that
-one covariance number applies to arbitrary mosaics, kernels, pixfrac values or
-survey reductions. The new PyAutoGalaxy/PyAutoArray item is a post-closure
-extension motivated by a maintained 2026 implementation and must be completed
-before Gate F is frozen. Survey-specific covariance effects remain deferred to
-Gate D.
+### Gate-C evidence policy
 
-## Gate C — literature reproduction
-
-- [x] FERENGI-style artificial-redshift benchmark — synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**; see `benchmarks/ferengi_2008/REVIEW.md`. Existing regression bounds were not loosened and remain non-production sanity checks.
-- [x] Paulino-Afonso/DOPTERIAN-style degradation benchmark — controlled synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**. The high-`n` numerical blocker was resolved by separating detector-pixel integration from the historical point-sampled fitter, the transfer centering phase was corrected, and the full noiseless pixel-integrated single-Sérsic set recovers truth cleanly. The remaining target-noise pathologies persist at low extended-source information and are classified as identifiability loss rather than a reason to widen bounds. Exact Table-2 correction factors are not claimed; see `benchmarks/paulino_afonso_2017/REVIEW.md`.
-- [x] Yu et al. (2023) resolvedness/morphology trends — controlled synthetic-equivalent reproduction reviewed as **PASS WITH EXPLAINED DIFFERENCE**. Circular-PSF smoothing reproduces the expected concentration/asymmetry suppression, the controlled noise stage preserves low-information failures and bound hits, and the pinned STPSF F444W diagnostic recovers the expected small positive asymmetry contribution from a realistic non-180-degree-symmetric PSF. No universal `R_p/FWHM` cut is inferred; see `benchmarks/yu_2023/REVIEW.md`.
-- [x] AGN nuclear-fraction morphology contamination benchmark — controlled synthetic-equivalent scope complete with explicit limitations. Ensemble run `33691443555` succeeded; all 216 winners/648 starts reviewed. Final bound hits persist (1/36, 12/36, 32/36 at SNR=100/20/5). No low-SNR accuracy, universal acceptance, or production claim. See `benchmarks/agn_nuclear_fraction/REVIEW.md` and its machine-readable ensemble summary.
-- [x] Zhuang & Shen PSF-mismatch AGN-host benchmark — controlled synthetic-equivalent scope complete with explicit numerical failure. C5r run `33842347328` succeeded as a diagnostic; six of 12 starts timed out and every selected wrong-PSF solution hit a bound. The A-data/B-PSF direction drove point flux to zero and assigned about 10.7–10.8 total flux to a subpixel host. This is a decisive noiseless morphology-recovery failure, not physical recovery. See `benchmarks/zhuang_shen_2024/c5r_33842347328.json` and `REVIEW.md`. Signed wings remain non-photon-ready; target noise is not started from this failed condition.
-- [ ] Dewsnap et al. JWST AGN-host cross-fitter/PSF-construction benchmark: C6a freezes a pinned AstroPhot 0.18.0 signed-PSF/runtime convention preflight before a common-scene fit. Then compare at least two PSF constructions and independent fitting implementations; do not use fit quality alone as a morphology-validity criterion. See `benchmarks/dewsnap_2025/C6A_PROTOCOL.md`.
-- [ ] Kawase, Shibuya & Matsuda (2026) controlled AGN-host synthetic validation case using smooth-host + sparse-point-source decomposition and the point-source-balance constraint; compare against the standard Sérsic+PSF stress test before considering production use.
-- [ ] Explicit source-SED / chromatic-PSF mismatch stress test including a color-gradient source. The PSF must be allowed to depend on the source SED within the bandpass; a single source-independent broadband PSF is not sufficient as the only verified mode.
-
-See `docs/RECENT_DEVELOPMENTS_2026_08.md` for the provenance and motivation of the newly added verification cases.
+The papers are **sources of distinct scientific checks, not eight mini-products that must each be rebuilt in full**. For each source, extract the smallest controlled experiment that tests the unique claim relevant to the future framework. Stop expanding a literature benchmark once its unique failure mode/operator has been isolated and independently audited. Preserve paper-specific numerical reproduction only when an exact number is itself needed to validate a convention or implementation.
 
 ## Gate D — real-survey injection
 
+**Status: not started; mandatory before production acceptance.**
+
 - [ ] Generic mosaic injection/recovery test.
-- [ ] COSMOS-Web NIRCam L1 test using real 30-mas products, PSF, background, WCS, segmentation, and the chosen measurement pipeline.
+- [ ] COSMOS-Web NIRCam L1 test using real 30-mas products, empirical/declared PSF, background, WCS, segmentation, and the chosen measurement pipeline.
 - [ ] Quantify the L1 source-shot-noise/covariance approximation.
-- [ ] Design the L2 exposure-injection adapter and compare L1 vs L2 on a small controlled sample.
+- [ ] Design the L2 exposure-injection adapter and compare L1 versus L2 on a small controlled sample.
+
+Gate D is more important to production readiness than reproducing additional redundant literature cases, because it tests the actual survey transfer function, crowding/background/WCS/segmentation interactions, and measurement-pipeline recovery.
 
 ## Gate E — numerical acceptance criteria
 
-Only after Gates B-D:
+**Only after Gates B-D.**
 
 - [ ] Freeze default wavelength quadrature convergence target.
 - [ ] Freeze PSF kernel quality diagnostics and application-level rejection policy.
 - [ ] Freeze direct-render/resampling tolerance policy by quantity (flux, centroid, size, morphology), not one universal scalar tolerance.
 - [ ] Freeze spectral-support warning/error policy based on posterior predictive uncertainty and prior dominance.
 - [ ] Freeze stochastic ensemble convergence criteria.
+
+No acceptance band may be loosened merely because a benchmark failed. Scientific non-recovery, bound hits, centroid excursions, optimizer path dependence, or low-S/N failure may themselves be the result.
 
 ## Gate F — production architecture review
 
@@ -146,6 +91,6 @@ Only after Gates B-D:
 - [ ] Review provenance schema.
 - [ ] Review exception/warning taxonomy.
 - [ ] Review unit conventions and calibration boundaries.
-- [ ] Select public package name only after checking uniqueness and scope.
+- [ ] Select a public package name only after checking uniqueness and scope.
 
 Only then: **production implementation begins.**
