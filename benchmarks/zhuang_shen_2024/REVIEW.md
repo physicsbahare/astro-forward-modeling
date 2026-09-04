@@ -1209,3 +1209,28 @@ Re=15.9835--16.0108 and q=0.599614--0.599719. However, the deliberately
 extended start in both AGN/host=10 cases converged to a much worse q=1 boundary
 basin; that start is retained rather than reported as agreement. These are
 LOCAL pipeline observations only, not GitHub success or an acceptance band.
+
+### C5o actual CI split result; C5p frozen — 2026-09-04 UTC
+
+Run **33819349854** at `7041907231a26292f8c663c2df898f3192175a7e`
+explicitly completed/failure. The n=1 job completed/success and its strict
+audit checked all four cases, 12 starts and 48 arrays. The n=4 job failed
+before audit after recording six starts: the compact start for module A at
+AGN/host=10 reached the unchanged 180-second process limit (return code 124)
+and produced no best-fit/model/residual files. Truth and extended starts for
+that exact scene completed in 3--4 seconds, agreed at n=4.13361, Re=16.227,
+q=0.596151 and point flux=9.99725, and had no bound hit. This does not make
+C5o complete or successful. Artifact IDs, ZIP hashes and fitted summaries are
+preserved in `c5o_33819349854.json`; the failed artifact remains authoritative.
+
+Official Imfit 1.9 solver documentation was rechecked before responding. C5p
+is a separate bounded optimizer-path diagnostic: replay only the declared n=4,
+AGN/host=10 compact start for matched modules A/B with the identical image,
+objective, bounds, signed PSF, thread count and 180-second cap. Compare Imfit's
+default Levenberg--Marquardt against its maintained `--nm` Nelder--Mead solver,
+recording timeouts as results and recomputing the objective for finite outputs.
+This is not a C5o rerun, recovery tolerance or substitute pass. Differential
+Evolution is deferred because its population cost is materially larger; it
+may be justified only after the bounded paths are reviewed. See
+`C5P_PROTOCOL.md`. Do not start the wrong-PSF free-shape arm before actual C5p
+artifacts are audited.
