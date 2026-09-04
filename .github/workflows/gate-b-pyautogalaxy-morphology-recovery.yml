@@ -1,0 +1,50 @@
+name: gate-b-pyautogalaxy-morphology-recovery
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - requirements-pyautogalaxy.txt
+      - scripts/run_pyautogalaxy_morphology_recovery.py
+      - scripts/audit_pyautogalaxy_morphology_recovery.py
+      - tests/test_pyautogalaxy_morphology_recovery.py
+      - benchmarks/pyautogalaxy_2026/B9B_PROTOCOL.md
+      - benchmarks/pyautogalaxy_2026/B9A_RESULT.md
+      - .github/workflows/gate-b-pyautogalaxy-morphology-recovery.yml
+permissions:
+  contents: read
+concurrency:
+  group: pyautogalaxy-morphology-recovery-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  common-scene-recovery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-pyautogalaxy.txt
+      - name: Install pinned PyAutoGalaxy/PyAutoArray
+        run: python -m pip install -r requirements-pyautogalaxy.txt -e '.[test]'
+      - name: Require exact selected versions
+        run: python -c "import importlib.metadata as m; assert m.version('autogalaxy') == '2026.8.14.1'; assert m.version('autoarray') == '2026.8.14.1'"
+      - name: Pinned B9b API/design tests
+        run: python -m pytest -q tests/test_pyautogalaxy_morphology_recovery.py
+      - name: Run frozen B9b common-scene recovery
+        run: python scripts/run_pyautogalaxy_morphology_recovery.py --out pyautogalaxy-morphology-recovery-output
+      - name: Read-only artifact audit
+        run: python scripts/audit_pyautogalaxy_morphology_recovery.py --source pyautogalaxy-morphology-recovery-output
+      - if: always()
+        run: |
+          mkdir -p pyautogalaxy-morphology-recovery-output
+          git rev-parse HEAD > pyautogalaxy-morphology-recovery-output/commit.txt
+          python -m pip freeze > pyautogalaxy-morphology-recovery-output/pip-freeze.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pyautogalaxy-morphology-recovery-b9b
+          path: pyautogalaxy-morphology-recovery-output
+          if-no-files-found: error
