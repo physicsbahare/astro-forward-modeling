@@ -1,6 +1,10 @@
 import importlib.metadata, importlib.util
 from pathlib import Path
 import numpy as np
+import pytest
+
+pytest.importorskip("autogalaxy")
+pytest.importorskip("autoarray")
 
 PATH = Path(__file__).resolve().parents[1] / "scripts" / "run_pyautogalaxy_morphology_recovery.py"
 spec = importlib.util.spec_from_file_location("b9b_runner", PATH)
