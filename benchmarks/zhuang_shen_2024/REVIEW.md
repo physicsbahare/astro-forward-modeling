@@ -621,665 +621,4 @@ verified against GitHub ZIP SHA-256 digests. These are actual CI products,
 not a substitution of the earlier local execution. No newer active experiment
 was present when selecting C5h.
 
-The reproducible audit `scripts/audit_agn_empirical_agn_centroid.py` reviews
-24 fixed baselines, 24 free-position winners, all 72 starts and all 384 new
-arrays, with complete C5d parent provenance. It verifies CSV/JSON identity,
-saved Photutils templates at every start, prediction/residual/cost/KKT and
-singular-value algebra, minimum-cost winners, finite values and zero/bound
-flags. `nuclear_centroid_33740141863.json` preserves the full review, source
-file hashes, explicitly queried job conclusions and numerical summaries.
-
-Every start reports convergence; no centroid bound is active. Wrong-PSF
-apparent radial offsets reach 0.266074 native pixel (0.03 arcsec/pixel).
-The maximum per-coordinate start spread is about 3.70e-6 pixel, and the
-maximum absolute cost spread is about 3.43e-9. For n=4, true B / fit A,
-AGN/host=10, the fixed host amplitude 0.849526 becomes exactly zero with the
-released nucleus. Reversing the mismatch changes host amplitude from
-3.331675 to 1.744172; the true amplitude is one. The matched-PSF controls
-retain floating-precision recovery. The fixed baseline differs from the C5d
-host amplitude by at most 7.6e-14, so the release did not silently alter the
-zero-phase convention. CI runtime was 29.03/27.39 seconds (n=1/4), with peak
-RSS 247160/245268 KiB and no recorded warnings.
-
-These are conditional fixed-host-shape solutions, not physical offsets or
-host morphology. Search agreement and a lower cost cannot validate a noisy
-signed PSF; negative wings and phase-dependent normalization remain. The
-zero-host result is retained without changing bounds or selecting another
-winner. C5g and its historical predecessors are not overwritten or rerun.
-
-### Software-first choice and frozen next question
-
-Freeing host Re,n,q is the next scientific goal. However, the archived n=4
-GalSim reference already required a roughly 12300-square FFT and 2.56 GB
-peak RSS. A new renderer needs convention and full-bound resource checks
-before its behavior can enter a shape optimizer. `C5H_PROTOCOL.md` freezes
-these checks before any C5h science-image evaluation: Imfit 1.9.0 rendering
-at 2x/4x/8x numerical sampling, the existing truth shapes, all eight corners
-of the unchanged Re/n/q box, exact Gaussian controls, and fixed-shape flux
-sensitivity on the original C5d images. No host-shape inference yet.
-
-Consulted the author's Imfit paper, tagged source, CLI documentation and
-PyImfit installation/convolution documentation (links and checksums in the
-protocol). Reuse the checksum-pinned Linux makeimage executable and its
-existing profile subsampling/convolution; no new renderer or optimizer is
-written. PyImfit uses the same engine but adds a Linux source-build/ABI
-requirement, so it is not necessary for this preflight. Imfit's GPL-3.0-or-
-later license and bundled source metadata are recorded; no executable is
-vendored or adopted as a production dependency. The small adapter translates
-1-based centers, PA/ellipticity, analytic flux units and already-integrated
-effective-PSF sampling. The original GalSim PSF interpolant is shared, so
-only the host renderer/convolution is independently compared. Do not infer
-independent physical PSF truth, universal numerical convergence or readiness
-for photon injection from package agreement.
-
-### Local implementation checks and setup diagnoses (not CI results)
-
-All 112 local tests pass with the frozen dependency pins and the real
-checksum-verified Imfit binary, including 18 targeted renderer/transfer
-tests. Pinned actionlint 1.7.12 accepts all workflows. The ordinary regression
-suite remains enabled and the new workflow has narrow push paths and two
-host jobs; no historical heavy science batch is intentionally relaunched.
-
-An interrupted local package installation left the NumPy OpenBLAS library
-truncated at 8388608 instead of the wheel RECORD's 25210641 bytes. Offline
-RECORD/hash comparison identified that one corrupt binary. Re-extracting the
-same library from the cached pinned wheel restored imports; no numerical
-dependency version or scientific setting was changed. Consulted NumPy's
-official import-troubleshooting guidance and the documented truncated-file
-SIGBUS case, rather than diagnosing this as a numerical failure:
-https://numpy.org/devdocs/user/troubleshooting-importerror.html
-https://bugs.python.org/issue40720
-
-The first external-binary smoke checks also caught a missing local GNU time
-utility and then Imfit 1.9's documented `--print-fluxes` behavior: that mode
-disables image saving, even with an output filename. Used the official
-Ubuntu time package locally (relocatable path, hash/version recorded), and
-removed that reporting-only flag so makeimage actually saves the requested
-FITS. A regression assertion prevents its return. These pre-science setup
-failures did not evaluate, discard or tune any C5h science result. Sources:
-https://packages.ubuntu.com/noble/time
-https://imfit.readthedocs.io/en/latest/frequently_asked_questions.html
-https://www.mpe.mpg.de/~erwin/resources/imfit/CHANGELOG.html
-
-Follow `gate-c-agn-imfit-renderer` at the commit implementing C5h, not an old
-centroid run. Its config records the actual GitHub run ID/SHA, prerequisite
-audit/protocol hashes, software identities and every frozen case. Only after
-explicit completed/success and review of all renderer, flux, residual and
-resource products may C5h inform the free-shape implementation decision.
-No acceptance band, morphology bound or production gate is changed here.
-
-Both full LOCAL C5h executions subsequently completed under that frozen
-protocol: 72 render cases (including all structural corners and Gaussian
-controls), 72 direct fits/start records and 600 new NPZ/FITS image arrays.
-All were audited for complete finite products, source identity, native/fine
-grid and area mapping, CSV/JSON identity, comparison/refinement bookkeeping,
-amplitude-zero flags and prediction/residual/cost/KKT algebra. No renderer
-timed out; no warning was recorded. Each host job took about 485 seconds;
-maximum measured child RSS was 2301872 KiB. The author CLI writes float32
-FITS, which is explicitly retained in the record rather than presented as
-double-precision independent agreement. No setting was changed in response
-to these outputs. These local checks are NOT GitHub Actions success, a
-physical PSF validation, or approval to advance to free-shape fitting yet.
-
-## C5h actual GitHub review and C5i freeze â€” 2026-09-03
-
-GitHub explicitly confirms run **33759931812**, commit
-`391efc236c440e76ed5dcd7c7b7e71e444fea012`, completed/success at
-13:18:02Z. Both jobs (`100663437845`, `100663438269`) and all their steps
-succeeded; regression `33759932043` also succeeded. The branch/PR were checked
-for replacements and active work before selecting the next experiment.
-Downloaded artifacts `9895134048` and `9895141857` match GitHub's ZIP SHA-256
-digests. `scripts/audit_agn_imfit_renderer.py` and
-`imfit_renderer_33759931812.json` preserve the reproducible review and the
-separately queried GitHub conclusions.
-
-The review covers **72 renders, 72 direct amplitude fits/start records and
-600 new NPZ/FITS arrays**. It verifies complete parent provenance, binary
-identity, model/PSF/native-grid conventions, all CSV/JSON rows, refinement
-and image statistics, saved predictions/residuals, amplitude-zero flags,
-cost, singular values and KKT bookkeeping. No render failed or timed out,
-no fit had zero amplitude, and no warning was recorded. The maximum saved
-prediction reconstruction difference was 2.78e-17; these are algebra checks,
-not new science acceptance bands. Job runtimes were 126.32/147.31 seconds
-(parent n=1/4 shards), maximum individual render 9.37 seconds, and maximum
-child RSS 2301884 KiB. Imfit's output FITS are float32, retained explicitly.
-
-At the original n=4, Re=16, q=0.6 shape, the 8x Imfit/GalSim image L1
-difference is 0.02052% (A) / 0.02779% (B). For n=1, 4x and 8x differences
-are near a nonmonotonic 0.0021--0.0022% floor. The largest change in fitted
-host flux from C5d is -0.011124 in unit-true-host-flux units, for n=4, true
-A / fit B, AGN/host=10 at 2x; the maximum absolute 8x change is 0.006358.
-These comparisons do not remove the original physical PSF mismatch. Exact
-Gaussian-control 8x L1 differences are 3.09--3.17e-6.
-
-The compact structural boundary is materially less stable. At **n=6,
-Re=0.5, q=0.15**, 4x-to-8x L1 changes are **1.614% (A), 1.630% (B)**;
-2x-to-8x changes reach 5.207%. Even the smooth n=0.5, Re=0.5, q=0.15
-case changes by 0.447%/0.478% at 4x-to-8x. Signed-flux changes and all other
-corners are recorded, not discarded. Thus C5h operational success is not
-full-bound numerical convergence. No bound is narrowed or widened, no
-sampling level is declared universally sufficient, and no shape optimizer
-is launched on an unreviewed renderer.
-
-### Next diagnostic: reuse GalSim, separate convention from sampling
-
-`C5I_PROTOCOL.md` was written before any C5i images. It fixes all four
-compact Re=0.5 corners, both signed empirical PSFs, the original detector
-convention/crop and existing coarse/fine GalSim settings. Two labelled
-radius conventions distinguish nominal half-light radius from the exact
-analytic conversion matching Imfit's approximate b_n. The n=0.5 Gaussian
-identity is an additional existing-package control. All archived Imfit
-2x/4x/8x images remain unchanged; 48 one-amplitude projections describe
-flux/shape differences, not recovered morphology or independent truth.
-
-The focused software/source review and reuse decision are recorded in the
-protocol: tagged Imfit source identifies finite central subsampling and
-approximate b_n as candidate contributions, while GalSim supplies a different
-Sersic Hankel/Fourier implementation. PyImfit shares Imfit's engine and would
-not isolate this question merely by changing wrappers. Reuse GalSim 2.8.4
-and SciPy 1.18.1; no new integration or optimization algorithm is written.
-Signed PSFs remain non-photon-ready, and GalSim shares their interpolation.
-Inspect independent-implementation differences relative to each method's
-own refinement before any free-shape decision. C5 and later gates remain open.
-
-### Local verification and serialization diagnostic (not CI)
-
-The complete local test suite passes **123 tests**, with one Imfit-binary
-smoke test skipped because that external binary is only installed in its
-dedicated C5h job. The intentional warning in the failure-retention test is
-expected. Checksum-pinned actionlint 1.7.12 validates every workflow. C5i
-keeps narrow push paths and two jobs; no prior heavy experiment is relaunched.
-
-Both initial local computations finished, but the subsequent read-only
-image audit rejected one n=6 round-host comparison NPZ: it contained exactly
-the first 488590 bytes of the expected 1098440-byte ZIP and lacked the end
-directory. This is an incomplete local file, not a numerical recovery result;
-the underlying truncation cause is not established. The original is retained,
-with hashes and the separate diagnosis in
-`c5i_local_serialization_20260903.json`. Re-serializing the already-saved
-reference/template and amplitude, without rendering or refitting, produced
-that byte-identical prefix and exactly the stored cost. It does not silently
-repair or replace the historical file.
-
-Consulted NumPy's compressed-NPZ documentation and Python's ZIP/atomic-rename
-documentation. Reuse those implementations: write a temporary NPZ, flush,
-read back every array, then atomically rename it; reject existing destinations.
-Retain failed temporary files. A final per-file/per-array manifest and a
-truncated-write regression check prevent a corrupt archive from being counted
-as complete. No scientific parameter, timeout, bound or criterion changed.
-Sources checked 2026-09-03:
-https://numpy.org/doc/stable/reference/generated/numpy.savez_compressed.html
-https://docs.python.org/3.12/library/zipfile.html
-https://docs.python.org/3.12/library/os.html#os.replace
-
-The original n=0.5 local output and a separate, serialization-checked n=6
-local execution were then fully audited: 32 Sersic images, 16 Gaussian
-controls, 48 direct starts and 308 new arrays, with no worker failures or
-warnings. Original failed-file evidence remains separate. Local runtimes
-were 30.19/43.55 seconds, with maximum child RSS 221544 KiB. All saved
-prediction, residual, gradient, cost, CSV/JSON and parent identities check.
-GalSim's local coarse/fine L1 difference reaches **0.903% for n=6**; the
-n=0.5 maximum is 1.08e-5, and its Gaussian-identity maximum is 1.07e-5.
-These descriptive LOCAL differences are retained without tuning either
-accuracy setting. They neither establish convergence nor replace pending
-CI inspection; both implementations' numerical behavior must be reviewed.
-
-Follow workflow **gate-c-agn-compact-renderer** on the commit containing this
-protocol. Its config records the actual run ID/SHA, C5h audit hash and protocol
-hash; it downloads run 33759931812 rather than an older centroid experiment.
-Do not infer GitHub success from local tests or outputs. Review all workers,
-radius conventions, Gaussian controls, amplitude starts and residual/image
-products after explicit completed/success before selecting another stage.
-
-## C5i actual GitHub review and C5j freeze â€” 2026-09-03
-
-GitHub explicitly confirms **33766246396**, commit
-`169018474ae502a537bc736a64ead778f24e42cd`, completed/success at
-14:50:10Z. Jobs `100684749911` / `100684750112` and all their steps
-succeeded. Regression `33766246298` also succeeded. Branch and draft PR5
-were checked for subsequent replacements/active experiments before acting.
-
-Downloaded artifacts `9898810716` (n=1 shard) and `9898833104` (n=4)
-match GitHub's ZIP digests. The read-only reproducible audit
-`scripts/audit_agn_compact_renderer.py` and
-`compact_renderer_33766246396.json` preserve the receipt, every file/array
-identity, row and diagnostic. All **32 Sersic images, 16 Gaussian controls,
-48 direct fits/start records and 308 new arrays** were reviewed, including
-parent/raw-PSF identity, protocol/settings/pins, both radius conventions,
-all worker logs/warnings/resources, CSV/JSON identity, native images,
-Gaussian/refinement residuals, saved amplitude predictions, cost and KKT
-bookkeeping. No warning, failed worker, zero amplitude or incomplete NPZ was
-found. All prediction/cost/gradient reconstruction differences were zero.
-Job runtimes were 15.44/23.05 seconds, maximum child RSS 231572 KiB.
-The historical local incomplete-NPZ record remains separate and unchanged.
-
-The n=0.5 maximum GalSim coarse/fine L1 change is **1.08034e-5** and its
-Gaussian identity difference reaches **1.07450e-5**. In contrast, n=6
-coarse/fine changes span **0.226--0.903%**; the maximum occurs for flattened
-q=0.15 with module B. The maximum n=6 nominal-versus-Imfit-b_n-equivalent
-image L1 difference is **1.38096e-8** (n=0.5: 2.13043e-5). The analytic
-radius convention therefore does not explain the measured n=6 discrepancy.
-Inspection of all eight nominal coarse/fine residual panels shows much
-larger, grid-aligned structure for n=6; this is descriptive evidence, not
-proof of one specific Fourier failure mode.
-
-At 8x, archived Imfit versus nominal fine GalSim L1 differences are
-**1.547--2.704% for n=6**. For the flattened n=0.5 case they are
-3.531% / 3.659% (A/B), versus 0.146% / 0.182% for its round counterpart.
-The corresponding one-amplitude projections also change; these are
-numerical comparisons, not host recovery. Smaller within-renderer changes
-do not automatically make that renderer independent truth. No acceptance
-band or bound was changed and no free-shape inference was authorized by
-successful execution alone.
-
-### Next experiment and software-first decision
-
-`C5J_PROTOCOL.md` was frozen before any new C5j evaluations. Reuse GalSim's
-documented GSParams and public InterpolatedImage support options, retaining
-the exact signed PSFs, geometry, crop, physics and dependency pins. Four
-single-setting interventions separate the existing coarse/fine controls;
-three additional fixed controls inspect Hankel integration accuracy, PSF
-spatial-support estimation and PSF Fourier-range estimation. Both original
-coarse/fine replays are retained. Native images, Gaussian controls, fixed
-Fourier probes, actual FFT grids and direct amplitude projections are saved.
-
-The focused official-source/paper review, tagged source blob identities,
-license/CI/runtime assessment and reuse decision are in the protocol.
-Notably, Sersic's quadrature has its own integration tolerances, while an
-empirical signed image's estimated Fourier support is not the same as a
-guaranteed optical band limit. Neither is diagnosed merely from source
-inspection. No custom renderer, integration routine or optimizer is added;
-PyImfit shares the already-tested Imfit engine and would not isolate this
-GalSim numerical question. Per-worker time/memory caps remain unchanged.
-All nine interventions are fixed and always retained; no fastest/closest
-arm will be adopted merely because it has a smaller residual.
-
-Original continuation plan, superseded by the local failure below: follow
-**gate-c-agn-fourier-controls** at its implementing commit. The planned
-new run ID/SHA would be recorded in each config; its prerequisite is run
-33766246396 and the checksum-audited record above. Further science depends
-on explicit CI success and inspection of all actual outputs. Local tests
-and runs are not GitHub success. C5, free-shape inference, physical/chromatic
-PSF work, subsequent literature gates and production remain open.
-
-### C5j LOCAL failure and separately frozen C5k â€” 2026-09-03
-
-The full local C5j execution attempted all 72 workers. All 68 successful
-Sersic renders, 36 Gaussian controls, 68 direct starts and 892 new arrays
-were audited; four n=6 `fine_psf_bandlimit` attempts failed with MemoryError.
-The six-GiB address-space cap prevented the requested single allocations
-of 440--989 GiB. GalSim warned of approximately 243000--364000-square FFTs.
-All warnings, failures and available products are retained in the complete
-read-only local audit `c5j_local_20260903.json`, reproducible with
-`scripts/audit_agn_fourier_local.py`. **C5j is incomplete, not passed, and
-was never dispatched to CI.** Its nine arms, original code/protocol and
-completeness requirement are not altered. The proposed workflow is kept as
-`C5J_WORKFLOW_NOT_DISPATCHED.yml`, outside the active workflow directory.
-
-The successful local controls inform a narrower question. For flattened
-n=6, the folding-only intervention differs from the archived fine image
-by just 7.81e-8 L1 (A) / 5.11e-8 (B); maxk-only and xvalue-only remain
-identical to the coarse image. The separate Hankel refinement changes the
-fine image by 6.42--7.46e-7 L1. Thus the local evidence implicates grid
-spacing in the original coarse/fine difference, while the full-interpolant
-frequency range is computationally infeasible. These are local numerical
-observations, not GitHub success or proof of which renderer is correct.
-
-After checking the tagged convolution implementation and the documented
-InterpolatedImage `_force_maxk` option, froze **C5k** before its images:
-two FFT-grid spacings crossed with 1x/2x/4x the inherited fine-PSF frequency
-cutoff, plus the unchanged fine replay. The underscored API is explicitly
-version-pinned and tested for units/propagation. All other numerical and
-physical parameters and per-worker caps stay fixed. The finite cutoff
-sequence is a separate sensitivity experiment, not an equivalent substitute
-for the failed full-bandlimit arm and not a declaration of convergence.
-Full rationale, sources and fixed criteria are in `C5K_PROTOCOL.md`.
-
-The historical C5j failure is not hidden or rerun with weaker criteria.
-Follow **gate-c-agn-fourier-grid** at its implementing commit, using actual
-C5i run 33766246396 as the CI input parent and the separate C5j local audit
-as design provenance. C5k requires all its own frozen products and the
-unchanged replay/bookkeeping checks. No missing image is accepted, and no
-physical or morphology acceptance threshold has been added.
-
-### C5k local verification before dispatch â€” 2026-09-03 UTC
-
-All **56 Sersic images, 28 Gaussian controls, 56 direct amplitude starts,
-168 pairwise comparisons and 896 new arrays** were read back and audited
-with `scripts/audit_agn_fourier_grid.py`. There were no failed render
-processes or zero amplitudes. Both original-fine replays passed the inherited
-bookkeeping check; all saved predictions, residuals, Fourier products,
-costs, gradients and array/file identities were checked. The machine-readable
-record is `c5k_local_20260903.json`; its GitHub run IDs are null. This is
-**LOCAL verification, not a GitHub success receipt**.
-
-Retained all **16 GalSim FFT-size warnings** (eight per shard). The largest
-requested FFT was 12300 square; maximum child RSS was 2603736 KiB, within
-the unchanged six-GiB cap. Original shard runtimes were 100.43 and 130.99
-seconds; warning thresholds and worker limits were not raised.
-
-The audit also rejected two incomplete original FFT logs: the round n=0.5,
-`grid1024_k4` A/B image bundles existed, but only one of the two required
-draw receipts survived. Their cause is not established. Separate, same-setting
-worker rechecks produced both receipts and **bitwise-identical images and
-Fourier probes**. Original files were not replaced; the audit retains both
-the incomplete logs and separate recheck identities. A new completeness-only
-guard now fails a worker if any draw receipt is missing, preserving the
-rendered data and the failure rather than accepting an incomplete record.
-The original local producer SHA256 is recorded separately from this guard.
-
-The full local suite passed **148 tests**; one dedicated external-Imfit-binary
-test was skipped and one deliberate failure-capture warning was retained.
-Pinned actionlint 1.7.12 accepted all workflows. No C5k image was used to
-change its frozen settings, bounds or acceptance rules. Next: launch the
-two-job C5k workflow, inspect its actual receipts/products, and only then
-decide whether further numerical controls or free-shape fits are justified.
-
-### C5k actual CI review and C5l freeze â€” 2026-09-03 UTC
-
-GitHub explicitly confirms run **33788705952**, commit
-`7ad6e1ca1b6a78dcde83d6cdea9e3c1bc26bd33b`, completed/success at
-18:56:30Z. Both jobs 100759718795/100759719068 and every step succeeded.
-Artifacts 9908021400 (n1) and 9908228320 (n4) were downloaded and their
-ZIP SHA256 values verified. `fourier_grid_33788705952.json` retains the
-receipt and reproducible full audit: 56 renders/direct starts, 28 Gaussian
-controls, 168 arm-pair comparisons and **896 new arrays**. All CSV/JSON,
-parent identities, predictions, residuals, costs, KKT quantities, Fourier
-products and actual FFT receipts were checked. No failed worker, zero
-amplitude or incomplete FFT log occurs in these CI artifacts. All **16
-large-FFT warnings** remain; maximum child RSS was 2613888 KiB. The two
-science-script runtimes were 65.35 and 117.02 seconds.
-
-The first read-only audit exposed a portability issue, not a CI failure:
-11/260 regenerated n4 kx coordinates differed from the saved values by at
-most 7.11e-15 (relative differences at floating-point rounding scale).
-Following NumPy's documented CPU-dispatch controls, restricting the audit
-process with `NPY_DISABLE_CPU_FEATURES=X86_V4,AVX512_ICL` reproduced the
-saved n4 coordinates exactly. The n1 audit used default dispatch. Both full
-audits then passed the **original exact assertions**, without changing any
-tolerance, image, coordinate file or scientific setting. The original
-failure and audit environments are recorded; this does not establish that
-all floating-point outputs are portable across every platform.
-https://numpy.org/doc/stable/reference/simd/build-options.html#runtime-dispatch
-https://numpy.org/doc/stable/reference/generated/numpy.geomspace.html
-Reproduce with `scripts/review_agn_fourier_grid_ci.py` and the two ZIPs.
-
-At the fourfold cutoff, increasing the grid from 1024 to1536 changes the
-eight images by 8.66e-7--3.29e-6 L1. Yet at grid1536, increasing the cutoff
-from 2x to4x changes n6 by **0.0660--0.1067%**; n0.5 flattened cases change
-by 0.00113--0.00140%, and round cases are identical at those two cutoffs.
-Thus small spacing sensitivity alone does not prove Fourier convergence.
-At grid1536/k4, Imfit8 differences are **0.214--0.273% for n6**,
-**1.699--1.740% for flattened n0.5**, and 0.0941--0.0991% for round n0.5.
-Neither code is independently established as truth. No tolerance or bound
-was changed and no host-shape or physical-recovery claim follows.
-
-The next specific question is whether finite intrinsic numerical-cell
-integration contributes to the cross-code difference. Checked Imfit's
-tagged GetValue/CalculateSubsamples implementation and GalSim's existing
-Pixel/convolution objects before freezing `C5L_PROTOCOL.md`. Reuse the
-published Imfit2/4/8 arrays from C5i; do not rerender that historical stage.
-Compare canonical no_cell and separately labelled square-cell responses
-of width 1/2, 1/4 and 1/8 native pixel, with all four arms compared against
-all three Imfit samplings. This uniform-cell surrogate is deliberately NOT
-asserted to equal adaptive Imfit integration or a new physical PSF model.
-Pins, bounds and resource caps remain unchanged. No bespoke numerical
-integrator/renderer or production code is introduced. Follow
-**gate-c-agn-cell-response** at its implementing commit; its configs record
-the actual new run/SHA. C5l is not yet a GitHub-success claim.
-
-C5l local verification before dispatch: all 32 Sersic renders, 16 Gaussian
-controls, 96 direct starts, 48 arm-pair comparisons and 720 new arrays were
-read back and audited. No failed worker, zero amplitude, missing FFT receipt
-or bookkeeping discrepancy was found. All 32 large-FFT warnings remain;
-maximum child RSS was 4371168 KiB under the unchanged six-GiB cap. Shard
-runtimes were 131.30 and 159.21 seconds. `c5l_local_20260903.json` explicitly
-is not a GitHub receipt; reproduce with `scripts/audit_agn_cell_response.py`.
-No settings were changed after these images. Full local tests: **157 passed,
-one external-Imfit-binary test skipped**, one intentional failure-capture
-warning. Pinned actionlint 1.7.12 accepted all workflows. The prerequisite
-ordinary regression run 33788706072 also explicitly completed/success.
-
-### C5l actual CI review and C5m freeze â€” 2026-09-03 UTC
-
-GitHub confirms **33798675379** at `094de88e88b668015658536d13583c201cfaaaf2`
-completed/success, updated 19:52:15Z. Both jobs and every step succeeded.
-Artifacts 9910256926/9910271962 were downloaded and ZIP SHA256 verified.
-The unchanged read-only audit checked all **32 renders, 16 Gaussian controls,
-96 direct starts, 48 arm pairs and 720 new arrays**, including parent hashes,
-all predictions/residuals, KKT, Fourier products, FFT receipts and manifests.
-There were no failed workers or zero amplitudes. All 32 FFT warnings remain.
-Science-script runtimes were 88.52/120.26 seconds. Full actual-CI receipt:
-`cell_response_33798675379.json`.
-
-The finite-cell surrogate does **not** consistently explain the discrepancy.
-For flattened n=0.5, matched cell8 differs from Imfit8 by **1.700%/1.693%**
-(A/B), compared with canonical no_cell **1.699%/1.740%**. Round n=0.5
-matched cell2 improves Imfit2 agreement to **0.0815%/0.1105%**, but that is
-not evidence the same correction applies across shape or sampling. Flattened
-n=6 matched cell8 differences are **0.2307%/0.2587%**, worse than no_cell
-**0.2246%/0.2144%**. All off-diagonal results remain in the receipt; no best
-cell is selected or adopted. Neither renderer is truth and no convergence,
-new physical PSF or free-shape recovery claim follows.
-
-Rechecked the tagged Imfit Sersic implementation and official makeimage
-architecture docs. Its adaptive integration depends on elliptical radius
-in numerical pixels, so a uniform box cannot reproduce it exactly. The next
-isolated question is whether Imfit 8-to-16 numerical sampling changes the
-compact cases and fits within the existing caps. `C5M_PROTOCOL.md` freezes
-all eight scenes, 16 renders, 32 amplitude fits and eight within-code
-comparisons. Reuse unchanged author Imfit 1.9.0, C5h geometry/convolution,
-same signed PSFs and archived C5l no_cell. No custom integrator, new
-cross-fitter, physical-bound change, or post-hoc tolerance. PyImfit is the
-same engine and would not add independence for this question. References
-and license/reuse/resource assessment are in the protocol. Follow
-**gate-c-agn-imfit-refinement** on its implementing commit; not yet a CI
-success claim. Higher sampling is a diagnostic, not permission to expand
-memory/time caps or assert morphology recovery.
-
-### C5m LOCAL resource failure; separate C5n freeze
-
-C5m was **not dispatched**. The first local attempt exposed an archive-key
-adapter error (C5l stores PSFs as A/B, not A_normalized_input/B_normalized_input).
-Corrected that schema access and added a regression test without changing
-any science setting. The separate corrected local attempt retained all eight
-successful sampling8 replays, but all eight sampling16 calls failed in
-Imfit Convolver::DoFullSetup allocation, before rendering. No tolerance or
-resource cap was raised. Both original and repaired local records, actual
-error logs, configurations and available array identities are preserved in
-`c5m_local_20260903.json`; `C5M_WORKFLOW_NOT_DISPATCHED.yml` preserves the
-undispatched plan outside the active workflow directory. A subsequent
-equivalent refactor expresses the pair labels using the frozen SAMPLES
-tuple instead of literal 8/16, allowing reuse without altering C5m science.
-
-Checked tagged Imfit ModelObject and Convolver allocation code. With the
-unchanged full PSF support, sampling16 needs about **7.77 GiB for six FFT
-arrays alone**, already beyond the six-GiB cap; blindly rerunning it in CI
-would not answer a new question. A separately frozen **C5n 8/10** experiment
-uses the same engine and physical scene, with about **3.04 GiB** for those
-arrays at sampling10 (not a promise of peak process memory). This samples
-a finer grid with headroom; it is not a substituted success for C5m16 or
-proof of convergence. No new handwritten convolution, cropped PSF,
-alternative integration algorithm or physical bound is introduced.
-See `C5N_PROTOCOL.md` for the source citations, candidate assessment and
-frozen design. Follow **gate-c-agn-imfit-bounded** on the implementing commit.
-The C5l prerequisite regression `33798675329` explicitly completed/success.
-
-C5n local verification: all 16 renders completed under unchanged caps;
-maximum makeimage RSS was 3589876 KiB. All 32 amplitude starts, eight
-sampling pairs, 16 fine FITS/native reductions and 168 finalized NPZ arrays
-were checked. n4 passed the full strict artifact audit. n1's original
-artifact audit **failed** because a leftover temporary kernel archive was
-present despite successful finalization. Its SHA256 is exactly identical
-to the finalized kernel, but it is retained as an unexplained artifact-
-completeness failure, not relabelled success. A separate byte-verified copy
-of finalized n1 products passed the unchanged numerical/algebra audit;
-that does not make the original artifact complete. The CI audit continues
-to reject any `.partial` file; no cleanup, ignore rule or tolerance was
-added. Python's documented os.replace semantics were checked; the cause
-of the duplicate is not established. No scientific rerender or setting
-change was made. `c5n_local_20260903.json` distinguishes these audit scopes.
-Full local suite: **167 passed**, including the pinned external-binary smoke
-test; one deliberate failure-capture warning remains. Pinned actionlint
-1.7.12 accepted all workflows. Actual CI outputs still require review.
-
-### C5n actual CI and minimal-environment regression repair â€” 2026-09-03 UTC
-
-Run **33806193712**, commit `69f9037a116ca5dd75e7f941c38fe6542d91b547`,
-explicitly completed/success for both jobs, including their strict output
-audits. Downloaded artifacts 9913113504/9913113898, verified ZIP SHA256,
-and independently reran the unchanged read-only audits on both original
-CI artifacts. All 16 renders, 32 direct amplitude starts, eight sampling
-pairs, 16 fine FITS/native reductions and **168 new NPZ arrays** passed.
-No original CI artifact contains the local leftover-partial anomaly.
-The complete receipt is `imfit_bounded_33806193712.json`.
-
-Imfit8-to-10 normalized L1 drift is **0.234â€“0.250%** for flattened n=0.5,
-**0.0130â€“0.0177%** for round n=0.5, **0.271â€“0.273%** for flattened n=6,
-and **0.0620â€“0.0695%** for round n=6. At sampling10, differences relative
-to canonical GalSim no_cell are **1.916â€“1.940%**, **0.1034â€“0.1038%**,
-**0.0602â€“0.0689%**, and **0.1891â€“0.2038%**, respectively. These are
-descriptive, with the reference image defining each denominator; C5l used
-Imfit as its reference for its cross-code comparison. Neither better nor
-worse agreement establishes truth, and full-range convergence remains open.
-
-The separate general regression run **33806193588 failed on Python3.11
-and3.12 during collection**, not during a science fit. Actual logs show
-`ModuleNotFoundError: No module named 'astropy'` in the two newly added
-Imfit test modules. The minimal harness intentionally does not install
-the optional astronomy stack; existing astronomy tests already use pytest's
-documented importorskip. Apply that same module-level dependency guard to
-the two new files. Do not add an xfail, alter an assertion, or relax a
-scientific criterion. In the dedicated C5n workflow, add mandatory imports
-and **exact pin equality before tests**, and include the C5m adapter tests
-alongside the bounded and author-renderer tests. Missing dependencies there
-remain a hard failure, not a skip. Scientific scripts/protocols are unchanged.
-Source: https://docs.pytest.org/en/stable/how-to/skipping.html#skipping-on-a-missing-import-dependency
-
-Local verification: a fresh minimal environment passes **65 tests**, with
-13 optional modules explicitly skipped; the pinned full environment passes
-**167 tests**, none skipped, including the author-binary smoke test. The
-new mandatory guard rejects the minimal environment and accepts the exact
-pinned one. Pinned actionlint1.7.12 passes. Preserve both failed regression
-jobs and the successful original C5n. The repair commit triggers the
-regression and same-setting C5n verification reruns; do not advance to new
-dependent science before these necessary checks succeed. Follow the newest
-`verification-suite` and `gate-c-agn-imfit-bounded` on the repair commit.
-
-### C5n repair reruns confirmed; C5o frozen â€” 2026-09-03 UTC
-
-GitHub explicitly confirms both repair runs at
-`9668b1ef6763676d93d7fefdb480054d80c8182a` completed/success. Verification
-run **33810187827** passed on Python 3.11 and 3.12; the actual Python3.11 log
-reports 65 passed and 13 explicit optional-astronomy skips. Dedicated C5n
-run **33810187864** passed both host jobs. Each required the exact pinned
-astronomy environment, passed 21 targeted tests, reran the unchanged C5n
-science, and passed the strict full-output audit. The n=4 job audit reports
-eight workers, 16 starts, four pairs, 84 new arrays and eight FITS outputs;
-the symmetric n=1 job passed the same steps. This confirms the test-collection
-repair without changing C5n's scientific result or erasing failed regression
-33806193588.
-
-Full-bound numerical convergence remains open at the extreme compact corners.
-That does not require repeating another corner sweep before testing the actual
-nominal anchor: C5h already measured only 0.002--0.028% Imfit8/GalSim image
-L1 differences at Re=16, q=0.6, n=1/4. After rechecking the Imfit paper,
-official configuration/PSF/PointSource documentation and pinned executable,
-`C5O_PROTOCOL.md` freezes a matched-PSF, noiseless, free-host-shape cross-
-fitter preflight at only those nominal anchors. Reuse Imfit 1.9.0's own Sersic,
-PointSource and optimizer; no custom renderer or optimizer is introduced.
-
-C5o keeps host/nuclear centers fixed and releases PA, q, n, Re and both
-nonnegative amplitudes for modules A/B and AGN/host 1/10, with three frozen
-starts. The wrong-PSF arm is deliberately absent: first establish how the
-independent host renderer/fitter behaves with the matched signed empirical
-PSF, then freeze mismatch separately if justified. All shape bounds, crop,
-PSF values and full-pixel objective remain. Signed negative wings are not
-photon-ready. Complete output and algebra are required, but no recovery band
-is invented. Follow `gate-c-agn-imfit-free-shape`; local tests or a successful
-process exit are not GitHub success or physical recovery.
-
-Local implementation verification: **171 tests passed**, with the unchanged
-C5h external-makeimage smoke test skipped because C5o installs the separate
-pinned `imfit` executable; its own binary/function check passed. Actionlint
-1.7.12 accepts all workflows. A complete local n=1 execution and read-only
-audit checked four cases, 12 starts and 48 image arrays with no winner bound
-hit. The minimum-cost solutions recover n=1.00105--1.00145,
-Re=15.9835--16.0108 and q=0.599614--0.599719. However, the deliberately
-extended start in both AGN/host=10 cases converged to a much worse q=1 boundary
-basin; that start is retained rather than reported as agreement. These are
-LOCAL pipeline observations only, not GitHub success or an acceptance band.
-
-### C5o actual CI split result; C5p frozen â€” 2026-09-04 UTC
-
-Run **33819349854** at `7041907231a26292f8c663c2df898f3192175a7e`
-explicitly completed/failure. The n=1 job completed/success and its strict
-audit checked all four cases, 12 starts and 48 arrays. The n=4 job failed
-before audit after recording six starts: the compact start for module A at
-AGN/host=10 reached the unchanged 180-second process limit (return code 124)
-and produced no best-fit/model/residual files. Truth and extended starts for
-that exact scene completed in 3--4 seconds, agreed at n=4.13361, Re=16.227,
-q=0.596151 and point flux=9.99725, and had no bound hit. This does not make
-C5o complete or successful. Artifact IDs, ZIP hashes and fitted summaries are
-preserved in `c5o_33819349854.json`; the failed artifact remains authoritative.
-
-Official Imfit 1.9 solver documentation was rechecked before responding. C5p
-is a separate bounded optimizer-path diagnostic: replay only the declared n=4,
-AGN/host=10 compact start for matched modules A/B with the identical image,
-objective, bounds, signed PSF, thread count and 180-second cap. Compare Imfit's
-default Levenberg--Marquardt against its maintained `--nm` Nelder--Mead solver,
-recording timeouts as results and recomputing the objective for finite outputs.
-This is not a C5o rerun, recovery tolerance or substitute pass. Differential
-Evolution is deferred because its population cost is materially larger; it
-may be justified only after the bounded paths are reviewed. See
-`C5P_PROTOCOL.md`. Do not start the wrong-PSF free-shape arm before actual C5p
-artifacts are audited.
-
-### C5p actual CI and C5q freeze â€” 2026-09-04 UTC
-
-Run **33823405733** at `b5644c92fa1efc7204cd267acdc098636cf437b2`
-explicitly completed/success for modules A and B. Both strict audits were
-rerun on the downloaded original artifacts; ZIP SHA256 and artifact IDs are
-recorded in `c5p_33823405733.json`. Module A's LM replay again reached the
-unchanged 180-second cap after 498 logged iterations. Nelder--Mead completed
-in 8.21 seconds at n=2.171, Re=9.414, q=0.642 and an SSE **89.04 times** the
-finite C5o solution. For module B, LM completed in 10.13 seconds at n=4.227,
-Re=16.130, q=0.599, while Nelder--Mead completed in 7.84 seconds at n=2.446,
-Re=9.154, q=0.685 and an SSE **32.14 times** worse. No reported solution hit
-a bound. Imfit's formal module-B LM uncertainties are extremely large, which
-is retained as identifiability evidence rather than interpreted as precision.
-
-C5p therefore confirms a module- and solver-dependent local-basin problem;
-an optimizer success label does not establish recovery. Before any PSF
-mismatch, C5q freezes the checksum-pinned Imfit `--de-lhs` global solver with
-two deterministic seeds on the exact same difficult A/B inputs, bounds,
-objective and 180-second cap. Existing SciPy DE was not substituted because
-that would change the engine/objective interface, and PyImfit would not add an
-independent engine. Timeouts remain results; no post-hoc fit band is added.
-See `C5Q_PROTOCOL.md`. Actual C5q outputs must be reviewed before proceeding.
-
-### C5q actual CI and C5r freeze â€” 2026-09-04 UTC
-
-Run **33830661656** at
-`ff39701f7ec5b9f698873064bd85da53ca417544` explicitly completed/success for
-both modules. The downloaded artifacts (IDs 9921687659 and 9921689299) passed
-their strict audits and their ZIP hashes are recorded in
-`c5q_33830661656.json`. All four DE-LHS processesâ€”two predeclared seeds for
-each moduleâ€”reached the unchanged 180-second cap without complete fit
-products. Thus C5q is a complete diagnostic execution but provides no finite
-global-search solution or agreement claim. The cap is not expanded.
-
-C5o--C5q now characterize the nominal matched-PSF problem as start-, solver-
-and module-dependent: finite lower-cost extended-host solutions exist, but
-the compact module-A LM path and all bounded population paths fail within the
-declared resource envelope. This limitation is sufficiently explicit to carry
-forward as an observable; it is not converted into a matched-PSF pass.
-
-Following Zhuang & Shen's published prediction that PSF mismatch changes host
-flux and concentration, `C5R_PROTOCOL.md` freezes the separate wrong-PSF
-free-shape diagnostic. It exchanges A/B PSFs only at noiseless AGN/host=10,
-reuses the exact C5o starts, bounds, objective and resource cap, and records
-timeouts and boundaries without requiring convergence. Noise remains absent.
-No recovery band, renderer change or physical-PSF claim is introduced. Follow
-`gate-c-agn-imfit-wrong-psf-free-shape`; review its actual artifacts before
-choosing a noise or morphology gate.
+The reproducible audit `scripts/audit_agn_ëú¶‰Ëkºwµçuµ¥Ğ°ÕÍ¥¹œ…ÑÕ…°)Õ¤ÉÕ¸€ÌÌÜØØÈĞØÌäØ…ÌÑ¡”$¥¹ÁÕĞÁ…É•¹Ğ…¹Ñ¡”Í•Á…É…Ñ”Õ¨±½…°…Õ‘¥Ğ)…Ì‘•Í¥¸ÁÉ½Ù•¹…¹”¸Õ¬É•ÅÕ¥É•Ì…±°¥ÑÌ½İ¸™É½é•¸ÁÉ½‘ÕÑÌ…¹Ñ¡”)Õ¹¡…¹•É•Á±…ä½‰½½­­••Á¥¹œ¡•­Ì¸9¼µ¥ÍÍ¥¹œ¥µ…”¥Ì…•ÁÑ•°…¹¹¼)Á¡åÍ¥…°½Èµ½ÉÁ¡½±½ä…•ÁÑ…¹”Ñ¡É•Í¡½±¡…Ì‰••¸…‘‘•¸((ŒŒŒÕ¬±½…°Ù•É¥™¥…Ñ¥½¸‰•™½É”‘¥ÍÁ…Ñ ƒŠP€ÈÀÈØ´Àä´ÀÌUQ()±°€¨¨ÔØM•ÉÍ¥Œ¥µ…•Ì°€Èà…ÕÍÍ¥…¸½¹ÑÉ½±Ì°€ÔØ‘¥É•Ğ…µÁ±¥ÑÕ‘”ÍÑ…ÉÑÌ°(ÄØàÁ…¥Éİ¥Í”½µÁ…É¥Í½¹Ì…¹€àäØ¹•Ü…ÉÉ…åÌ¨¨İ•É”É•…‰…¬…¹…Õ‘¥Ñ•)İ¥Ñ ÍÉ¥ÁÑÌ½…Õ‘¥Ñ}…¹}™½ÕÉ¥•É}É¥¹Áå€¸Q¡•É”İ•É”¹¼™…¥±•É•¹‘•È)ÁÉ½•ÍÍ•Ì½Èé•É¼…µÁ±¥ÑÕ‘•Ì¸	½Ñ ½É¥¥¹…°µ™¥¹”É•Á±…åÌÁ…ÍÍ•Ñ¡”¥¹¡•É¥Ñ•)‰½½­­••Á¥¹œ¡•¬ì…±°Í…Ù•ÁÉ•‘¥Ñ¥½¹Ì°É•Í¥‘Õ…±Ì°½ÕÉ¥•ÈÁÉ½‘ÕÑÌ°)½ÍÑÌ°É…‘¥•¹ÑÌ…¹…ÉÉ…ä½™¥±”¥‘•¹Ñ¥Ñ¥•Ìİ•É”¡•­•¸Q¡”µ…¡¥¹”µÉ•…‘…‰±”)É•½É¥ÌŒÕ­}±½…±|ÈÀÈØÀäÀÌ¹©Í½¹€ì¥ÑÌ¥Ñ!ÕˆÉÕ¸%Ì…É”¹Õ±°¸Q¡¥Ì¥Ì(¨©1=0Ù•É¥™¥…Ñ¥½¸°¹½Ğ„¥Ñ!ÕˆÍÕ•ÍÌÉ••¥ÁĞ¨¨¸()I•Ñ…¥¹•…±°€¨¨ÄØ…±M¥´PµÍ¥é”İ…É¹¥¹Ì¨¨€¡•¥¡ĞÁ•ÈÍ¡…É¤¸Q¡”±…É•ÍĞ)É•ÅÕ•ÍÑ•Pİ…Ì€ÄÈÌÀÀÍÅÕ…É”ìµ…á¥µÕ´¡¥±IMLİ…Ì€ÈØÀÌÜÌØ-¥°İ¥Ñ¡¥¸)Ñ¡”Õ¹¡…¹•Í¥àµ¥…À¸=É¥¥¹…°Í¡…ÉÉÕ¹Ñ¥µ•Ìİ•É”€ÄÀÀ¸ĞÌ…¹€ÄÌÀ¸ää)Í•½¹‘Ììİ…É¹¥¹œÑ¡É•Í¡½±‘Ì…¹İ½É­•È±¥µ¥ÑÌİ•É”¹½ĞÉ…¥Í•¸()Q¡”…Õ‘¥Ğ…±Í¼É•©•Ñ•Ñİ¼¥¹½µÁ±•Ñ”½É¥¥¹…°P±½ÌèÑ¡”É½Õ¹¸ôÀ¸Ô°)É¥ÄÀÈÑ}¬Ñ€½¥µ…”‰Õ¹‘±•Ì•á¥ÍÑ•°‰ÕĞ½¹±ä½¹”½˜Ñ¡”Ñİ¼É•ÅÕ¥É•)‘É…ÜÉ••¥ÁÑÌÍÕÉÙ¥Ù•¸Q¡•¥È…ÕÍ”¥Ì¹½Ğ•ÍÑ…‰±¥Í¡•¸M•Á…É…Ñ”°Í…µ”µÍ•ÑÑ¥¹œ)İ½É­•ÈÉ•¡•­ÌÁÉ½‘Õ•‰½Ñ É••¥ÁÑÌ…¹€¨©‰¥Ñİ¥Í”µ¥‘•¹Ñ¥…°¥µ…•Ì…¹)½ÕÉ¥•ÈÁÉ½‰•Ì¨¨¸=É¥¥¹…°™¥±•Ìİ•É”¹½ĞÉ•Á±…•ìÑ¡”…Õ‘¥ĞÉ•Ñ…¥¹Ì‰½Ñ )Ñ¡”¥¹½µÁ±•Ñ”±½Ì…¹Í•Á…É…Ñ”É•¡•¬¥‘•¹Ñ¥Ñ¥•Ì¸¹•Ü½µÁ±•Ñ•¹•ÍÌµ½¹±ä)Õ…É¹½Ü™…¥±Ì„İ½É­•È¥˜…¹ä‘É…ÜÉ••¥ÁĞ¥Ìµ¥ÍÍ¥¹œ°ÁÉ•Í•ÉÙ¥¹œÑ¡”)É•¹‘•É•‘…Ñ„…¹Ñ¡”™…¥±ÕÉ”É…Ñ¡•ÈÑ¡…¸…•ÁÑ¥¹œ…¸¥¹½µÁ±•Ñ”É•½É¸)Q¡”½É¥¥¹…°±½…°ÁÉ½‘Õ•ÈM!ÈÔØ¥ÌÉ•½É‘•Í•Á…É…Ñ•±ä™É½´Ñ¡¥ÌÕ…É¸()Q¡”™Õ±°±½…°ÍÕ¥Ñ”Á…ÍÍ•€¨¨ÄĞàÑ•ÍÑÌ¨¨ì½¹”‘•‘¥…Ñ••áÑ•É¹…°µ%µ™¥Ğµ‰¥¹…Éä)Ñ•ÍĞİ…ÌÍ­¥ÁÁ•…¹½¹”‘•±¥‰•É…Ñ”™…¥±ÕÉ”µ…ÁÑÕÉ”İ…É¹¥¹œİ…ÌÉ•Ñ…¥¹•¸)A¥¹¹•…Ñ¥½¹±¥¹Ğ€Ä¸Ü¸ÄÈ…•ÁÑ•…±°İ½É­™±½İÌ¸9¼Õ¬¥µ…”İ…ÌÕÍ•Ñ¼)¡…¹”¥ÑÌ™É½é•¸Í•ÑÑ¥¹Ì°‰½Õ¹‘Ì½È…•ÁÑ…¹”ÉÕ±•Ì¸9•áĞè±…Õ¹ Ñ¡”)Ñİ¼µ©½ˆÕ¬İ½É­™±½Ü°¥¹ÍÁ•Ğ¥ÑÌ…ÑÕ…°É••¥ÁÑÌ½ÁÉ½‘ÕÑÌ°…¹½¹±äÑ¡•¸)‘•¥‘”İ¡•Ñ¡•È™ÕÉÑ¡•È¹Õµ•É¥…°½¹ÑÉ½±Ì½È™É•”µÍ¡…Á”™¥ÑÌ…É”©ÕÍÑ¥™¥•¸((ŒŒŒÕ¬…ÑÕ…°$É•Ù¥•Ü…¹Õ°™É••é”ƒŠP€ÈÀÈØ´Àä´ÀÌUQ()¥Ñ!Õˆ•áÁ±¥¥Ñ±ä½¹™¥ÉµÌÉÕ¸€¨¨ÌÌÜààÜÀÔäÔÈ¨¨°½µµ¥Ğ)€İ…Ù”Å„ÅˆÙ„Üá‘‘”àÍÙ‘•„å”ÍŒÅ‰ŒÈÙ‰ÌÍ‰€°½µÁ±•Ñ•½ÍÕ•ÍÌ…Ğ(ÄàèÔØèÌÁh¸	½Ñ ©½‰Ì€ÄÀÀÜÔäÜÄàÜäÔ¼ÄÀÀÜÔäÜÄäÀØà…¹•Ù•ÉäÍÑ•ÀÍÕ••‘•¸)ÉÑ¥™…ÑÌ€ääÀàÀÈÄĞÀÀ€¡¸Ä¤…¹€ääÀàÈÈàÌÈÀ€¡¸Ğ¤İ•É”‘½İ¹±½…‘•…¹Ñ¡•¥È)i%@M!ÈÔØÙ…±Õ•ÌÙ•É¥™¥•¸™½ÕÉ¥•É}É¥‘|ÌÌÜààÜÀÔäÔÈ¹©Í½¹€É•Ñ…¥¹ÌÑ¡”)É••¥ÁĞ…¹É•ÁÉ½‘Õ¥‰±”™Õ±°…Õ‘¥Ğè€ÔØÉ•¹‘•ÉÌ½‘¥É•ĞÍÑ…ÉÑÌ°€Èà…ÕÍÍ¥…¸)½¹ÑÉ½±Ì°€ÄØà…É´µÁ…¥È½µÁ…É¥Í½¹Ì…¹€¨¨àäØ¹•Ü…ÉÉ…åÌ¨¨¸±°MX½)M=8°)Á…É•¹Ğ¥‘•¹Ñ¥Ñ¥•Ì°ÁÉ•‘¥Ñ¥½¹Ì°É•Í¥‘Õ…±Ì°½ÍÑÌ°--PÅÕ…¹Ñ¥Ñ¥•Ì°½ÕÉ¥•È)ÁÉ½‘ÕÑÌ…¹…ÑÕ…°PÉ••¥ÁÑÌİ•É”¡•­•¸9¼™…¥±•İ½É­•È°é•É¼)…µÁ±¥ÑÕ‘”½È¥¹½µÁ±•Ñ”P±½œ½ÕÉÌ¥¸Ñ¡•Í”$…ÉÑ¥™…ÑÌ¸±°€¨¨ÄØ)±…É”µPİ…É¹¥¹Ì¨¨É•µ…¥¸ìµ…á¥µÕ´¡¥±IMLİ…Ì€ÈØÄÌààà-¥¸Q¡”Ñİ¼)Í¥•¹”µÍÉ¥ÁĞÉÕ¹Ñ¥µ•Ìİ•É”€ØÔ¸ÌÔ…¹€ÄÄÜ¸ÀÈÍ•½¹‘Ì¸()Q¡”™¥ÉÍĞÉ•…µ½¹±ä…Õ‘¥Ğ•áÁ½Í•„Á½ÉÑ…‰¥±¥Ñä¥ÍÍÕ”°¹½Ğ„$™…¥±ÕÉ”è(ÄÄ¼ÈØÀÉ••¹•É…Ñ•¸Ğ­à½½É‘¥¹…Ñ•Ì‘¥™™•É•™É½´Ñ¡”Í…Ù•Ù…±Õ•Ì‰ä…Ğ)µ½ÍĞ€Ü¸ÄÅ”´ÄÔ€¡É•±…Ñ¥Ù”‘¥™™•É•¹•Ì…Ğ™±½…Ñ¥¹œµÁ½¥¹ĞÉ½Õ¹‘¥¹œÍ…±”¤¸)½±±½İ¥¹œ9ÕµAäÌ‘½Õµ•¹Ñ•ATµ‘¥ÍÁ…Ñ ½¹ÑÉ½±Ì°É•ÍÑÉ¥Ñ¥¹œÑ¡”…Õ‘¥Ğ)ÁÉ½•ÍÌİ¥Ñ 9Ae}%M	1}AU}QUILõ`àÙ}XĞ±Y`ÔÄÉ}%1€É•ÁÉ½‘Õ•Ñ¡”)Í…Ù•¸Ğ½½É‘¥¹…Ñ•Ì•á…Ñ±ä¸Q¡”¸Ä…Õ‘¥ĞÕÍ•‘•™…Õ±Ğ‘¥ÍÁ…Ñ ¸	½Ñ ™Õ±°)…Õ‘¥ÑÌÑ¡•¸Á…ÍÍ•Ñ¡”€¨©½É¥¥¹…°•á…Ğ…ÍÍ•ÉÑ¥½¹Ì¨¨°İ¥Ñ¡½ÕĞ¡…¹¥¹œ…¹ä)Ñ½±•É…¹”°¥µ…”°½½É‘¥¹…Ñ”™¥±”½ÈÍ¥•¹Ñ¥™¥ŒÍ•ÑÑ¥¹œ¸Q¡”½É¥¥¹…°)™…¥±ÕÉ”…¹…Õ‘¥Ğ•¹Ù¥É½¹µ•¹ÑÌ…É”É•½É‘•ìÑ¡¥Ì‘½•Ì¹½Ğ•ÍÑ…‰±¥Í Ñ¡…Ğ)…±°™±½…Ñ¥¹œµÁ½¥¹Ğ½ÕÑÁÕÑÌ…É”Á½ÉÑ…‰±”…É½ÍÌ•Ù•ÉäÁ±…Ñ™½É´¸)¡ÑÑÁÌè¼½¹ÕµÁä¹½Éœ½‘½Œ½ÍÑ…‰±”½É•™•É•¹”½Í¥µ½‰Õ¥±µ½ÁÑ¥½¹Ì¹¡Ñµ°ÉÕ¹Ñ¥µ”µ‘¥ÍÁ…Ñ )¡ÑÑÁÌè¼½¹ÕµÁä¹½Éœ½‘½Œ½ÍÑ…‰±”½É•™•É•¹”½•¹•É…Ñ•½¹ÕµÁä¹•½µÍÁ…”¹¡Ñµ°)I•ÁÉ½‘Õ”İ¥Ñ ÍÉ¥ÁÑÌ½É•Ù¥•İ}…¹}™½ÕÉ¥•É}É¥‘}¤¹Áå€…¹Ñ¡”Ñİ¼i%AÌ¸()ĞÑ¡”™½ÕÉ™½±ÕÑ½™˜°¥¹É•…Í¥¹œÑ¡”É¥™É½´€ÄÀÈĞÑ¼ÄÔÌØ¡…¹•ÌÑ¡”)•¥¡Ğ¥µ…•Ì‰ä€à¸ØÙ”´Ü´´Ì¸Èå”´Ø0Ä¸e•Ğ…ĞÉ¥ÄÔÌØ°¥¹É•…Í¥¹œÑ¡”ÕÑ½™˜)™É½´€ÉàÑ¼Ñà¡…¹•Ì¸Ø‰ä€¨¨À¸ÀØØÀ´´À¸ÄÀØÜ”¨¨ì¸À¸Ô™±…ÑÑ•¹•…Í•Ì¡…¹”)‰ä€À¸ÀÀÄÄÌ´´À¸ÀÀÄĞÀ”°…¹É½Õ¹…Í•Ì…É”¥‘•¹Ñ¥…°…ĞÑ¡½Í”Ñİ¼ÕÑ½™™Ì¸)Q¡ÕÌÍµ…±°ÍÁ…¥¹œÍ•¹Í¥Ñ¥Ù¥Ñä…±½¹”‘½•Ì¹½ĞÁÉ½Ù”½ÕÉ¥•È½¹Ù•É•¹”¸)ĞÉ¥ÄÔÌØ½¬Ğ°%µ™¥Ğà‘¥™™•É•¹•Ì…É”€¨¨À¸ÈÄĞ´´À¸ÈÜÌ”™½È¸Ø¨¨°(¨¨Ä¸Øää´´Ä¸ÜĞÀ”™½È™±…ÑÑ•¹•¸À¸Ô¨¨°…¹€À¸ÀäĞÄ´´À¸ÀääÄ”™½ÈÉ½Õ¹¸À¸Ô¸)9•¥Ñ¡•È½‘”¥Ì¥¹‘•Á•¹‘•¹Ñ±ä•ÍÑ…‰±¥Í¡•…ÌÑÉÕÑ ¸9¼Ñ½±•É…¹”½È‰½Õ¹)İ…Ì¡…¹•…¹¹¼¡½ÍĞµÍ¡…Á”½ÈÁ¡åÍ¥…°µÉ•½Ù•Éä±…¥´™½±±½İÌ¸()Q¡”¹•áĞÍÁ•¥™¥ŒÅÕ•ÍÑ¥½¸¥Ìİ¡•Ñ¡•È™¥¹¥Ñ”¥¹ÑÉ¥¹Í¥Œ¹Õµ•É¥…°µ•±°)¥¹Ñ•É…Ñ¥½¸½¹ÑÉ¥‰ÕÑ•ÌÑ¼Ñ¡”É½ÍÌµ½‘”‘¥™™•É•¹”¸¡•­•%µ™¥ĞÌ)Ñ…••ÑY…±Õ”½…±Õ±…Ñ•MÕ‰Í…µÁ±•Ì¥µÁ±•µ•¹Ñ…Ñ¥½¸…¹…±M¥´Ì•á¥ÍÑ¥¹œ)A¥á•°½½¹Ù½±ÕÑ¥½¸½‰©•ÑÌ‰•™½É”™É••é¥¹œÕ1}AI=Q==0¹µ‘€¸I•ÕÍ”Ñ¡”)ÁÕ‰±¥Í¡•%µ™¥ĞÈ¼Ğ¼à…ÉÉ…åÌ™É½´Õ¤ì‘¼¹½ĞÉ•É•¹‘•ÈÑ¡…Ğ¡¥ÍÑ½É¥…°ÍÑ…”¸)½µÁ…É”…¹½¹¥…°¹½}•±°…¹Í•Á…É…Ñ•±ä±…‰•±±•ÍÅÕ…É”µ•±°É•ÍÁ½¹Í•Ì)½˜İ¥‘Ñ €Ä¼È°€Ä¼Ğ…¹€Ä¼à¹…Ñ¥Ù”Á¥á•°°İ¥Ñ …±°™½ÕÈ…ÉµÌ½µÁ…É•……¥¹ÍĞ)…±°Ñ¡É•”%µ™¥ĞÍ…µÁ±¥¹Ì¸Q¡¥ÌÕ¹¥™½É´µ•±°ÍÕÉÉ½…Ñ”¥Ì‘•±¥‰•É…Ñ•±ä9=P)…ÍÍ•ÉÑ•Ñ¼•ÅÕ…°…‘…ÁÑ¥Ù”%µ™¥Ğ¥¹Ñ•É…Ñ¥½¸½È„¹•ÜÁ¡åÍ¥…°AMµ½‘•°¸)A¥¹Ì°‰½Õ¹‘Ì…¹É•Í½ÕÉ”…ÁÌÉ•µ…¥¸Õ¹¡…¹•¸9¼‰•ÍÁ½­”¹Õµ•É¥…°)¥¹Ñ•É…Ñ½È½É•¹‘•É•È½ÈÁÉ½‘ÕÑ¥½¸½‘”¥Ì¥¹ÑÉ½‘Õ•¸½±±½Ü(¨©…Ñ”µŒµ…¸µ•±°µÉ•ÍÁ½¹Í”¨¨…Ğ¥ÑÌ¥µÁ±•µ•¹Ñ¥¹œ½µµ¥Ğì¥ÑÌ½¹™¥ÌÉ•½É)Ñ¡”…ÑÕ…°¹•ÜÉÕ¸½M!¸Õ°¥Ì¹½Ğå•Ğ„¥Ñ!ÕˆµÍÕ•ÍÌ±…¥´¸()Õ°±½…°Ù•É¥™¥…Ñ¥½¸‰•™½É”‘¥ÍÁ…Ñ è…±°€ÌÈM•ÉÍ¥ŒÉ•¹‘•ÉÌ°€ÄØ…ÕÍÍ¥…¸)½¹ÑÉ½±Ì°€äØ‘¥É•ĞÍÑ…ÉÑÌ°€Ğà…É´µÁ…¥È½µÁ…É¥Í½¹Ì…¹€ÜÈÀ¹•Ü…ÉÉ…åÌİ•É”)É•…‰…¬…¹…Õ‘¥Ñ•¸9¼™…¥±•İ½É­•È°é•É¼…µÁ±¥ÑÕ‘”°µ¥ÍÍ¥¹œPÉ••¥ÁĞ)½È‰½½­­••Á¥¹œ‘¥ÍÉ•Á…¹äİ…Ì™½Õ¹¸±°€ÌÈ±…É”µPİ…É¹¥¹ÌÉ•µ…¥¸ì)µ…á¥µÕ´¡¥±IMLİ…Ì€ĞÌÜÄÄØà-¥Õ¹‘•ÈÑ¡”Õ¹¡…¹•Í¥àµ¥…À¸M¡…É)ÉÕ¹Ñ¥µ•Ìİ•É”€ÄÌÄ¸ÌÀ…¹€ÄÔä¸ÈÄÍ•½¹‘Ì¸ŒÕ±}±½…±|ÈÀÈØÀäÀÌ¹©Í½¹€•áÁ±¥¥Ñ±ä)¥Ì¹½Ğ„¥Ñ!ÕˆÉ••¥ÁĞìÉ•ÁÉ½‘Õ”İ¥Ñ ÍÉ¥ÁÑÌ½…Õ‘¥Ñ}…¹}•±±}É•ÍÁ½¹Í”¹Áå€¸)9¼Í•ÑÑ¥¹Ìİ•É”¡…¹•…™Ñ•ÈÑ¡•Í”¥µ…•Ì¸Õ±°±½…°Ñ•ÍÑÌè€¨¨ÄÔÜÁ…ÍÍ•°)½¹”•áÑ•É¹…°µ%µ™¥Ğµ‰¥¹…ÉäÑ•ÍĞÍ­¥ÁÁ•¨¨°½¹”¥¹Ñ•¹Ñ¥½¹…°™…¥±ÕÉ”µ…ÁÑÕÉ”)İ…É¹¥¹œ¸A¥¹¹•…Ñ¥½¹±¥¹Ğ€Ä¸Ü¸ÄÈ…•ÁÑ•…±°İ½É­™±½İÌ¸Q¡”ÁÉ•É•ÅÕ¥Í¥Ñ”)½É‘¥¹…ÉäÉ•É•ÍÍ¥½¸ÉÕ¸€ÌÌÜààÜÀØÀÜÈ…±Í¼•áÁ±¥¥Ñ±ä½µÁ±•Ñ•½ÍÕ•ÍÌ¸((ŒŒŒÕ°…ÑÕ…°$É•Ù¥•Ü…¹Õ´™É••é”ƒŠP€ÈÀÈØ´Àä´ÀÌUQ()¥Ñ!Õˆ½¹™¥ÉµÌ€¨¨ÌÌÜäàØÜÔÌÜä¨¨…Ğ€ÀäÑ‘”àá”àáˆØØàÀÄÔØÔàÔÌÙÄÌÔàÍŒÈÀÅ™………˜É€)½µÁ±•Ñ•½ÍÕ•ÍÌ°ÕÁ‘…Ñ•€ÄäèÔÈèÄÕh¸	½Ñ ©½‰Ì…¹•Ù•ÉäÍÑ•ÀÍÕ••‘•¸)ÉÑ¥™…ÑÌ€ääÄÀÈÔØäÈØ¼ääÄÀÈÜÄäØÈİ•É”‘½İ¹±½…‘•…¹i%@M!ÈÔØÙ•É¥™¥•¸)Q¡”Õ¹¡…¹•É•…µ½¹±ä…Õ‘¥Ğ¡•­•…±°€¨¨ÌÈÉ•¹‘•ÉÌ°€ÄØ…ÕÍÍ¥…¸½¹ÑÉ½±Ì°(äØ‘¥É•ĞÍÑ…ÉÑÌ°€Ğà…É´Á…¥ÉÌ…¹€ÜÈÀ¹•Ü…ÉÉ…åÌ¨¨°¥¹±Õ‘¥¹œÁ…É•¹Ğ¡…Í¡•Ì°)…±°ÁÉ•‘¥Ñ¥½¹Ì½É•Í¥‘Õ…±Ì°--P°½ÕÉ¥•ÈÁÉ½‘ÕÑÌ°PÉ••¥ÁÑÌ…¹µ…¹¥™•ÍÑÌ¸)Q¡•É”İ•É”¹¼™…¥±•İ½É­•ÉÌ½Èé•É¼…µÁ±¥ÑÕ‘•Ì¸±°€ÌÈPİ…É¹¥¹ÌÉ•µ…¥¸¸)M¥•¹”µÍÉ¥ÁĞÉÕ¹Ñ¥µ•Ìİ•É”€àà¸ÔÈ¼ÄÈÀ¸ÈØÍ•½¹‘Ì¸Õ±°…ÑÕ…°µ$É••¥ÁĞè)•±±}É•ÍÁ½¹Í•|ÌÌÜäàØÜÔÌÜä¹©Í½¹€¸()Q¡”™¥¹¥Ñ”µ•±°ÍÕÉÉ½…Ñ”‘½•Ì€¨©¹½Ğ¨¨½¹Í¥ÍÑ•¹Ñ±ä•áÁ±…¥¸Ñ¡”‘¥ÍÉ•Á…¹ä¸)½È™±…ÑÑ•¹•¸ôÀ¸Ô°µ…Ñ¡••±°à‘¥™™•ÉÌ™É½´%µ™¥Ğà‰ä€¨¨Ä¸ÜÀÀ”¼Ä¸ØäÌ”¨¨(¡½¤°½µÁ…É•İ¥Ñ …¹½¹¥…°¹½}•±°€¨¨Ä¸Øää”¼Ä¸ÜĞÀ”¨¨¸I½Õ¹¸ôÀ¸Ô)µ…Ñ¡••±°È¥µÁÉ½Ù•Ì%µ™¥ĞÈ…É••µ•¹ĞÑ¼€¨¨À¸ÀàÄÔ”¼À¸ÄÄÀÔ”¨¨°‰ÕĞÑ¡…Ğ¥Ì)¹½Ğ•Ù¥‘•¹”Ñ¡”Í…µ”½ÉÉ•Ñ¥½¸…ÁÁ±¥•Ì…É½ÍÌÍ¡…Á”½ÈÍ…µÁ±¥¹œ¸±…ÑÑ•¹•)¸ôØµ…Ñ¡••±°à‘¥™™•É•¹•Ì…É”€¨¨À¸ÈÌÀÜ”¼À¸ÈÔàÜ”¨¨°İ½ÉÍ”Ñ¡…¸¹½}•±°(¨¨À¸ÈÈĞØ”¼À¸ÈÄĞĞ”¨¨¸±°½™˜µ‘¥…½¹…°É•ÍÕ±ÑÌÉ•µ…¥¸¥¸Ñ¡”É••¥ÁĞì¹¼‰•ÍĞ)•±°¥ÌÍ•±•Ñ•½È…‘½ÁÑ•¸9•¥Ñ¡•ÈÉ•¹‘•É•È¥ÌÑÉÕÑ …¹¹¼½¹Ù•É•¹”°)¹•ÜÁ¡åÍ¥…°AM½È™É•”µÍ¡…Á”É•½Ù•Éä±…¥´™½±±½İÌ¸()I•¡•­•Ñ¡”Ñ…•%µ™¥ĞM•ÉÍ¥Œ¥µÁ±•µ•¹Ñ…Ñ¥½¸…¹½™™¥¥…°µ…­•¥µ…”)…É¡¥Ñ•ÑÕÉ”‘½Ì¸%ÑÌ…‘…ÁÑ¥Ù”¥¹Ñ•É…Ñ¥½¸‘•Á•¹‘Ì½¸•±±¥ÁÑ¥…°É…‘¥ÕÌ)¥¸¹Õµ•É¥…°Á¥á•±Ì°Í¼„Õ¹¥™½É´‰½à…¹¹½ĞÉ•ÁÉ½‘Õ”¥Ğ•á…Ñ±ä¸Q¡”¹•áĞ)¥Í½±…Ñ•ÅÕ•ÍÑ¥½¸¥Ìİ¡•Ñ¡•È%µ™¥Ğ€àµÑ¼´ÄØ¹Õµ•É¥…°Í…µÁ±¥¹œ¡…¹•ÌÑ¡”)½µÁ…Ğ…Í•Ì…¹™¥ÑÌİ¥Ñ¡¥¸Ñ¡”•á¥ÍÑ¥¹œ…ÁÌ¸Õ5}AI=Q==0¹µ‘€™É••é•Ì)…±°•¥¡ĞÍ•¹•Ì°€ÄØÉ•¹‘•ÉÌ°€ÌÈ…µÁ±¥ÑÕ‘”™¥ÑÌ…¹•¥¡Ğİ¥Ñ¡¥¸µ½‘”)½µÁ…É¥Í½¹Ì¸I•ÕÍ”Õ¹¡…¹•…ÕÑ¡½È%µ™¥Ğ€Ä¸ä¸À°Õ •½µ•ÑÉä½½¹Ù½±ÕÑ¥½¸°)Í…µ”Í¥¹•AMÌ…¹…É¡¥Ù•Õ°¹½}•±°¸9¼ÕÍÑ½´¥¹Ñ•É…Ñ½È°¹•Ü)É½ÍÌµ™¥ÑÑ•È°Á¡åÍ¥…°µ‰½Õ¹¡…¹”°½ÈÁ½ÍĞµ¡½ŒÑ½±•É…¹”¸Aå%µ™¥Ğ¥ÌÑ¡”)Í…µ”•¹¥¹”…¹İ½Õ±¹½Ğ…‘¥¹‘•Á•¹‘•¹”™½ÈÑ¡¥ÌÅÕ•ÍÑ¥½¸¸I•™•É•¹•Ì)…¹±¥•¹Í”½É•ÕÍ”½É•Í½ÕÉ”…ÍÍ•ÍÍµ•¹Ğ…É”¥¸Ñ¡”ÁÉ½Ñ½½°¸½±±½Ü(¨©…Ñ”µŒµ…¸µ¥µ™¥ĞµÉ•™¥¹•µ•¹Ğ¨¨½¸¥ÑÌ¥µÁ±•µ•¹Ñ¥¹œ½µµ¥Ğì¹½Ğå•Ğ„$)ÍÕ•ÍÌ±…¥´¸!¥¡•ÈÍ…µÁ±¥¹œ¥Ì„‘¥…¹½ÍÑ¥Œ°¹½ĞÁ•Éµ¥ÍÍ¥½¸Ñ¼•áÁ…¹)µ•µ½Éä½Ñ¥µ”…ÁÌ½È…ÍÍ•ÉĞµ½ÉÁ¡½±½äÉ•½Ù•Éä¸((ŒŒŒÕ´1=0É•Í½ÕÉ”™…¥±ÕÉ”ìÍ•Á…É…Ñ”Õ¸™É••é”()Õ´İ…Ì€¨©¹½Ğ‘¥ÍÁ…Ñ¡•¨¨¸Q¡”™¥ÉÍĞ±½…°…ÑÑ•µÁĞ•áÁ½Í•…¸…É¡¥Ù”µ­•ä)…‘…ÁÑ•È•ÉÉ½È€¡Õ°ÍÑ½É•ÌAMÌ…Ì½°¹½Ğ}¹½Éµ…±¥é•‘}¥¹ÁÕĞ½	}¹½Éµ…±¥é•‘}¥¹ÁÕĞ¤¸)½ÉÉ•Ñ•Ñ¡…ĞÍ¡•µ„…•ÍÌ…¹…‘‘•„É•É•ÍÍ¥½¸Ñ•ÍĞİ¥Ñ¡½ÕĞ¡…¹¥¹œ)…¹äÍ¥•¹”Í•ÑÑ¥¹œ¸Q¡”Í•Á…É…Ñ”½ÉÉ•Ñ•±½…°…ÑÑ•µÁĞÉ•Ñ…¥¹•…±°•¥¡Ğ)ÍÕ•ÍÍ™Õ°Í…µÁ±¥¹œàÉ•Á±…åÌ°‰ÕĞ…±°•¥¡ĞÍ…µÁ±¥¹œÄØ…±±Ì™…¥±•¥¸)%µ™¥Ğ½¹Ù½±Ù•Èèé½Õ±±M•ÑÕÀ…±±½…Ñ¥½¸°‰•™½É”É•¹‘•É¥¹œ¸9¼Ñ½±•É…¹”½È)É•Í½ÕÉ”…Àİ…ÌÉ…¥Í•¸	½Ñ ½É¥¥¹…°…¹É•Á…¥É•±½…°É•½É‘Ì°…ÑÕ…°)•ÉÉ½È±½Ì°½¹™¥ÕÉ…Ñ¥½¹Ì…¹…Ù…¥±…‰±”…ÉÉ…ä¥‘•¹Ñ¥Ñ¥•Ì…É”ÁÉ•Í•ÉÙ•¥¸)ŒÕµ}±½…±|ÈÀÈØÀäÀÌ¹©Í½¹€ìÕ5}]=I-1=]}9=Q}%MAQ!¹åµ±€ÁÉ•Í•ÉÙ•ÌÑ¡”)Õ¹‘¥ÍÁ…Ñ¡•Á±…¸½ÕÑÍ¥‘”Ñ¡”…Ñ¥Ù”İ½É­™±½Ü‘¥É•Ñ½Éä¸ÍÕ‰Í•ÅÕ•¹Ğ)•ÅÕ¥Ù…±•¹ĞÉ•™…Ñ½È•áÁÉ•ÍÍ•ÌÑ¡”Á…¥È±…‰•±ÌÕÍ¥¹œÑ¡”™É½é•¸M5A1L)ÑÕÁ±”¥¹ÍÑ•…½˜±¥Ñ•É…°€à¼ÄØ°…±±½İ¥¹œÉ•ÕÍ”İ¥Ñ¡½ÕĞ…±Ñ•É¥¹œÕ´Í¥•¹”¸()¡•­•Ñ…•%µ™¥Ğ5½‘•±=‰©•Ğ…¹½¹Ù½±Ù•È…±±½…Ñ¥½¸½‘”¸]¥Ñ Ñ¡”)Õ¹¡…¹•™Õ±°AMÍÕÁÁ½ÉĞ°Í…µÁ±¥¹œÄØ¹••‘Ì…‰½ÕĞ€¨¨Ü¸ÜÜ¥™½ÈÍ¥àP)…ÉÉ…åÌ…±½¹”¨¨°…±É•…‘ä‰•å½¹Ñ¡”Í¥àµ¥…Àì‰±¥¹‘±äÉ•ÉÕ¹¹¥¹œ¥Ğ¥¸$)İ½Õ±¹½Ğ…¹Íİ•È„¹•ÜÅÕ•ÍÑ¥½¸¸Í•Á…É…Ñ•±ä™É½é•¸€¨©Õ¸€à¼ÄÀ¨¨•áÁ•É¥µ•¹Ğ)ÕÍ•ÌÑ¡”Í…µ”•¹¥¹”…¹Á¡åÍ¥…°Í•¹”°İ¥Ñ …‰½ÕĞ€¨¨Ì¸ÀĞ¥¨¨™½ÈÑ¡½Í”)…ÉÉ…åÌ…ĞÍ…µÁ±¥¹œÄÀ€¡¹½Ğ„ÁÉ½µ¥Í”½˜Á•…¬ÁÉ½•ÍÌµ•µ½Éä¤¸Q¡¥ÌÍ…µÁ±•Ì)„™¥¹•ÈÉ¥İ¥Ñ ¡•…‘É½½´ì¥Ğ¥Ì¹½Ğ„ÍÕ‰ÍÑ¥ÑÕÑ•ÍÕ•ÍÌ™½ÈÕ´ÄØ½È)ÁÉ½½˜½˜½¹Ù•É•¹”¸9¼¹•Ü¡…¹‘İÉ¥ÑÑ•¸½¹Ù½±ÕÑ¥½¸°É½ÁÁ•AM°)…±Ñ•É¹…Ñ¥Ù”¥¹Ñ•É…Ñ¥½¸…±½É¥Ñ¡´½ÈÁ¡åÍ¥…°‰½Õ¹¥Ì¥¹ÑÉ½‘Õ•¸)M•”Õ9}AI=Q==0¹µ‘€™½ÈÑ¡”Í½ÕÉ”¥Ñ…Ñ¥½¹Ì°…¹‘¥‘…Ñ”…ÍÍ•ÍÍµ•¹Ğ…¹)™É½é•¸‘•Í¥¸¸½±±½Ü€¨©…Ñ”µŒµ…¸µ¥µ™¥Ğµ‰½Õ¹‘•¨¨½¸Ñ¡”¥µÁ±•µ•¹Ñ¥¹œ½µµ¥Ğ¸)Q¡”Õ°ÁÉ•É•ÅÕ¥Í¥Ñ”É•É•ÍÍ¥½¸€ÌÌÜäàØÜÔÌÈå€•áÁ±¥¥Ñ±ä½µÁ±•Ñ•½ÍÕ•ÍÌ¸()Õ¸±½…°Ù•É¥™¥…Ñ¥½¸è…±°€ÄØÉ•¹‘•ÉÌ½µÁ±•Ñ•Õ¹‘•ÈÕ¹¡…¹•…ÁÌì)µ…á¥µÕ´µ…­•¥µ…”IMLİ…Ì€ÌÔàäàÜØ-¥¸±°€ÌÈ…µÁ±¥ÑÕ‘”ÍÑ…ÉÑÌ°•¥¡Ğ)Í…µÁ±¥¹œÁ…¥ÉÌ°€ÄØ™¥¹”%QL½¹…Ñ¥Ù”É•‘ÕÑ¥½¹Ì…¹€ÄØà™¥¹…±¥é•9Ah…ÉÉ…åÌ)İ•É”¡•­•¸¸ĞÁ…ÍÍ•Ñ¡”™Õ±°ÍÑÉ¥Ğ…ÉÑ¥™…Ğ…Õ‘¥Ğ¸¸ÄÌ½É¥¥¹…°)…ÉÑ¥™…Ğ…Õ‘¥Ğ€¨©™…¥±•¨¨‰•…ÕÍ”„±•™Ñ½Ù•ÈÑ•µÁ½É…Éä­•É¹•°…É¡¥Ù”İ…Ì)ÁÉ•Í•¹Ğ‘•ÍÁ¥Ñ”ÍÕ•ÍÍ™Õ°™¥¹…±¥é…Ñ¥½¸¸%ÑÌM!ÈÔØ¥Ì•á…Ñ±ä¥‘•¹Ñ¥…°)Ñ¼Ñ¡”™¥¹…±¥é•­•É¹•°°‰ÕĞ¥Ğ¥ÌÉ•Ñ…¥¹•…Ì…¸Õ¹•áÁ±…¥¹•…ÉÑ¥™…Ğ´)½µÁ±•Ñ•¹•ÍÌ™…¥±ÕÉ”°¹½ĞÉ•±…‰•±±•ÍÕ•ÍÌ¸Í•Á…É…Ñ”‰åÑ”µÙ•É¥™¥•½Áä)½˜™¥¹…±¥é•¸ÄÁÉ½‘ÕÑÌÁ…ÍÍ•Ñ¡”Õ¹¡…¹•¹Õµ•É¥…°½…±•‰É„…Õ‘¥Ğì)Ñ¡…Ğ‘½•Ì¹½Ğµ…­”Ñ¡”½É¥¥¹…°…ÉÑ¥™…Ğ½µÁ±•Ñ”¸Q¡”$…Õ‘¥Ğ½¹Ñ¥¹Õ•Ì)Ñ¼É•©•Ğ…¹ä€¹Á…ÉÑ¥…±€™¥±”ì¹¼±•…¹ÕÀ°¥¹½É”ÉÕ±”½ÈÑ½±•É…¹”İ…Ì)…‘‘•¸AåÑ¡½¸Ì‘½Õµ•¹Ñ•½Ì¹É•Á±…”Í•µ…¹Ñ¥Ìİ•É”¡•­•ìÑ¡”…ÕÍ”)½˜Ñ¡”‘ÕÁ±¥…Ñ”¥Ì¹½Ğ•ÍÑ…‰±¥Í¡•¸9¼Í¥•¹Ñ¥™¥ŒÉ•É•¹‘•È½ÈÍ•ÑÑ¥¹œ)¡…¹”İ…Ìµ…‘”¸ŒÕ¹}±½…±|ÈÀÈØÀäÀÌ¹©Í½¹€‘¥ÍÑ¥¹Õ¥Í¡•ÌÑ¡•Í”…Õ‘¥ĞÍ½Á•Ì¸)Õ±°±½…°ÍÕ¥Ñ”è€¨¨ÄØÜÁ…ÍÍ•¨¨°¥¹±Õ‘¥¹œÑ¡”Á¥¹¹••áÑ•É¹…°µ‰¥¹…ÉäÍµ½­”)Ñ•ÍĞì½¹”‘•±¥‰•É…Ñ”™…¥±ÕÉ”µ…ÁÑÕÉ”İ…É¹¥¹œÉ•µ…¥¹Ì¸A¥¹¹•…Ñ¥½¹±¥¹Ğ(Ä¸Ü¸ÄÈ…•ÁÑ•…±°İ½É­™±½İÌ¸ÑÕ…°$½ÕÑÁÕÑÌÍÑ¥±°É•ÅÕ¥É”É•Ù¥•Ü¸((ŒŒŒÕ¸…ÑÕ…°$…¹µ¥¹¥µ…°µ•¹Ù¥É½¹µ•¹ĞÉ•É•ÍÍ¥½¸É•Á…¥ÈƒŠP€ÈÀÈØ´Àä´ÀÌUQ()IÕ¸€¨¨ÌÌàÀØÄäÌÜÄÈ¨¨°½µµ¥Ğ€Øå˜äÀÌİ„ÄÄÙ„Õ‘ÜÕ”İ˜äĞÅŒÌá™”ØÔĞÉäÅˆÔĞİ€°)•áÁ±¥¥Ñ±ä½µÁ±•Ñ•½ÍÕ•ÍÌ™½È‰½Ñ ©½‰Ì°¥¹±Õ‘¥¹œÑ¡•¥ÈÍÑÉ¥Ğ½ÕÑÁÕĞ)…Õ‘¥ÑÌ¸½İ¹±½…‘•…ÉÑ¥™…ÑÌ€ääÄÌÄÄÌÔÀĞ¼ääÄÌÄÄÌàäà°Ù•É¥™¥•i%@M!ÈÔØ°)…¹¥¹‘•Á•¹‘•¹Ñ±äÉ•É…¸Ñ¡”Õ¹¡…¹•É•…µ½¹±ä…Õ‘¥ÑÌ½¸‰½Ñ ½É¥¥¹…°)$…ÉÑ¥™…ÑÌ¸±°€ÄØÉ•¹‘•ÉÌ°€ÌÈ‘¥É•Ğ…µÁ±¥ÑÕ‘”ÍÑ…ÉÑÌ°•¥¡ĞÍ…µÁ±¥¹œ)Á…¥ÉÌ°€ÄØ™¥¹”%QL½¹…Ñ¥Ù”É•‘ÕÑ¥½¹Ì…¹€¨¨ÄØà¹•Ü9Ah…ÉÉ…åÌ¨¨Á…ÍÍ•¸)9¼½É¥¥¹…°$…ÉÑ¥™…Ğ½¹Ñ…¥¹ÌÑ¡”±½…°±•™Ñ½Ù•ÈµÁ…ÉÑ¥…°…¹½µ…±ä¸)Q¡”½µÁ±•Ñ”É••¥ÁĞ¥Ì¥µ™¥Ñ}‰½Õ¹‘•‘|ÌÌàÀØÄäÌÜÄÈ¹©Í½¹€¸()%µ™¥ĞàµÑ¼´ÄÀ¹½Éµ…±¥é•0Ä‘É¥™Ğ¥Ì€¨¨À¸ÈÌÓŠLÀ¸ÈÔÀ”¨¨™½È™±…ÑÑ•¹•¸ôÀ¸Ô°(¨¨À¸ÀÄÌÃŠLÀ¸ÀÄÜÜ”¨¨™½ÈÉ½Õ¹¸ôÀ¸Ô°€¨¨À¸ÈÜÇŠLÀ¸ÈÜÌ”¨¨™½È™±…ÑÑ•¹•¸ôØ°)…¹€¨¨À¸ÀØÈÃŠLÀ¸ÀØäÔ”¨¨™½ÈÉ½Õ¹¸ôØ¸ĞÍ…µÁ±¥¹œÄÀ°‘¥™™•É•¹•ÌÉ•±…Ñ¥Ù”)Ñ¼…¹½¹¥…°…±M¥´¹½}•±°…É”€¨¨Ä¸äÄÛŠLÄ¸äĞÀ”¨¨°€¨¨À¸ÄÀÌÓŠLÀ¸ÄÀÌà”¨¨°(¨¨À¸ÀØÀËŠLÀ¸ÀØàä”¨¨°…¹€¨¨À¸ÄàäÇŠLÀ¸ÈÀÌà”¨¨°É•ÍÁ•Ñ¥Ù•±ä¸Q¡•Í”…É”)‘•ÍÉ¥ÁÑ¥Ù”°İ¥Ñ Ñ¡”É•™•É•¹”¥µ…”‘•™¥¹¥¹œ•… ‘•¹½µ¥¹…Ñ½ÈìÕ°ÕÍ•)%µ™¥Ğ…Ì¥ÑÌÉ•™•É•¹”™½È¥ÑÌÉ½ÍÌµ½‘”½µÁ…É¥Í½¸¸9•¥Ñ¡•È‰•ÑÑ•È¹½È)İ½ÉÍ”…É••µ•¹Ğ•ÍÑ…‰±¥Í¡•ÌÑÉÕÑ °…¹™Õ±°µÉ…¹”½¹Ù•É•¹”É•µ…¥¹Ì½Á•¸¸()Q¡”Í•Á…É…Ñ”•¹•É…°É•É•ÍÍ¥½¸ÉÕ¸€¨¨ÌÌàÀØÄäÌÔàà™…¥±•½¸AåÑ¡½¸Ì¸ÄÄ)…¹Ì¸ÄÈ‘ÕÉ¥¹œ½±±•Ñ¥½¸¨¨°¹½Ğ‘ÕÉ¥¹œ„Í¥•¹”™¥Ğ¸ÑÕ…°±½ÌÍ¡½Ü)5½‘Õ±•9½Ñ½Õ¹‘ÉÉ½Èè9¼µ½‘Õ±”¹…µ•€…ÍÑÉ½Áä€¥¸Ñ¡”Ñİ¼¹•İ±ä…‘‘•)%µ™¥ĞÑ•ÍĞµ½‘Õ±•Ì¸Q¡”µ¥¹¥µ…°¡…É¹•ÍÌ¥¹Ñ•¹Ñ¥½¹…±±ä‘½•Ì¹½Ğ¥¹ÍÑ…±°)Ñ¡”½ÁÑ¥½¹…°…ÍÑÉ½¹½µäÍÑ…¬ì•á¥ÍÑ¥¹œ…ÍÑÉ½¹½µäÑ•ÍÑÌ…±É•…‘äÕÍ”ÁåÑ•ÍĞÌ)‘½Õµ•¹Ñ•¥µÁ½ÉÑ½ÉÍ­¥À¸ÁÁ±äÑ¡…ĞÍ…µ”µ½‘Õ±”µ±•Ù•°‘•Á•¹‘•¹äÕ…ÉÑ¼)Ñ¡”Ñİ¼¹•Ü™¥±•Ì¸¼¹½Ğ…‘…¸á™…¥°°…±Ñ•È…¸…ÍÍ•ÉÑ¥½¸°½ÈÉ•±…à„)Í¥•¹Ñ¥™¥ŒÉ¥Ñ•É¥½¸¸%¸Ñ¡”‘•‘¥…Ñ•Õ¸İ½É­™±½Ü°…‘µ…¹‘…Ñ½Éä¥µÁ½ÉÑÌ)…¹€¨©•á…ĞÁ¥¸•ÅÕ…±¥Ñä‰•™½É”Ñ•ÍÑÌ¨¨°…¹¥¹±Õ‘”Ñ¡”Õ´…‘…ÁÑ•ÈÑ•ÍÑÌ)…±½¹Í¥‘”Ñ¡”‰½Õ¹‘•…¹…ÕÑ¡½ÈµÉ•¹‘•É•ÈÑ•ÍÑÌ¸5¥ÍÍ¥¹œ‘•Á•¹‘•¹¥•ÌÑ¡•É”)É•µ…¥¸„¡…É™…¥±ÕÉ”°¹½Ğ„Í­¥À¸M¥•¹Ñ¥™¥ŒÍÉ¥ÁÑÌ½ÁÉ½Ñ½½±Ì…É”Õ¹¡…¹•¸)M½ÕÉ”è¡ÑÑÁÌè¼½‘½Ì¹ÁåÑ•ÍĞ¹½Éœ½•¸½ÍÑ…‰±”½¡½ÜµÑ¼½Í­¥ÁÁ¥¹œ¹¡Ñµ°Í­¥ÁÁ¥¹œµ½¸µ„µµ¥ÍÍ¥¹œµ¥µÁ½ÉĞµ‘•Á•¹‘•¹ä()1½…°Ù•É¥™¥…Ñ¥½¸è„™É•Í µ¥¹¥µ…°•¹Ù¥É½¹µ•¹ĞÁ…ÍÍ•Ì€¨¨ØÔÑ•ÍÑÌ¨¨°İ¥Ñ (ÄÌ½ÁÑ¥½¹…°µ½‘Õ±•Ì•áÁ±¥¥Ñ±äÍ­¥ÁÁ•ìÑ¡”Á¥¹¹•™Õ±°•¹Ù¥É½¹µ•¹ĞÁ…ÍÍ•Ì(¨¨ÄØÜÑ•ÍÑÌ¨¨°¹½¹”Í­¥ÁÁ•°¥¹±Õ‘¥¹œÑ¡”…ÕÑ¡½Èµ‰¥¹…ÉäÍµ½­”Ñ•ÍĞ¸Q¡”)¹•Üµ…¹‘…Ñ½ÉäÕ…ÉÉ•©•ÑÌÑ¡”µ¥¹¥µ…°•¹Ù¥É½¹µ•¹Ğ…¹…•ÁÑÌÑ¡”•á…Ğ)Á¥¹¹•½¹”¸A¥¹¹•…Ñ¥½¹±¥¹ĞÄ¸Ü¸ÄÈÁ…ÍÍ•Ì¸AÉ•Í•ÉÙ”‰½Ñ ™…¥±•É•É•ÍÍ¥½¸)©½‰Ì…¹Ñ¡”ÍÕ•ÍÍ™Õ°½É¥¥¹…°Õ¸¸Q¡”É•Á…¥È½µµ¥ĞÑÉ¥•ÉÌÑ¡”)É•É•ÍÍ¥½¸…¹Í…µ”µÍ•ÑÑ¥¹œÕ¸Ù•É¥™¥…Ñ¥½¸É•ÉÕ¹Ìì‘¼¹½Ğ…‘Ù…¹”Ñ¼¹•Ü)‘•Á•¹‘•¹ĞÍ¥•¹”‰•™½É”Ñ¡•Í”¹••ÍÍ…Éä¡•­ÌÍÕ••¸½±±½ÜÑ¡”¹•İ•ÍĞ)Ù•É¥™¥…Ñ¥½¸µÍÕ¥Ñ•€…¹…Ñ”µŒµ…¸µ¥µ™¥Ğµ‰½Õ¹‘•‘€½¸Ñ¡”É•Á…¥È½µµ¥Ğ¸((ŒŒŒÕ¸É•Á…¥ÈÉ•ÉÕ¹Ì½¹™¥Éµ•ìÕ¼™É½é•¸ƒŠP€ÈÀÈØ´Àä´ÀÌUQ()¥Ñ!Õˆ•áÁ±¥¥Ñ±ä½¹™¥ÉµÌ‰½Ñ É•Á…¥ÈÉÕ¹Ì…Ğ)€äØØáˆÅ•˜ØÜØÌØÜÙäÍİ™•™‘ˆĞàÀÀÔÑàÁŒàÄàÉ…€½µÁ±•Ñ•½ÍÕ•ÍÌ¸Y•É¥™¥…Ñ¥½¸)ÉÕ¸€¨¨ÌÌàÄÀÄàÜàÈÜ¨¨Á…ÍÍ•½¸AåÑ¡½¸€Ì¸ÄÄ…¹€Ì¸ÄÈìÑ¡”…ÑÕ…°AåÑ¡½¸Ì¸ÄÄ±½œ)É•Á½ÉÑÌ€ØÔÁ…ÍÍ•…¹€ÄÌ•áÁ±¥¥Ğ½ÁÑ¥½¹…°µ…ÍÑÉ½¹½µäÍ­¥ÁÌ¸•‘¥…Ñ•Õ¸)ÉÕ¸€¨¨ÌÌàÄÀÄàÜàØĞ¨¨Á…ÍÍ•‰½Ñ ¡½ÍĞ©½‰Ì¸… É•ÅÕ¥É•Ñ¡”•á…ĞÁ¥¹¹•)…ÍÑÉ½¹½µä•¹Ù¥É½¹µ•¹Ğ°Á…ÍÍ•€ÈÄÑ…É•Ñ•Ñ•ÍÑÌ°É•É…¸Ñ¡”Õ¹¡…¹•Õ¸)Í¥•¹”°…¹Á…ÍÍ•Ñ¡”ÍÑÉ¥Ğ™Õ±°µ½ÕÑÁÕĞ…Õ‘¥Ğ¸Q¡”¸ôĞ©½ˆ…Õ‘¥ĞÉ•Á½ÉÑÌ)•¥¡Ğİ½É­•ÉÌ°€ÄØÍÑ…ÉÑÌ°™½ÕÈÁ…¥ÉÌ°€àĞ¹•Ü…ÉÉ…åÌ…¹•¥¡Ğ%QL½ÕÑÁÕÑÌì)Ñ¡”Íåµµ•ÑÉ¥Œ¸ôÄ©½ˆÁ…ÍÍ•Ñ¡”Í…µ”ÍÑ•ÁÌ¸Q¡¥Ì½¹™¥ÉµÌÑ¡”Ñ•ÍĞµ½±±•Ñ¥½¸)É•Á…¥Èİ¥Ñ¡½ÕĞ¡…¹¥¹œÕ¸ÌÍ¥•¹Ñ¥™¥ŒÉ•ÍÕ±Ğ½È•É…Í¥¹œ™…¥±•É•É•ÍÍ¥½¸(ÌÌàÀØÄäÌÔàà¸()Õ±°µ‰½Õ¹¹Õµ•É¥…°½¹Ù•É•¹”É•µ…¥¹Ì½Á•¸…ĞÑ¡”•áÑÉ•µ”½µÁ…Ğ½É¹•ÉÌ¸)Q¡…Ğ‘½•Ì¹½ĞÉ•ÅÕ¥É”É•Á•…Ñ¥¹œ…¹½Ñ¡•È½É¹•ÈÍİ••À‰•™½É”Ñ•ÍÑ¥¹œÑ¡”…ÑÕ…°)¹½µ¥¹…°…¹¡½ÈèÕ …±É•…‘äµ•…ÍÕÉ•½¹±ä€À¸ÀÀÈ´´À¸ÀÈà”%µ™¥Ğà½…±M¥´¥µ…”)0Ä‘¥™™•É•¹•Ì…ĞI”ôÄØ°ÄôÀ¸Ø°¸ôÄ¼Ğ¸™Ñ•ÈÉ•¡•­¥¹œÑ¡”%µ™¥ĞÁ…Á•È°)½™™¥¥…°½¹™¥ÕÉ…Ñ¥½¸½AM½A½¥¹ÑM½ÕÉ”‘½Õµ•¹Ñ…Ñ¥½¸…¹Á¥¹¹••á•ÕÑ…‰±”°)Õ=}AI=Q==0¹µ‘€™É••é•Ì„µ…Ñ¡•µAM°¹½¥Í•±•ÍÌ°™É•”µ¡½ÍĞµÍ¡…Á”É½ÍÌ´)™¥ÑÑ•ÈÁÉ•™±¥¡Ğ…Ğ½¹±äÑ¡½Í”¹½µ¥¹…°…¹¡½ÉÌ¸I•ÕÍ”%µ™¥Ğ€Ä¸ä¸ÀÌ½İ¸M•ÉÍ¥Œ°)A½¥¹ÑM½ÕÉ”…¹½ÁÑ¥µ¥é•Èì¹¼ÕÍÑ½´É•¹‘•É•È½È½ÁÑ¥µ¥é•È¥Ì¥¹ÑÉ½‘Õ•¸()Õ¼­••ÁÌ¡½ÍĞ½¹Õ±•…È•¹Ñ•ÉÌ™¥á•…¹É•±•…Í•ÌA°Ä°¸°I”…¹‰½Ñ )¹½¹¹•…Ñ¥Ù”…µÁ±¥ÑÕ‘•Ì™½Èµ½‘Õ±•Ì½…¹8½¡½ÍĞ€Ä¼ÄÀ°İ¥Ñ Ñ¡É•”™É½é•¸)ÍÑ…ÉÑÌ¸Q¡”İÉ½¹œµAM…É´¥Ì‘•±¥‰•É…Ñ•±ä…‰Í•¹Ğè™¥ÉÍĞ•ÍÑ…‰±¥Í ¡½ÜÑ¡”)¥¹‘•Á•¹‘•¹Ğ¡½ÍĞÉ•¹‘•É•È½™¥ÑÑ•È‰•¡…Ù•Ìİ¥Ñ Ñ¡”µ…Ñ¡•Í¥¹••µÁ¥É¥…°)AM°Ñ¡•¸™É••é”µ¥Íµ…Ñ Í•Á…É…Ñ•±ä¥˜©ÕÍÑ¥™¥•¸±°Í¡…Á”‰½Õ¹‘Ì°É½À°)AMÙ…±Õ•Ì…¹™Õ±°µÁ¥á•°½‰©•Ñ¥Ù”É•µ…¥¸¸M¥¹•¹•…Ñ¥Ù”İ¥¹Ì…É”¹½Ğ)Á¡½Ñ½¸µÉ•…‘ä¸½µÁ±•Ñ”½ÕÑÁÕĞ…¹…±•‰É„…É”É•ÅÕ¥É•°‰ÕĞ¹¼É•½Ù•Éä‰…¹)¥Ì¥¹Ù•¹Ñ•¸½±±½Ü…Ñ”µŒµ…¸µ¥µ™¥Ğµ™É•”µÍ¡…Á•€ì±½…°Ñ•ÍÑÌ½È„ÍÕ•ÍÍ™Õ°)ÁÉ½•ÍÌ•á¥Ğ…É”¹½Ğ¥Ñ!ÕˆÍÕ•ÍÌ½ÈÁ¡åÍ¥…°É•½Ù•Éä¸()1½…°¥µÁ±•µ•¹Ñ…Ñ¥½¸Ù•É¥™¥…Ñ¥½¸è€¨¨ÄÜÄÑ•ÍÑÌÁ…ÍÍ•¨¨°İ¥Ñ Ñ¡”Õ¹¡…¹•)Õ •áÑ•É¹…°µµ…­•¥µ…”Íµ½­”Ñ•ÍĞÍ­¥ÁÁ•‰•…ÕÍ”Õ¼¥¹ÍÑ…±±ÌÑ¡”Í•Á…É…Ñ”)Á¥¹¹•¥µ™¥Ñ€•á•ÕÑ…‰±”ì¥ÑÌ½İ¸‰¥¹…Éä½™Õ¹Ñ¥½¸¡•¬Á…ÍÍ•¸Ñ¥½¹±¥¹Ğ(Ä¸Ü¸ÄÈ…•ÁÑÌ…±°İ½É­™±½İÌ¸½µÁ±•Ñ”±½…°¸ôÄ•á•ÕÑ¥½¸…¹É•…µ½¹±ä)…Õ‘¥Ğ¡•­•™½ÕÈ…Í•Ì°€ÄÈÍÑ…ÉÑÌ…¹€Ğà¥µ…”…ÉÉ…åÌİ¥Ñ ¹¼İ¥¹¹•È‰½Õ¹)¡¥Ğ¸Q¡”µ¥¹¥µÕ´µ½ÍĞÍ½±ÕÑ¥½¹ÌÉ•½Ù•È¸ôÄ¸ÀÀÄÀÔ´´Ä¸ÀÀÄĞÔ°)I”ôÄÔ¸äàÌÔ´´ÄØ¸ÀÄÀà…¹ÄôÀ¸ÔääØÄĞ´´À¸ÔääÜÄä¸!½İ•Ù•È°Ñ¡”‘•±¥‰•É…Ñ•±ä)•áÑ•¹‘•ÍÑ…ÉĞ¥¸‰½Ñ 8½¡½ÍĞôÄÀ…Í•Ì½¹Ù•É•Ñ¼„µÕ İ½ÉÍ”ÄôÄ‰½Õ¹‘…Éä)‰…Í¥¸ìÑ¡…ĞÍÑ…ÉĞ¥ÌÉ•Ñ…¥¹•É…Ñ¡•ÈÑ¡…¸É•Á½ÉÑ•…Ì…É••µ•¹Ğ¸Q¡•Í”…É”)1=0Á¥Á•±¥¹”½‰Í•ÉÙ…Ñ¥½¹Ì½¹±ä°¹½Ğ¥Ñ!ÕˆÍÕ•ÍÌ½È…¸…•ÁÑ…¹”‰…¹¸((ŒŒŒÕ¼…ÑÕ…°$ÍÁ±¥ĞÉ•ÍÕ±ĞìÕÀ™É½é•¸ƒŠP€ÈÀÈØ´Àä´ÀĞUQ()IÕ¸€¨¨ÌÌàÄäÌĞäàÔĞ¨¨…Ğ€ÜÀĞÄäÀÜÈÌÅ„ÈØÈäÉ˜áŒØØÍŒÉ‘˜àäá˜ÌÄäÈÄÜÕ„İ•€)•áÁ±¥¥Ñ±ä½µÁ±•Ñ•½™…¥±ÕÉ”¸Q¡”¸ôÄ©½ˆ½µÁ±•Ñ•½ÍÕ•ÍÌ…¹¥ÑÌÍÑÉ¥Ğ)…Õ‘¥Ğ¡•­•…±°™½ÕÈ…Í•Ì°€ÄÈÍÑ…ÉÑÌ…¹€Ğà…ÉÉ…åÌ¸Q¡”¸ôĞ©½ˆ™…¥±•)‰•™½É”…Õ‘¥Ğ…™Ñ•ÈÉ•½É‘¥¹œÍ¥àÍÑ…ÉÑÌèÑ¡”½µÁ…ĞÍÑ…ÉĞ™½Èµ½‘Õ±”…Ğ)8½¡½ÍĞôÄÀÉ•…¡•Ñ¡”Õ¹¡…¹•€ÄàÀµÍ•½¹ÁÉ½•ÍÌ±¥µ¥Ğ€¡É•ÑÕÉ¸½‘”€ÄÈĞ¤)…¹ÁÉ½‘Õ•¹¼‰•ÍĞµ™¥Ğ½µ½‘•°½É•Í¥‘Õ…°™¥±•Ì¸QÉÕÑ …¹•áÑ•¹‘•ÍÑ…ÉÑÌ™½È)Ñ¡…Ğ•á…ĞÍ•¹”½µÁ±•Ñ•¥¸€Ì´´ĞÍ•½¹‘Ì°…É••…Ğ¸ôĞ¸ÄÌÌØÄ°I”ôÄØ¸ÈÈÜ°)ÄôÀ¸ÔäØÄÔÄ…¹Á½¥¹Ğ™±Õàôä¸ääÜÈÔ°…¹¡…¹¼‰½Õ¹¡¥Ğ¸Q¡¥Ì‘½•Ì¹½Ğµ…­”)Õ¼½µÁ±•Ñ”½ÈÍÕ•ÍÍ™Õ°¸ÉÑ¥™…Ğ%Ì°i%@¡…Í¡•Ì…¹™¥ÑÑ•ÍÕµµ…É¥•Ì…É”)ÁÉ•Í•ÉÙ•¥¸ŒÕ½|ÌÌàÄäÌĞäàÔĞ¹©Í½¹€ìÑ¡”™…¥±•…ÉÑ¥™…ĞÉ•µ…¥¹Ì…ÕÑ¡½É¥Ñ…Ñ¥Ù”¸()=™™¥¥…°%µ™¥Ğ€Ä¸äÍ½±Ù•È‘½Õµ•¹Ñ…Ñ¥½¸İ…ÌÉ•¡•­•‰•™½É”É•ÍÁ½¹‘¥¹œ¸ÕÀ)¥Ì„Í•Á…É…Ñ”‰½Õ¹‘•½ÁÑ¥µ¥é•ÈµÁ…Ñ ‘¥…¹½ÍÑ¥ŒèÉ•Á±…ä½¹±äÑ¡”‘•±…É•¸ôĞ°)8½¡½ÍĞôÄÀ½µÁ…ĞÍÑ…ÉĞ™½Èµ…Ñ¡•µ½‘Õ±•Ì½İ¥Ñ Ñ¡”¥‘•¹Ñ¥…°¥µ…”°)½‰©•Ñ¥Ù”°‰½Õ¹‘Ì°Í¥¹•AM°Ñ¡É•…½Õ¹Ğ…¹€ÄàÀµÍ•½¹…À¸½µÁ…É”%µ™¥ĞÌ)‘•™…Õ±Ğ1•Ù•¹‰•Éœ´µ5…ÉÅÕ…É‘Ğ……¥¹ÍĞ¥ÑÌµ…¥¹Ñ…¥¹•€´µ¹µ€9•±‘•È´µ5•…Í½±Ù•È°)É•½É‘¥¹œÑ¥µ•½ÕÑÌ…ÌÉ•ÍÕ±ÑÌ…¹É•½µÁÕÑ¥¹œÑ¡”½‰©•Ñ¥Ù”™½È™¥¹¥Ñ”½ÕÑÁÕÑÌ¸)Q¡¥Ì¥Ì¹½Ğ„Õ¼É•ÉÕ¸°É•½Ù•ÉäÑ½±•É…¹”½ÈÍÕ‰ÍÑ¥ÑÕÑ”Á…ÍÌ¸¥™™•É•¹Ñ¥…°)Ù½±ÕÑ¥½¸¥Ì‘•™•ÉÉ•‰•…ÕÍ”¥ÑÌÁ½ÁÕ±…Ñ¥½¸½ÍĞ¥Ìµ…Ñ•É¥…±±ä±…É•Èì¥Ğ)µ…ä‰”©ÕÍÑ¥™¥•½¹±ä…™Ñ•ÈÑ¡”‰½Õ¹‘•Á…Ñ¡Ì…É”É•Ù¥•İ•¸M•”)ÕA}AI=Q==0¹µ‘€¸¼¹½ĞÍÑ…ÉĞÑ¡”İÉ½¹œµAM™É•”µÍ¡…Á”…É´‰•™½É”…ÑÕ…°ÕÀ)…ÉÑ¥™…ÑÌ…É”…Õ‘¥Ñ•¸((ŒŒŒÕÀ…ÑÕ…°$…¹ÕÄ™É••é”ƒŠP€ÈÀÈØ´Àä´ÀĞUQ()IÕ¸€¨¨ÌÌàÈÌĞÀÔÜÌÌ¨¨…ĞˆÔØĞÑŒäÉ™„Å•™ŒÜÈÀÑÈØİ…‘ŒÀäàØÌÙ˜ĞÌİˆÉ€)•áÁ±¥¥Ñ±ä½µÁ±•Ñ•½ÍÕ•ÍÌ™½Èµ½‘Õ±•Ì…¹¸	½Ñ ÍÑÉ¥Ğ…Õ‘¥ÑÌİ•É”)É•ÉÕ¸½¸Ñ¡”‘½İ¹±½…‘•½É¥¥¹…°…ÉÑ¥™…ÑÌìi%@M!ÈÔØ…¹…ÉÑ¥™…Ğ%Ì…É”)É•½É‘•¥¸ŒÕÁ|ÌÌàÈÌĞÀÔÜÌÌ¹©Í½¹€¸5½‘Õ±”Ì14É•Á±…ä……¥¸É•…¡•Ñ¡”)Õ¹¡…¹•€ÄàÀµÍ•½¹…À…™Ñ•È€Ğäà±½•¥Ñ•É…Ñ¥½¹Ì¸9•±‘•È´µ5•…½µÁ±•Ñ•)¥¸€à¸ÈÄÍ•½¹‘Ì…Ğ¸ôÈ¸ÄÜÄ°I”ôä¸ĞÄĞ°ÄôÀ¸ØĞÈ…¹…¸MM€¨¨àä¸ÀĞÑ¥µ•Ì¨¨Ñ¡”)™¥¹¥Ñ”Õ¼Í½±ÕÑ¥½¸¸½Èµ½‘Õ±”°14½µÁ±•Ñ•¥¸€ÄÀ¸ÄÌÍ•½¹‘Ì…Ğ¸ôĞ¸ÈÈÜ°)I”ôÄØ¸ÄÌÀ°ÄôÀ¸Ôää°İ¡¥±”9•±‘•È´µ5•…½µÁ±•Ñ•¥¸€Ü¸àĞÍ•½¹‘Ì…Ğ¸ôÈ¸ĞĞØ°)I”ôä¸ÄÔĞ°ÄôÀ¸ØàÔ…¹…¸MM€¨¨ÌÈ¸ÄĞÑ¥µ•Ì¨¨İ½ÉÍ”¸9¼É•Á½ÉÑ•Í½±ÕÑ¥½¸¡¥Ğ)„‰½Õ¹¸%µ™¥ĞÌ™½Éµ…°µ½‘Õ±”µ14Õ¹•ÉÑ…¥¹Ñ¥•Ì…É”•áÑÉ•µ•±ä±…É”°İ¡¥ )¥ÌÉ•Ñ…¥¹•…Ì¥‘•¹Ñ¥™¥…‰¥±¥Ñä•Ù¥‘•¹”É…Ñ¡•ÈÑ¡…¸¥¹Ñ•ÉÁÉ•Ñ•…ÌÁÉ•¥Í¥½¸¸()ÕÀÑ¡•É•™½É”½¹™¥ÉµÌ„µ½‘Õ±”´…¹Í½±Ù•Èµ‘•Á•¹‘•¹Ğ±½…°µ‰…Í¥¸ÁÉ½‰±•´ì)…¸½ÁÑ¥µ¥é•ÈÍÕ•ÍÌ±…‰•°‘½•Ì¹½Ğ•ÍÑ…‰±¥Í É•½Ù•Éä¸	•™½É”…¹äAM)µ¥Íµ…Ñ °ÕÄ™É••é•ÌÑ¡”¡•­ÍÕ´µÁ¥¹¹•%µ™¥Ğ€´µ‘”µ±¡Í€±½‰…°Í½±Ù•Èİ¥Ñ )Ñİ¼‘•Ñ•Éµ¥¹¥ÍÑ¥ŒÍ••‘Ì½¸Ñ¡”•á…ĞÍ…µ”‘¥™™¥Õ±Ğ½¥¹ÁÕÑÌ°‰½Õ¹‘Ì°)½‰©•Ñ¥Ù”…¹€ÄàÀµÍ•½¹…À¸á¥ÍÑ¥¹œM¥Aäİ…Ì¹½ĞÍÕ‰ÍÑ¥ÑÕÑ•‰•…ÕÍ”)Ñ¡…Ğİ½Õ±¡…¹”Ñ¡”•¹¥¹”½½‰©•Ñ¥Ù”¥¹Ñ•É™…”°…¹Aå%µ™¥Ğİ½Õ±¹½Ğ…‘…¸)¥¹‘•Á•¹‘•¹Ğ•¹¥¹”¸Q¥µ•½ÕÑÌÉ•µ…¥¸É•ÍÕ±ÑÌì¹¼Á½ÍĞµ¡½Œ™¥Ğ‰…¹¥Ì…‘‘•¸)M•”ÕE}AI=Q==0¹µ‘€¸ÑÕ…°ÕÄ½ÕÑÁÕÑÌµÕÍĞ‰”É•Ù¥•İ•‰•™½É”ÁÉ½••‘¥¹œ¸((ŒŒŒÕÄ…ÑÕ…°$…¹ÕÈ™É••é”ƒŠP€ÈÀÈØ´Àä´ÀĞUQ()IÕ¸€¨¨ÌÌàÌÀØØÄØÔØ¨¨…Ğ)™˜ÌäÜÀÅ˜İ•ŒÕˆå˜ØäààÜÌÀØÑ‰àÕ‘„ÔÍ„ĞÄÜÔĞÑ€•áÁ±¥¥Ñ±ä½µÁ±•Ñ•½ÍÕ•ÍÌ™½È)‰½Ñ µ½‘Õ±•Ì¸Q¡”‘½İ¹±½…‘•…ÉÑ¥™…ÑÌ€¡%Ì€ääÈÄØàÜØÔä…¹€ääÈÄØàäÈää¤Á…ÍÍ•)Ñ¡•¥ÈÍÑÉ¥Ğ…Õ‘¥ÑÌ…¹Ñ¡•¥Èi%@¡…Í¡•Ì…É”É•½É‘•¥¸)ŒÕÅ|ÌÌàÌÀØØÄØÔØ¹©Í½¹€¸±°™½ÕÈµ1!LÁÉ½•ÍÍ•ÏŠQÑİ¼ÁÉ•‘•±…É•Í••‘Ì™½È)•… µ½‘Õ±—ŠQÉ•…¡•Ñ¡”Õ¹¡…¹•€ÄàÀµÍ•½¹…Àİ¥Ñ¡½ÕĞ½µÁ±•Ñ”™¥Ğ)ÁÉ½‘ÕÑÌ¸Q¡ÕÌÕÄ¥Ì„½µÁ±•Ñ”‘¥…¹½ÍÑ¥Œ•á•ÕÑ¥½¸‰ÕĞÁÉ½Ù¥‘•Ì¹¼™¥¹¥Ñ”)±½‰…°µÍ•…É Í½±ÕÑ¥½¸½È…É••µ•¹Ğ±…¥´¸Q¡”…À¥Ì¹½Ğ•áÁ…¹‘•¸()Õ¼´µÕÄ¹½Ü¡…É…Ñ•É¥é”Ñ¡”¹½µ¥¹…°µ…Ñ¡•µAMÁÉ½‰±•´…ÌÍÑ…ÉĞ´°Í½±Ù•È´)…¹µ½‘Õ±”µ‘•Á•¹‘•¹Ğè™¥¹¥Ñ”±½İ•Èµ½ÍĞ•áÑ•¹‘•µ¡½ÍĞÍ½±ÕÑ¥½¹Ì•á¥ÍĞ°‰ÕĞ)Ñ¡”½µÁ…Ğµ½‘Õ±”µ14Á…Ñ …¹…±°‰½Õ¹‘•Á½ÁÕ±…Ñ¥½¸Á…Ñ¡Ì™…¥°İ¥Ñ¡¥¸Ñ¡”)‘•±…É•É•Í½ÕÉ”•¹Ù•±½Á”¸Q¡¥Ì±¥µ¥Ñ…Ñ¥½¸¥ÌÍÕ™™¥¥•¹Ñ±ä•áÁ±¥¥ĞÑ¼…ÉÉä)™½Éİ…É…Ì…¸½‰Í•ÉÙ…‰±”ì¥Ğ¥Ì¹½Ğ½¹Ù•ÉÑ•¥¹Ñ¼„µ…Ñ¡•µAMÁ…ÍÌ¸()½±±½İ¥¹œi¡Õ…¹œ€˜M¡•¸ÌÁÕ‰±¥Í¡•ÁÉ•‘¥Ñ¥½¸Ñ¡…ĞAMµ¥Íµ…Ñ ¡…¹•Ì¡½ÍĞ)™±Õà…¹½¹•¹ÑÉ…Ñ¥½¸°ÕI}AI=Q==0¹µ‘€™É••é•ÌÑ¡”Í•Á…É…Ñ”İÉ½¹œµAM)™É•”µÍ¡…Á”‘¥…¹½ÍÑ¥Œ¸%Ğ•á¡…¹•Ì½AMÌ½¹±ä…Ğ¹½¥Í•±•ÍÌ8½¡½ÍĞôÄÀ°)É•ÕÍ•ÌÑ¡”•á…ĞÕ¼ÍÑ…ÉÑÌ°‰½Õ¹‘Ì°½‰©•Ñ¥Ù”…¹É•Í½ÕÉ”…À°…¹É•½É‘Ì)Ñ¥µ•½ÕÑÌ…¹‰½Õ¹‘…É¥•Ìİ¥Ñ¡½ÕĞÉ•ÅÕ¥É¥¹œ½¹Ù•É•¹”¸9½¥Í”É•µ…¥¹Ì…‰Í•¹Ğ¸)9¼É•½Ù•Éä‰…¹°É•¹‘•É•È¡…¹”½ÈÁ¡åÍ¥…°µAM±…¥´¥Ì¥¹ÑÉ½‘Õ•¸½±±½Ü)…Ñ”µŒµ…¸µ¥µ™¥ĞµİÉ½¹œµÁÍ˜µ™É•”µÍ¡…Á•€ìÉ•Ù¥•Ü¥ÑÌ…ÑÕ…°…ÉÑ¥™…ÑÌ‰•™½É”)¡½½Í¥¹œ„¹½¥Í”½Èµ½ÉÁ¡½±½ä…Ñ”¸((ŒŒŒÕÈ…ÑÕ…°$É•ÍÕ±Ğ…¹ÑÉ…¹Í¥Ñ¥½¸Ñ¼•İÍ¹…ÀƒŠP€ÈÀÈØ´Àä´ÀĞUQ()IÕ¸€¨¨ÌÌàĞÈÌĞÜÌÈà¨¨…Ğ)€å„äÉˆäÀàÔÑ‘…‘„ÄäĞÙŒäàØÀàå……ŒÄØÀÅ•Ù˜äàÉ€•áÁ±¥¥Ñ±ä½µÁ±•Ñ•½ÍÕ•ÍÌ™½È)‰½Ñ ¡½ÍĞµ¥¹‘•à©½‰Ì¸Q¡”½É¥¥¹…°‘½İ¹±½…‘•…ÉÑ¥™…ÑÌ€¡%Ì€ääÈÔØĞĞØäÜ…¹(ääÈÔÔÜÔÌàÈ¤Á…ÍÍ•Ñ¡•¥ÈÍÑÉ¥Ğ…Õ‘¥ÑÌìi%@M!ÈÔØ…¹…±°Í•±•Ñ•™¥ÑÌ…É”)É•½É‘•¥¸ŒÕÉ|ÌÌàĞÈÌĞÜÌÈà¹©Í½¹€¸É½ÍÌ€ÄÈ‘•±…É•ÍÑ…ÉÑÌ°Í¥à½µÁ±•Ñ•)İ¥Ñ ™¥¹¥Ñ”ÁÉ½‘ÕÑÌ…¹Í¥àÉ•…¡•Ñ¡”Õ¹¡…¹•€ÄàÀµÍ•½¹…À¸±°™½ÕÈ)µ¥¹¥µÕ´µ™¥¹¥Ñ”Í½±ÕÑ¥½¹Ì¡¥Ğ…Ğ±•…ÍĞ½¹”‰½Õ¹¸()Q¡”•™™•Ğ¥Ì‘¥É•Ñ¥½¹…°…¹…Ñ…ÍÑÉ½Á¡¥Œ™½Èµ½ÉÁ¡½±½äÉ•½Ù•Éä¸¥ÑÑ¥¹œ)µ½‘Õ±”µ‘…Ñ„İ¥Ñ µ½‘Õ±”ÌAM‘É½Ù”Ñ¡”Á½¥¹ĞµÍ½ÕÉ”™±ÕàÑ¼é•É¼…¹ÁÕĞ)…‰½ÕĞ€ÄÀ¸ÜÄØ€¡ÑÉÕ”¸ôÄ¤½È€ÄÀ¸àÄÄ€¡ÑÉÕ”¸ôĞ¤Ñ½Ñ…°™±Õà¥¹Ñ¼„ÍÕ‰Á¥á•°¡½ÍĞ)İ¥Ñ ¸ôÀ¸Ô…¹I”…‰½ÕĞ€À¸äÔÁ¥á•°¸%¸Ñ¡”É•Ù•ÉÍ”‘¥É•Ñ¥½¸Ñ¡”Í•±•Ñ•)¡½ÍÑÌ…±Í¼É•…¡•¸ôÀ¸Ô°İ¥Ñ ¡½ÍĞ™±Õà…‰½ÕĞ€À¸ääÈ…¹€À¸ØÜÌ…¹I”…‰½ÕĞ(È¸àà…¹€Ì¸ØĞÁ¥á•±Ì¸¥Ğ½µÁ±•Ñ¥½¸…¹±½İ•ÈMM‘¼¹½Ğµ…­”…¹ä½˜Ñ¡•Í”)‰½Õ¹‘…ÉäÍ½±ÕÑ¥½¹ÌÁ¡åÍ¥…°É•½Ù•Éä¸M¥¹••µÁ¥É¥…°İ¥¹ÌÉ•µ…¥¸)¹½¸µÁ¡½Ñ½¸µÉ•…‘ä¸()Q¡¥Ì±½Í•ÌÑ¡”½¹ÑÉ½±±•¹½¥Í•±•ÍÌi¡Õ…¹œ´µM¡•¸Í½Á”…Ì„‘½Õµ•¹Ñ•)™…¥±ÕÉ”½¹‘¥Ñ¥½¸¸‘‘¥¹œÑ…É•Ğ¹½¥Í”İ½Õ±½¹™½Õ¹„µ¥Íµ…Ñ Á…Ñ¡½±½ä)…±É•…‘äÁÉ•Í•¹Ğİ¥Ñ¡½ÕĞ¹½¥Í”°Í¼¥Ğ¥Ì¹½ĞÑ¡”¹•áĞ•áÁ•É¥µ•¹Ğ¸½±±½İ¥¹œ)Ñ¡”±¥Ñ•É…ÑÕÉ”½Í½™Ñİ…É”µ™¥ÉÍĞÉ•Ù¥•Ü°Ù„¥¹ÍÑ•…™É••é•ÌÍÑÉ½A¡½Ğ€À¸Äà¸À(¡Ñ…œ½µµ¥ĞˆÈÁŒäáˆÑ…‰„ÑˆäÜÀàäÌàØÄÁ”ØÅ…•ØÁ˜ÈÀÔØÈÁ€¤…ÌÑ¡”µ…¥¹Ñ…¥¹•°)½Á•¸µÍ½ÕÉ”É½ÍÌµ™¥ÑÑ•È…¹‘¥‘…Ñ”ÕÍ•‰ä•İÍ¹…À•Ğ…°¸1%P°Aå%µ™¥Ğ…¹)A•ÑÉ½¥Ğİ•É”½¹Í¥‘•É•‰ÕĞ‘¼¹½Ğ½™™•ÈÑ¡”Í…µ”½µ‰¥¹…Ñ¥½¸½˜¥¹‘•Á•¹‘•¹Ğ)•¹¥¹”°Í½ÕÉ”¥¹ÍÁ•Ñ…‰¥±¥Ñä…¹‘¥É•Ğ•İÍ¹…ÀÁÉ½Ù•¹…¹”¸Ù„™¥ÉÍĞ¡•­Ì)¥¹ÍÑ…±±…Ñ¥½¸°Í¥¹•µÍ…µÁ±”ÁÉ•Í•ÉÙ…Ñ¥½¸…¹Ñ¡”ØÀ¸Äà…á¥Ì½¹Ù•¹Ñ¥½¸ì¥Ğ¥Ì)¹½Ğå•Ğ„™¥ÑÑ¥¹œ½ÈÉ•½Ù•Éä±…¥´¸M•”‰•¹¡µ…É­Ì½‘•İÍ¹…Á|ÈÀÈÔ½Ù}AI=Q==0¹µ‘€¸
