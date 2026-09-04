@@ -5,8 +5,17 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import sys
 import numpy as np
 from astropy.io import fits
+
+# When this file is executed directly (``python scripts/...py``), Python puts
+# ``scripts/`` rather than the repository root on sys.path. Add the repository
+# root explicitly so the same import works both in CI execution and when the
+# module is imported by pytest. This changes no scientific settings.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from scripts import run_dewsnap_astrophot_common_scene as c6b
 
