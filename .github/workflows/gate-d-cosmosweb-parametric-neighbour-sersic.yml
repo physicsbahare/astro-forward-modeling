@@ -68,6 +68,8 @@ jobs:
             --out-json gate_d_parametric_neighbours/summary.json \
             | tee gate_d_parametric_neighbours/stdout.txt
           python -m pip freeze > gate_d_parametric_neighbours/pip-freeze.txt
+          echo '--- D1l summary.json ---'
+          cat gate_d_parametric_neighbours/summary.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
