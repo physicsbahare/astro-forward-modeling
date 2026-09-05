@@ -62,14 +62,16 @@ The papers are **sources of distinct scientific checks, not mini-products that m
 
 ## Gate D — real-survey injection
 
-**Status: active. Real COSMOS-Web L1 injection/recovery is established; scene-contamination modelling is the current unresolved diagnostic.**
+**Status: active. Real COSMOS-Web L1 injection/recovery is established; residual morphology failures now require PSF/effective-scene diagnostics rather than more segmentation tuning.**
 
 - [x] Acquire and checksum real COSMOS-Web DR1 JWST/NIRCam F444W 30-mas tile-A1 SCI/ERR/WHT data and create a finite 512x512 real cutout.
 - [x] Freeze real-context placement classes from the pre-injection scene and construct 18 L1 injections (9 locations x AB=26/29) while modifying SCI only. ERR/WHT remain unchanged; no extra background noise, source shot noise, or extra Tolman factor is added.
 - [x] Verify injected flux conservation and run forced-position morphology recovery on the literal real mosaic context. This is synthetic-source injection into **real survey context**, not literal reproduction of real COSMOS-Web sources; the declared STPSF is not claimed to be the exact effective survey PSF.
 - [x] Run the paired-difference identifiability control (`injected - SCI_ORIG`), which recovers the injected target essentially exactly and isolates real-scene contamination/deblending as the dominant failure source.
 - [x] Preserve D1g-D1k neighbour masking/template/deblending diagnostics. None provides a coherent global solution. D1k remains 13/18 target-bound-hit fits and does not improve both AB=26 near-source and intermediate regimes; see `benchmarks/gate_d/COSMOSWEB_D1_DEBLENDED_NEIGHBOUR_TEMPLATES_RESULT.md`.
-- [ ] **D1l limited simultaneous parametric-neighbour Sérsic diagnostic.** Reuse D1k's frozen deblending, model at most the three nearest children with free PSF-convolved Sérsic nuisance morphology, mask only exact support for remaining children, and keep the target fit/bounds unchanged; see `benchmarks/gate_d/COSMOSWEB_D1_PARAMETRIC_NEIGHBOUR_SERSIC_PROTOCOL.md`.
+- [x] **D1l limited simultaneous parametric-neighbour Sérsic diagnostic.** D1l reduces target-bound-hit fits to 10/18 (AB=26: 2/9; AB=29: 8/9) and improves median AB=26 recovery in both crowded classes, but retains catastrophic interior failures; see `benchmarks/gate_d/COSMOSWEB_D1_PARAMETRIC_NEIGHBOUR_SERSIC_RESULT.md`.
+- [x] **D1m pre-injection fitted/frozen-neighbour diagnostic.** Fit the selected nuisance scene once on `SCI_ORIG`, freeze neighbour Sérsic parameters, and recover the injected target with target bounds/objective unchanged. AB=26 target-bound hits fall to 0/9, showing that target-neighbour parameter competition is important, but two catastrophic AB=26 interior failures remain; AB=29 still has 7/9 target-bound hits. This is an injection-only diagnostic control, not a production method; see `benchmarks/gate_d/COSMOSWEB_D1_FROZEN_PREFIT_NEIGHBOUR_SCENE_RESULT.md`.
+- [ ] **D1n PSF/effective-PSF realism diagnostic.** Before implementation, freeze a minimal protocol that compares the currently declared single-position STPSF with a position/effective-PSF treatment appropriate to the real mosaic, preserving D1m scene/target bounds and testing only a minimal failure/control subset. Do not interpret an empirical ePSF as automatic ground truth and do not construct sharpening kernels.
 - [ ] Quantify the L1 source-shot-noise/covariance approximation as a separately declared experiment.
 - [ ] Design the L2 exposure-injection adapter and compare L1 versus L2 on a small controlled sample.
 
