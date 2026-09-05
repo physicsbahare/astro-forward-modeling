@@ -3,6 +3,12 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+# The general verification suite intentionally keeps heavyweight astronomy
+# dependencies optional. Mirror the other Gate-D tests: if astropy is absent,
+# skip this module there; the dedicated real-injection workflow installs
+# astropy explicitly and therefore exercises these tests rather than skipping.
+astropy = pytest.importorskip("astropy")
+
 SCRIPT = Path(__file__).parents[1] / "scripts" / "run_gate_d_cosmosweb_real_injection.py"
 spec = importlib.util.spec_from_file_location("gate_d_real_injection", SCRIPT)
 mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
