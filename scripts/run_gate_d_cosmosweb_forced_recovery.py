@@ -34,9 +34,12 @@ def _render(theta, psf, scale, base_amp):
     return src + b0 + bx * xx + by * yy
 
 
-def fit_one(image, err, x, y, psf, pixar_sr):
+def fit_one(image, err, x, y, psf, pixar_sr, exclude_mask=None):
     data = _crop(image, x, y); sigma = _crop(err, x, y)
     valid = np.isfinite(data) & np.isfinite(sigma) & (sigma > 0)
+    if exclude_mask is not None:
+        excluded = _crop(np.asarray(exclude_mask, dtype=bool), x, y).astype(bool)
+        valid &= ~excluded
     if valid.sum() < 0.8 * data.size:
         return {"optimizer_success": False, "reason": "insufficient_valid_weight_pixels", "valid_fraction": float(valid.mean())}
     base_flux_jy = inj.ab_to_jy(27.5)
