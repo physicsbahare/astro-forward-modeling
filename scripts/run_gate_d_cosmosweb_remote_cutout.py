@@ -21,7 +21,7 @@ PRODUCTS = {
     ext.upper(): f"{BASE}/mosaic_nircam_f444w_COSMOS-Web_30mas_A1_v1.0_{ext}.fits.gz"
     for ext in ("sci", "err", "wht")
 }
-USER_AGENT = "astro-forward-modeling-gate-d1b/0.1"
+USER_AGENT = "astro-forward-modeling-gate-d1b/0.2"
 
 
 def sha256(path: Path) -> str:
@@ -42,9 +42,30 @@ def image_header(path: Path):
     raise ValueError(f"no 2-D image HDU found in {path}")
 
 
+def _celestial_wcs(header: fits.Header):
+    """Return a usable 2-D celestial WCS, or None when no celestial WCS is declared."""
+    w = WCS(header)
+    if w.has_celestial:
+        c = w.celestial
+        if c.pixel_n_dim != 2 or c.world_n_dim != 2:
+            raise ValueError(
+                f"declared celestial WCS has unexpected dimensions pixel={c.pixel_n_dim} world={c.world_n_dim}"
+            )
+        return c
+    # A header that tries to declare RA/DEC but is not parseable as celestial is malformed,
+    # not an ancillary plane with intentionally omitted WCS.
+    ctypes = [str(header.get("CTYPE1", "")).upper(), str(header.get("CTYPE2", "")).upper()]
+    if any(("RA" in c or "DEC" in c) for c in ctypes):
+        raise ValueError(f"malformed celestial WCS declaration: CTYPE={ctypes}")
+    return None
+
+
 def section_from_sci_header(header: fits.Header, ra: float, dec: float, size: int):
     center = SkyCoord(ra=ra * u.deg, dec=dec * u.deg, frame="icrs")
-    x, y = WCS(header).celestial.world_to_pixel(center)
+    sci_wcs = _celestial_wcs(header)
+    if sci_wcs is None:
+        raise ValueError("SCI header has no celestial WCS")
+    x, y = sci_wcs.world_to_pixel(center)
     if not (np.isfinite(x) and np.isfinite(y)):
         raise ValueError("non-finite SCI WCS coordinate")
     ny, nx = int(header["NAXIS2"]), int(header["NAXIS1"])
@@ -64,18 +85,42 @@ def section_from_sci_header(header: fits.Header, ra: float, dec: float, size: in
 
 def verify_header_against_sci(name: str, header: fits.Header, sci_header: fits.Header,
                               ra: float, dec: float):
+    """Verify ancillary-plane geometry without pretending absent WCS was measured.
+
+    When an ancillary plane carries celestial WCS, enforce the frozen <=0.05 pixel
+    agreement exactly.  When it carries no celestial WCS at all, accept only exact
+    image-shape agreement and record that alignment is inferred from the official
+    COSMOS-Web co-grid product provenance plus use of the identical pixel section.
+    A malformed or conflicting celestial WCS remains a hard failure.
+    """
     shape = [int(header["NAXIS2"]), int(header["NAXIS1"])]
     sci_shape = [int(sci_header["NAXIS2"]), int(sci_header["NAXIS1"])]
     if shape != sci_shape:
         raise ValueError(f"{name} image shape {shape} differs from SCI {sci_shape}")
     center = SkyCoord(ra=ra * u.deg, dec=dec * u.deg, frame="icrs")
-    sx, sy = WCS(sci_header).celestial.world_to_pixel(center)
-    x, y = WCS(header).celestial.world_to_pixel(center)
+    sci_wcs = _celestial_wcs(sci_header)
+    if sci_wcs is None:
+        raise ValueError("SCI header has no celestial WCS")
+    sx, sy = sci_wcs.world_to_pixel(center)
+    anc_wcs = _celestial_wcs(header)
+    if anc_wcs is None:
+        return {
+            "wcs_status": "absent",
+            "alignment_mode": "exact-shape + official-COSMOS-Web-co-grid provenance + identical pixel section",
+            "center_pixel_xy_zero_based": None,
+            "sci_center_pixel_xy_zero_based": [float(sx), float(sy)],
+        }
+    x, y = anc_wcs.world_to_pixel(center)
     if not (np.isfinite(x) and np.isfinite(y)):
         raise ValueError(f"non-finite WCS coordinate for {name}")
     if abs(x - sx) > 0.05 or abs(y - sy) > 0.05:
         raise ValueError(f"{name} WCS differs from SCI by >0.05 pixel")
-    return [float(x), float(y)]
+    return {
+        "wcs_status": "present",
+        "alignment_mode": "independent celestial-WCS agreement <=0.05 pixel",
+        "center_pixel_xy_zero_based": [float(x), float(y)],
+        "sci_center_pixel_xy_zero_based": [float(sx), float(sy)],
+    }
 
 
 def download(url: str, dest: Path):
@@ -106,22 +151,44 @@ def extract_section(src: Path, hdu_index: int, section: list[int], dest: Path):
     subprocess.run(["fitscopy", spec, str(dest)], check=True)
 
 
+def _copy_sci_wcs_if_absent(name: str, header: fits.Header, sci_header: fits.Header):
+    """Propagate SCI cutout WCS metadata only when an ancillary cutout has none."""
+    if name == "SCI":
+        return header.copy(), "native"
+    anc = _celestial_wcs(header)
+    if anc is not None:
+        return header.copy(), "native"
+    sci_wcs = _celestial_wcs(sci_header)
+    if sci_wcs is None:
+        raise ValueError("cannot propagate missing SCI celestial WCS")
+    out = header.copy()
+    for key, value in sci_wcs.to_header(relax=True).items():
+        out[key] = value
+    out["HISTORY"] = "Celestial WCS propagated from co-grid SCI cutout; pixel data unchanged."
+    return out, "propagated-from-SCI-co-grid"
+
+
 def package_cutouts(parts: dict[str, Path], out_fits: Path):
     arrays = {}
-    headers = {}
+    native_headers = {}
     for name, path in parts.items():
         with fits.open(path, memmap=True) as hdul:
             hdu = next(h for h in hdul if getattr(h, "data", None) is not None and np.ndim(h.data) == 2)
             arrays[name] = np.array(hdu.data, copy=True)
-            headers[name] = hdu.header.copy()
+            native_headers[name] = hdu.header.copy()
     shapes = {a.shape for a in arrays.values()}
     if len(shapes) != 1:
         raise ValueError(f"extracted SCI/ERR/WHT shapes differ: {shapes}")
+    sci_header = native_headers["SCI"]
+    headers = {}
+    wcs_origin = {}
+    for name in ("SCI", "ERR", "WHT"):
+        headers[name], wcs_origin[name] = _copy_sci_wcs_if_absent(name, native_headers[name], sci_header)
     hdus = [fits.PrimaryHDU()]
     for name in ("SCI", "ERR", "WHT"):
         hdus.append(fits.ImageHDU(data=arrays[name], header=headers[name], name=name))
     fits.HDUList(hdus).writeto(out_fits, overwrite=True, checksum=True)
-    return arrays, headers
+    return arrays, headers, wcs_origin
 
 
 def make_preview(sci: np.ndarray, out_png: Path):
@@ -150,7 +217,6 @@ def run(out: Path, ra: float, dec: float, size: int):
     provenance = {}
     parts = {}
 
-    # Download SCI first, freeze the section from its WCS, extract, then delete.
     sci_gz = work / "SCI.fits.gz"
     download(PRODUCTS["SCI"], sci_gz)
     sci_hdu, sci_header = image_header(sci_gz)
@@ -159,6 +225,8 @@ def run(out: Path, ra: float, dec: float, size: int):
         "url": PRODUCTS["SCI"], "remote_head": remote_meta["SCI"],
         "compressed_size_bytes": sci_gz.stat().st_size,
         "compressed_sha256": sha256(sci_gz), "source_image_hdu": sci_hdu,
+        "wcs_status": "present",
+        "alignment_mode": "authoritative SCI celestial WCS",
         "center_pixel_xy_zero_based": section["sci_center_pixel_xy_zero_based"],
     }
     sci_part = work / "SCI_cutout.fits"
@@ -166,18 +234,16 @@ def run(out: Path, ra: float, dec: float, size: int):
     parts["SCI"] = sci_part
     sci_gz.unlink()
 
-    # ERR/WHT are each downloaded, verified against the frozen SCI geometry,
-    # extracted using exactly the same section, and immediately deleted.
     for name in ("ERR", "WHT"):
         src = work / f"{name}.fits.gz"
         download(PRODUCTS[name], src)
         idx, hdr = image_header(src)
-        center_xy = verify_header_against_sci(name, hdr, sci_header, ra, dec)
+        geometry = verify_header_against_sci(name, hdr, sci_header, ra, dec)
         provenance[name] = {
             "url": PRODUCTS[name], "remote_head": remote_meta[name],
             "compressed_size_bytes": src.stat().st_size,
             "compressed_sha256": sha256(src), "source_image_hdu": idx,
-            "center_pixel_xy_zero_based": center_xy,
+            **geometry,
         }
         part = work / f"{name}_cutout.fits"
         extract_section(src, idx, section["cfitsio_section_one_based"], part)
@@ -185,11 +251,14 @@ def run(out: Path, ra: float, dec: float, size: int):
         src.unlink()
 
     bundle = out / "cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits"
-    arrays, cut_headers = package_cutouts(parts, bundle)
+    arrays, cut_headers, cutout_wcs_origin = package_cutouts(parts, bundle)
     center = SkyCoord(ra=ra * u.deg, dec=dec * u.deg, frame="icrs")
     cut_pix = {}
     for name, hdr in cut_headers.items():
-        x, y = WCS(hdr).celestial.world_to_pixel(center)
+        w = _celestial_wcs(hdr)
+        if w is None:
+            raise ValueError(f"packaged {name} has no celestial WCS")
+        x, y = w.world_to_pixel(center)
         cut_pix[name] = [float(x), float(y)]
     sx, sy = cut_pix["SCI"]
     for name, (x, y) in cut_pix.items():
@@ -218,11 +287,14 @@ def run(out: Path, ra: float, dec: float, size: int):
         "catalog_anchor": {"catalog": "COSMOS2025", "id": 4204},
         "center_icrs_deg": {"ra": ra, "dec": dec}, "size_pixels": size,
         "section": section, "sources": provenance,
-        "cutout_center_pixel_xy_zero_based": cut_pix, "diagnostics": diagnostics,
+        "cutout_center_pixel_xy_zero_based": cut_pix,
+        "cutout_wcs_origin": cutout_wcs_origin,
+        "diagnostics": diagnostics,
         "bundle": {"path": bundle.name, "sha256": sha256(bundle), "size_bytes": bundle.stat().st_size},
         "preview": preview.name,
         "injection_performed": False, "recovery_performed": False,
         "noise_added": False, "err_wht_modified": False, "psf_operation_performed": False,
+        "ancillary_wcs_metadata_only_propagation_allowed": True,
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
     shutil.rmtree(work)

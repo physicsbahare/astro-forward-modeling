@@ -24,6 +24,12 @@ def header(nx=1000, ny=900, dx=0.0):
     return h
 
 
+def ancillary_without_wcs(nx=1000, ny=900):
+    h = fits.Header()
+    h["NAXIS"] = 2; h["NAXIS1"] = nx; h["NAXIS2"] = ny
+    return h
+
+
 def test_section_is_strict_and_exact_size():
     h = header()
     s = mod.section_from_sci_header(h, 149.86715, 2.129401, 512)
@@ -35,12 +41,39 @@ def test_section_is_strict_and_exact_size():
 
 def test_err_wht_geometry_match_and_mismatch():
     sci = header()
-    xy = mod.verify_header_against_sci("ERR", header(dx=0.02), sci, 149.86715, 2.129401)
-    assert len(xy) == 2
+    result = mod.verify_header_against_sci("ERR", header(dx=0.02), sci, 149.86715, 2.129401)
+    assert result["wcs_status"] == "present"
+    assert result["alignment_mode"].endswith("<=0.05 pixel")
     with pytest.raises(ValueError, match=">0.05 pixel"):
         mod.verify_header_against_sci("WHT", header(dx=0.2), sci, 149.86715, 2.129401)
 
 
-def test_shape_mismatch_fails():
+def test_missing_ancillary_wcs_uses_explicit_cogrid_provenance_not_fake_coordinate():
+    result = mod.verify_header_against_sci(
+        "ERR", ancillary_without_wcs(), header(), 149.86715, 2.129401
+    )
+    assert result["wcs_status"] == "absent"
+    assert "official-COSMOS-Web-co-grid" in result["alignment_mode"]
+    assert result["center_pixel_xy_zero_based"] is None
+
+
+def test_malformed_declared_celestial_wcs_fails():
+    bad = ancillary_without_wcs()
+    bad["CTYPE1"] = "RA---TAN"
+    bad["CTYPE2"] = "LINEAR"
+    with pytest.raises(ValueError, match="malformed celestial WCS"):
+        mod.verify_header_against_sci("ERR", bad, header(), 149.86715, 2.129401)
+
+
+def test_shape_mismatch_fails_even_when_ancillary_wcs_missing():
     with pytest.raises(ValueError, match="shape"):
-        mod.verify_header_against_sci("ERR", header(nx=999), header(), 149.86715, 2.129401)
+        mod.verify_header_against_sci("ERR", ancillary_without_wcs(nx=999), header(), 149.86715, 2.129401)
+
+
+def test_wcs_metadata_propagation_does_not_change_pixel_grid_semantics():
+    sci = header(nx=32, ny=32)
+    anc = ancillary_without_wcs(nx=32, ny=32)
+    out, origin = mod._copy_sci_wcs_if_absent("ERR", anc, sci)
+    assert origin == "propagated-from-SCI-co-grid"
+    assert mod._celestial_wcs(out) is not None
+    assert out["NAXIS1"] == 32 and out["NAXIS2"] == 32
