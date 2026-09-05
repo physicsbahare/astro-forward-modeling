@@ -1,5 +1,7 @@
 # Gate D1n-b — empirical point-source / effective-PSF support audit
 
+Protocol version: `D1n-b-v1` (frozen before execution).
+
 ## Purpose
 
 D1n-a showed that the ideal STPSF F444W shape changes across the frozen NIRCam detector-field bracket, but only modestly. D1n-b asks a different question: **does the literal frozen COSMOS-Web F444W mosaic cutout contain enough compact, isolated, high-S/N point-source-like support to diagnose the local/effective mosaic PSF, and if so how different is that support from the single declared STPSF used by D1d–D1m?**
