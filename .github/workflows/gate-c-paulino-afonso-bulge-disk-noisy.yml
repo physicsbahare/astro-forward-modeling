@@ -1,0 +1,43 @@
+name: gate-c-paulino-afonso-bulge-disk-noisy
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'scripts/run_paulino_afonso_bulge_disk_noisy_ensemble.py'
+      - 'scripts/run_paulino_afonso_bulge_disk_model_mismatch.py'
+      - 'scripts/run_paulino_afonso_full_chain_califa.py'
+      - 'verification/paulino_afonso_sersic_floor.py'
+      - '.github/workflows/gate-c-paulino-afonso-bulge-disk-noisy.yml'
+  workflow_dispatch:
+
+jobs:
+  bulge-disk-noisy-ensemble:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) && !(github.event_name == 'push' && github.ref == 'refs/heads/verification-v0.1' && github.event.before == '88f3fb646a0b89e6cb9b8b8ee1aacae377edca56' && contains(github.event.head_commit.message, '[C5e isolated]')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        z_target: ['0.40', '0.84', '1.47', '2.23']
+        realization: [0, 1, 2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install verification harness
+        run: python -m pip install -e '.[test]'
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-paulino-afonso-bulge-disk-noisy-pip-freeze.txt
+      - name: Recover single-Sersic morphology from noisy bulge-disk composites
+        run: python scripts/run_paulino_afonso_bulge_disk_noisy_ensemble.py --z-target ${{ matrix.z_target }} --realization ${{ matrix.realization }}
+      - name: Upload noisy bulge-disk metrics and provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-paulino-afonso-bulge-disk-noisy-z-${{ matrix.z_target }}-r-${{ matrix.realization }}
+          path: |
+            gate-c-paulino-afonso-bulge-disk-noisy-pip-freeze.txt
+            benchmark_output/paulino_afonso_2017/bulge_disk_noisy_ensemble/

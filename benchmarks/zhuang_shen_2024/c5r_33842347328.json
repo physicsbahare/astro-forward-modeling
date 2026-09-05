@@ -1,0 +1,17 @@
+{
+  "run_id": 33842347328,
+  "commit": "9a92b90854dada1946c986089aac1601ed6f982c",
+  "github_conclusion": "success",
+  "artifacts": {
+    "n1": {"artifact_id": 9925644697, "zip_sha256": "85b454ea390c7aa9913647f06af1fcef6c230bd00397d4260f5d88dda6291633"},
+    "n4": {"artifact_id": 9925575382, "zip_sha256": "30ee677a54dd2e8056700ab9f9bee1a758a452ebc4a10deeef3a74e626e3ddc8"}
+  },
+  "counts": {"attempts": 12, "finite": 6, "timeouts": 6, "selected_solutions": 4, "selected_with_bounds": 4, "image_arrays": 24},
+  "selected": [
+    {"case": "n1_truthA_fitB_ratio10", "start": "extended", "n": 0.5, "re": 0.955328, "q": 0.625221, "point_flux": 0.0, "host_flux": 10.7162, "sse": 0.009967161338144924, "bound_hits": ["n", "point_flux"]},
+    {"case": "n1_truthB_fitA_ratio10", "start": "extended", "n": 0.5, "re": 2.88493, "q": 0.386991, "point_flux": 9.25014, "host_flux": 0.991703, "sse": 0.021938287641884054, "bound_hits": ["n"]},
+    {"case": "n4_truthA_fitB_ratio10", "start": "compact", "n": 0.5, "re": 0.949765, "q": 0.634226, "point_flux": 0.0, "host_flux": 10.8111, "sse": 0.009839654104364066, "bound_hits": ["n", "point_flux"]},
+    {"case": "n4_truthB_fitA_ratio10", "start": "extended", "n": 0.5, "re": 3.63765, "q": 0.331922, "point_flux": 9.6297, "host_flux": 0.673421, "sse": 0.02223604124396835, "bound_hits": ["n"]}
+  ],
+  "interpretation": "Both jobs and strict audits passed as diagnostic executions. The directional, boundary-limited flux transfer is catastrophic morphology-recovery failure under these noiseless signed empirical PSF exchanges, not physical recovery or a basis for introducing target noise."
+}

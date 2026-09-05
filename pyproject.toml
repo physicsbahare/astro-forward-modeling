@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forward-modeling-verification"
+version = "0.1.0"
+description = "Independent pre-implementation verification harness for a general astronomical survey-transfer framework."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "matplotlib>=3.8",
+  "astropy==8.0.1",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8",
+  "photutils==3.0.0",
+  "scikit-image==0.25.2",
+]
+tutorial = ["pandas>=2", "jupyter>=1"]
+
+[tool.setuptools]
+packages = ["verification"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]

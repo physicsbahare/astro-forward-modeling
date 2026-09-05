@@ -1,0 +1,67 @@
+{
+  "record_kind": "infrastructure_failure_and_separate_repair",
+  "observed_date_utc": "2026-09-03",
+  "failed_run": {
+    "id": 33727184271,
+    "commit": "b23d2a21f1d6cb2823b1adb44c04e9a14b55fac7",
+    "status": "completed",
+    "conclusion": "failure",
+    "jobs": [],
+    "workflow": ".github/workflows/gate-b-jwst-pipeline.yml",
+    "annotation": "Unrecognized named-value: 'runner'. Located at position 1 within expression: runner.temp",
+    "annotation_line": 28,
+    "url": "https://github.com/physicsbahare/astro-forward-modeling/actions/runs/33727184271"
+  },
+  "same_failure_on_parent": {
+    "id": 33717897774,
+    "commit": "88f3fb646a0b89e6cb9b8b8ee1aacae377edca56",
+    "status": "completed",
+    "conclusion": "failure",
+    "annotation_line": 25,
+    "url": "https://github.com/physicsbahare/astro-forward-modeling/actions/runs/33717897774"
+  },
+  "source_policy": {
+    "reuse": "authors' actionlint release; no custom expression parser",
+    "sources": [
+      "https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#context-availability",
+      "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#setting-an-environment-variable",
+      "https://github.com/rhysd/actionlint/releases/tag/v1.7.12",
+      "https://github.com/rhysd/actionlint/blob/v1.7.12/docs/usage.md",
+      "https://github.com/rhysd/actionlint/blob/v1.7.12/LICENSE.txt"
+    ]
+  },
+  "local_validator": {
+    "name": "actionlint",
+    "version": "1.7.12",
+    "license": "MIT",
+    "platform": "linux/amd64",
+    "archive_sha256": "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8",
+    "checksum_verified_against_authors_release": true,
+    "workflow_count": 48,
+    "before_errors": 1,
+    "before_kind": "expression",
+    "before_context": "runner",
+    "after_errors": 0,
+    "after_exit_code": 0,
+    "shellcheck_pyflakes_integrations": false,
+    "suppressed_expression_errors": []
+  },
+  "repair": {
+    "cache_path_intent_unchanged": "$RUNNER_TEMP/crds-cache",
+    "mechanism": "runner-step printf to GITHUB_ENV before calibration imports",
+    "crds_context_unchanged": "jwst_1584.pmap",
+    "scientific_commands_bounds_pins_unchanged": true,
+    "new_ci_check": "checksum-pinned actionlint on ordinary Python-3.12 regression arm",
+    "ordinary_local_tests_passed": 85,
+    "calibration_ci_success_claimed": false
+  },
+  "active_science_run_unchanged": {
+    "id": 33727185586,
+    "commit": "b23d2a21f1d6cb2823b1adb44c04e9a14b55fac7",
+    "workflow": "gate-c-agn-empirical-psf-phase",
+    "last_observed_status": "queued",
+    "conclusion": null,
+    "duplicate_dispatch_authorized": false,
+    "url": "https://github.com/physicsbahare/astro-forward-modeling/actions/runs/33727185586"
+  }
+}

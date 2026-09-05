@@ -1,0 +1,93 @@
+name: gate-c-yu-2023-stpsf-asymmetry
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "scripts/run_yu_2023_stpsf_psf_asymmetry.py"
+      - "scripts/run_yu_2023_stpsf_psf_asymmetry_support_corrected.py"
+      - "scripts/run_yu_2023_noisy_resolvedness_support_corrected.py"
+      - "scripts/run_yu_2023_psf_only_resolvedness.py"
+      - "verification/yu_2023.py"
+      - "tests/test_yu_2023.py"
+      - "benchmarks/yu_2023/REVIEW.md"
+      - "requirements-crosscode-jwst-stpsf.txt"
+      - ".github/workflows/gate-c-yu-2023-stpsf-asymmetry.yml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths:
+      - "scripts/run_yu_2023_stpsf_psf_asymmetry.py"
+      - "scripts/run_yu_2023_stpsf_psf_asymmetry_support_corrected.py"
+      - "scripts/run_yu_2023_noisy_resolvedness_support_corrected.py"
+      - "scripts/run_yu_2023_psf_only_resolvedness.py"
+      - "verification/yu_2023.py"
+      - "tests/test_yu_2023.py"
+      - "benchmarks/yu_2023/REVIEW.md"
+      - "requirements-crosscode-jwst-stpsf.txt"
+      - ".github/workflows/gate-c-yu-2023-stpsf-asymmetry.yml"
+  workflow_dispatch:
+
+jobs:
+  yu-2023-stpsf-asymmetry:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) && !(github.event_name == 'push' && github.ref == 'refs/heads/verification-v0.1' && github.event.before == '88f3fb646a0b89e6cb9b8b8ee1aacae377edca56' && contains(github.event.head_commit.message, '[C5e isolated]')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      STPSF_DATA_VERSION: "2.2.0"
+      STPSF_DATA_URL: https://stsci.box.com/shared/static/mjst9j056ibf2uph4gxy8qxmi89tjzwk.gz
+      STPSF_DATA_SHA256: bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Install pinned STPSF environment
+        run: python -m pip install -r requirements-crosscode-jwst-stpsf.txt
+
+      - name: Download and verify exact STPSF reference-data bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/stpsf-data-${STPSF_DATA_VERSION}.tar.gz"
+          root="$RUNNER_TEMP/stpsf-reference"
+          mkdir -p "$root"
+          curl --fail --location --retry 5 --retry-delay 2 "$STPSF_DATA_URL" -o "$archive"
+          printf '%s  %s\n' "$STPSF_DATA_SHA256" "$archive" | sha256sum --check --strict
+          sha256sum "$archive" | tee stpsf-data-${STPSF_DATA_VERSION}.sha256
+          tar -xzf "$archive" -C "$root"
+          data_dir="$(dirname "$(find "$root" -type f -name version.txt -print -quit)")"
+          test -n "$data_dir"
+          test "$(cat "$data_dir/version.txt")" = "$STPSF_DATA_VERSION"
+          echo "STPSF_PATH=$data_dir" >> "$GITHUB_ENV"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-yu-2023-stpsf-asymmetry-pip-freeze.txt
+
+      - name: Test frozen Yu definitions
+        run: pytest -q tests/test_yu_2023.py
+
+      - name: Run support-corrected noiseless STPSF asymmetry diagnostic
+        run: python scripts/run_yu_2023_stpsf_psf_asymmetry_support_corrected.py
+
+      - name: Upload metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-yu-2023-stpsf-asymmetry
+          path: |
+            gate-c-yu-2023-stpsf-asymmetry-pip-freeze.txt
+            stpsf-data-2.2.0.sha256
+            benchmark_output/yu_2023/stpsf_psf_asymmetry_support_corrected/
+          if-no-files-found: warn

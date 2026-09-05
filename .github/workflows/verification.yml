@@ -1,0 +1,49 @@
+name: verification-suite
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+
+jobs:
+  independent-verification:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate workflow expressions with pinned actionlint
+        if: matrix.python-version == '3.12'
+        shell: bash
+        run: |
+          set -euo pipefail
+          lint_dir="$RUNNER_TEMP/actionlint-1.7.12"
+          mkdir -p "$lint_dir"
+          curl --fail --location --retry 2 --max-time 90 \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz \
+            --output "$lint_dir/actionlint.tar.gz"
+          printf '8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  %s\n' \
+            "$lint_dir/actionlint.tar.gz" | sha256sum --check -
+          tar --no-same-owner -xzf "$lint_dir/actionlint.tar.gz" -C "$lint_dir" actionlint LICENSE.txt
+          "$lint_dir/actionlint" -version
+          "$lint_dir/actionlint" -shellcheck= -pyflakes= .github/workflows/*.yml
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install verification harness and tests
+        run: python -m pip install -e ".[test]"
+      - name: Show resolved package versions
+        run: python -m pip freeze
+      - name: Run scientific regression tests
+        run: pytest -q

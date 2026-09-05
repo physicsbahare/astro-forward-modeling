@@ -1,0 +1,59 @@
+name: gate-c-yu-2023-noisy-support-corrected
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "verification/yu_2023.py"
+      - "tests/test_yu_2023.py"
+      - "tests/test_yu_2023_noise.py"
+      - "scripts/run_yu_2023_psf_only_resolvedness.py"
+      - "scripts/run_yu_2023_noisy_resolvedness.py"
+      - "scripts/run_yu_2023_noisy_resolvedness_support_corrected.py"
+      - ".github/workflows/gate-c-yu-2023-noisy-support-corrected.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  yu-2023-noisy-support-corrected:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) && !(github.event_name == 'push' && github.ref == 'refs/heads/verification-v0.1' && github.event.before == '88f3fb646a0b89e6cb9b8b8ee1aacae377edca56' && contains(github.event.head_commit.message, '[C5e isolated]')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        snr: [10, 30, 100]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-yu-2023-noisy-support-corrected-pip-freeze.txt
+
+      - name: Test frozen Yu definitions and Eq. 28
+        run: pytest -q tests/test_yu_2023.py tests/test_yu_2023_noise.py
+
+      - name: Run support-corrected noisy resolvedness shard
+        run: >-
+          python scripts/run_yu_2023_noisy_resolvedness_support_corrected.py
+          --aperture-snr ${{ matrix.snr }}
+
+      - name: Upload support-corrected metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-yu-2023-noisy-support-corrected-snr-${{ matrix.snr }}
+          path: |
+            gate-c-yu-2023-noisy-support-corrected-pip-freeze.txt
+            benchmark_output/yu_2023/noisy_resolvedness_support_corrected/snr_${{ matrix.snr }}/

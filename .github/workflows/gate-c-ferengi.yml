@@ -1,0 +1,77 @@
+name: gate-c-ferengi
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "verification/ferengi_synthetic.py"
+      - "verification/ferengi_noise_benchmark.py"
+      - "verification/target_noise.py"
+      - "tests/test_ferengi_synthetic.py"
+      - "tests/test_ferengi_noise_benchmark.py"
+      - "tests/test_target_noise.py"
+      - "scripts/run_ferengi_synthetic_benchmark.py"
+      - "scripts/run_ferengi_noise_benchmark.py"
+      - ".github/workflows/gate-c-ferengi.yml"
+      - "pyproject.toml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths:
+      - "verification/ferengi_synthetic.py"
+      - "verification/ferengi_noise_benchmark.py"
+      - "verification/target_noise.py"
+      - "tests/test_ferengi_synthetic.py"
+      - "tests/test_ferengi_noise_benchmark.py"
+      - "tests/test_target_noise.py"
+      - "scripts/run_ferengi_synthetic_benchmark.py"
+      - "scripts/run_ferengi_noise_benchmark.py"
+      - ".github/workflows/gate-c-ferengi.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  synthetic-observation-only:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) && !(github.event_name == 'push' && github.ref == 'refs/heads/verification-v0.1' && github.event.before == '88f3fb646a0b89e6cb9b8b8ee1aacae377edca56' && contains(github.event.head_commit.message, '[C5e isolated]')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-ferengi-pip-freeze.txt
+
+      - name: Run deterministic FERENGI regression tests
+        run: pytest -q tests/test_ferengi_synthetic.py
+
+      - name: Generate deterministic FERENGI benchmark metrics
+        run: python scripts/run_ferengi_synthetic_benchmark.py
+
+      - name: Run target-noise regression tests
+        run: pytest -q tests/test_target_noise.py tests/test_ferengi_noise_benchmark.py
+
+      - name: Generate FERENGI target-noise metrics
+        run: python scripts/run_ferengi_noise_benchmark.py
+
+      - name: Upload benchmark metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-ferengi-synthetic-baseline
+          path: |
+            gate-c-ferengi-pip-freeze.txt
+            benchmark_output/ferengi_2008/
+          if-no-files-found: warn
