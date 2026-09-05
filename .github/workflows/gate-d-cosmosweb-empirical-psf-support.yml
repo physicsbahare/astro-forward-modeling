@@ -52,9 +52,11 @@ jobs:
           test -s real_cutout/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits
           printf '%s  %s\n' "$REAL_CUTOUT_SHA256" real_cutout/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits | sha256sum --check --strict
       - name: Run empirical point-source support audit
+        shell: bash
         run: |
+          set -o pipefail
           mkdir -p gate_d_empirical_psf_support
-          python scripts/run_gate_d_cosmosweb_empirical_psf_support.py --real-fits real_cutout/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits --matrix benchmarks/gate_d/COSMOSWEB_D1_INJECTION_MATRIX.json --out-json gate_d_empirical_psf_support/summary.json --out-npz gate_d_empirical_psf_support/stamps_and_stack.npz | tee gate_d_empirical_psf_support/stdout.txt
+          python scripts/run_gate_d_cosmosweb_empirical_psf_support.py --real-fits real_cutout/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits --matrix benchmarks/gate_d/COSMOSWEB_D1_INJECTION_MATRIX.json --out-json gate_d_empirical_psf_support/summary.json --out-npz gate_d_empirical_psf_support/stamps_and_stack.npz 2>&1 | tee gate_d_empirical_psf_support/stdout.txt
           python -m pip freeze > gate_d_empirical_psf_support/pip-freeze.txt
           echo '--- D1n-b summary.json ---'; cat gate_d_empirical_psf_support/summary.json
       - uses: actions/upload-artifact@v4
