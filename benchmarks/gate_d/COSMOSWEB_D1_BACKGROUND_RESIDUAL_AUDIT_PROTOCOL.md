@@ -1,5 +1,7 @@
 # Gate D1n-c — AB=26 background / residual-context audit
 
+Protocol version: `D1n-c-v1` (frozen before execution).
+
 ## Purpose
 
 D1m removed all AB=26 target-bound hits by fitting neighbouring Sérsic components on `SCI_ORIG` and freezing them, yet two severe interior morphology/flux failures remained. D1n-c asks whether those failures live in unusually structured real-mosaic backgrounds/residuals or coverage regions.
