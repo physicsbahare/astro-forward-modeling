@@ -72,9 +72,9 @@ def run(real_fits,matrix_path,out_json,out_npz):
     if not (np.isfinite(sci).all() and np.isfinite(err).all() and np.isfinite(wht).all() and np.all(err>0) and np.all(wht>0)): raise ValueError("invalid cutout")
     bg,bgs=robust_location_scale(sci); finder=DAOStarFinder(threshold=DETECTION_THRESHOLD_SIGMA*bgs,fwhm=DETECTION_FWHM_PIX); table=finder(sci-bg); detections=[]
     if table is not None:
-        xs=np.asarray(table["xcentroid"],dtype=float); ys=np.asarray(table["ycentroid"],dtype=float); nearest=_nearest_distances(xs,ys)
+        xs=np.asarray(table["x_centroid"],dtype=float); ys=np.asarray(table["y_centroid"],dtype=float); nearest=_nearest_distances(xs,ys)
         for i,row in enumerate(table):
-            x=float(row["xcentroid"]); y=float(row["ycentroid"]); ix,iy=int(round(x)),int(round(y)); edge=float(min(ix,iy,sci.shape[1]-1-ix,sci.shape[0]-1-iy)); snr=float((sci[iy,ix]-bg)/err[iy,ix])
+            x=float(row["x_centroid"]); y=float(row["y_centroid"]); ix,iy=int(round(x)),int(round(y)); edge=float(min(ix,iy,sci.shape[1]-1-ix,sci.shape[0]-1-iy)); snr=float((sci[iy,ix]-bg)/err[iy,ix])
             item={"id":int(row["id"]),"xcentroid":x,"ycentroid":y,"ix":ix,"iy":iy,"peak":float(row["peak"]),"flux":float(row["flux"]),"sharpness":float(row["sharpness"]),"roundness1":float(row["roundness1"]),"roundness2":float(row["roundness2"]),"nearest_detection_distance_pix":float(nearest[i]),"edge_distance_pix":edge,"peak_snr_using_err":snr}
             item["support_selected"]=bool(edge>=STAMP_HALF+1 and nearest[i]>=ISOLATION_RADIUS_PIX and snr>=CORE_SNR_MIN); detections.append(item)
     selected=[r for r in detections if r["support_selected"]]; psf,prov=d1d.build_stpsf(matrix,PIXEL_SCALE); psf_stamp=crop_center(psf,STAMP_SIZE); stamps=[]; rows=[]
