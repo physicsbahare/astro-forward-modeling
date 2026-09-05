@@ -1,0 +1,44 @@
+name: gate-d-cosmosweb-real-context-audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - benchmarks/gate_d/COSMOSWEB_D1_CONTEXT_AUDIT_PROTOCOL.md
+      - scripts/audit_gate_d_cosmosweb_real_context.py
+      - tests/test_gate_d_cosmosweb_real_context.py
+      - .github/workflows/gate-d-cosmosweb-real-context-audit.yml
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: gate-d-cosmosweb-real-context-audit-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  real-context-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '.[test]' astropy
+      - run: python -m pytest -q tests/test_gate_d_cosmosweb_real_context.py
+      - name: Download frozen real-cutout artifact
+        run: |
+          mkdir -p real_artifact
+          gh run download 33941326833 -n gate-d-cosmosweb-real-cutout -D real_artifact
+          echo '764d542f2417810c904bce711455b3eb69c70cf388f97348cb857b056b2dd66d  real_artifact/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits' | sha256sum -c -
+      - name: Audit real survey context
+        run: |
+          mkdir -p gate_d_context
+          python scripts/audit_gate_d_cosmosweb_real_context.py \
+            --fits real_artifact/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits \
+            --out gate_d_context/summary.json | tee gate_d_context/stdout.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gate-d-cosmosweb-real-context-audit
+          path: gate_d_context/
