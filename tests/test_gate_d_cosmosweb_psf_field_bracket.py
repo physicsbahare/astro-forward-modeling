@@ -1,8 +1,10 @@
 import importlib.util
 from pathlib import Path
+import sys
 import numpy as np
 
 P = Path(__file__).resolve().parents[1] / "scripts" / "run_gate_d_cosmosweb_psf_field_bracket.py"
+sys.path.insert(0, str(P.parent))
 spec = importlib.util.spec_from_file_location("d1n", P); d1n = importlib.util.module_from_spec(spec); spec.loader.exec_module(d1n)
 
 
