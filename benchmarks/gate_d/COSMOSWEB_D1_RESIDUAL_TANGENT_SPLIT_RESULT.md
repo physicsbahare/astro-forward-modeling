@@ -12,6 +12,8 @@
 
 The workflow conclusion records execution success only. This receipt is derived from the immutable machine-readable `summary.json` in the artifact and records a scientific diagnostic outcome, not a production acceptance criterion.
 
+**Receipt correction:** the first receipt commit (`9aad5d36e461741a2f721b7f63a5661e9146121c`) manually transcribed the five `(168,66)` `chi2` entries incorrectly. The table below corrects only those five fields directly from the immutable artifact. Git history preserves the superseded transcription; no fitted parameter, bound-hit status, execution status, or scientific interpretation changed.
+
 ## Frozen semantics
 
 The run retained the exact D1m scene decomposition, target renderer, STPSF, ERR weighting, exact child mask, target bounds, `scipy.optimize.least_squares` TRF optimizer, linear loss, `x_scale=jac`, `max_nfev=500`, and the D1n-i finite-difference steps. The planar-background subspace was removed before the split. No regularization, Jacobian-column removal, added noise, source-shot noise, ERR/WHT modification, Tolman factor, PSF sharpening, altered bounds, or post-hoc acceptance threshold was used. Optimizer failures and target-bound hits were retained.
@@ -37,22 +39,22 @@ Truth is `Re=0.18 arcsec`, `n=1`. `delta_mag` is recovered minus injected magnit
 
 | role / position | mode | delta_mag | Re [arcsec] | n | centroid excursion [pix] | chi2 | target bound hit | optimizer success |
 |---|---|---:|---:|---:|---:|---:|---|---|
-| catastrophic `(168,66)` | none | 2.21e-09 | 0.1800000 | 1.0000000 | 1.51e-08 | 3.43e-12 | no | yes |
-| catastrophic `(168,66)` | tangent_only | -0.604426 | 0.280269 | 1.492344 | 0.298612 | 48.7853 | no | yes |
-| catastrophic `(168,66)` | orthogonal_only | +0.214044 | 0.159176 | 0.300000 | 0.093147 | 4724.27 | **yes** | yes |
-| catastrophic `(168,66)` | background_residualized_full | -1.111934 | 0.509825 | 2.315127 | 0.484553 | 4635.28 | no | yes |
-| catastrophic `(168,66)` | original_full | -1.111933 | 0.509825 | 2.315124 | 0.484552 | 4635.28 | no | yes |
-| catastrophic `(69,195)` | none | 4.06e-11 | 0.1800000 | 1.0000000 | 2.20e-08 | 2.71e-12 | no | yes |
+| catastrophic `(168,66)` | none | 2.21e-09 | 0.1800000 | 1.0000000 | 1.51e-08 | 1.20884e-10 | no | yes |
+| catastrophic `(168,66)` | tangent_only | -0.604426 | 0.280269 | 1.492344 | 0.298612 | 1.63094 | no | yes |
+| catastrophic `(168,66)` | orthogonal_only | +0.214044 | 0.159176 | 0.300000 | 0.093147 | 4723.82 | **yes** | yes |
+| catastrophic `(168,66)` | background_residualized_full | -1.111934 | 0.509825 | 2.315127 | 0.484553 | 4708.25 | no | yes |
+| catastrophic `(168,66)` | original_full | -1.111933 | 0.509825 | 2.315124 | 0.484552 | 4708.25 | no | yes |
+| catastrophic `(69,195)` | none | 4.06e-11 | 0.1800000 | 1.0000000 | 2.20e-08 | 2.71464e-12 | no | yes |
 | catastrophic `(69,195)` | tangent_only | -0.413928 | 0.277508 | 1.773024 | 1.068732 | 2.00866 | no | yes |
 | catastrophic `(69,195)` | orthogonal_only | +0.005573 | 0.179331 | 0.983666 | 0.002282 | 2897.12 | no | yes |
 | catastrophic `(69,195)` | background_residualized_full | -1.011339 | 0.599659 | 3.105607 | 1.172834 | 2879.02 | no | yes |
 | catastrophic `(69,195)` | original_full | -1.011339 | 0.599659 | 3.105607 | 1.172834 | 2879.02 | no | yes |
-| control `(379,254)` | none | -1.39e-08 | 0.1800000 | 1.0000000 | 4.79e-08 | 5.11e-12 | no | yes |
+| control `(379,254)` | none | -1.39e-08 | 0.1800000 | 1.0000000 | 4.79e-08 | 5.11050e-12 | no | yes |
 | control `(379,254)` | tangent_only | -0.001680 | 0.183919 | 1.566489 | 0.569369 | 0.266279 | no | yes |
 | control `(379,254)` | orthogonal_only | -0.003451 | 0.180317 | 1.018733 | 0.027156 | 2714.43 | no | yes |
 | control `(379,254)` | background_residualized_full | -0.034759 | 0.188828 | 1.713284 | 0.635240 | 2714.14 | no | yes |
 | control `(379,254)` | original_full | -0.034759 | 0.188828 | 1.713284 | 0.635240 | 2714.14 | no | yes |
-| control `(358,97)` | none | -2.48e-09 | 0.1800000 | 1.0000000 | 1.14e-08 | 2.53e-12 | no | yes |
+| control `(358,97)` | none | -2.48e-09 | 0.1800000 | 1.0000000 | 1.14e-08 | 2.53208e-12 | no | yes |
 | control `(358,97)` | tangent_only | -0.056423 | 0.200294 | 1.178445 | 0.459938 | 0.0665549 | no | yes |
 | control `(358,97)` | orthogonal_only | +0.003073 | 0.179320 | 0.998533 | 0.030945 | 2869.01 | no | yes |
 | control `(358,97)` | background_residualized_full | -0.012246 | 0.191034 | 1.060863 | 0.420963 | 2870.01 | no | yes |
