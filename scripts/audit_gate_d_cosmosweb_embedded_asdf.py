@@ -109,12 +109,15 @@ def _final_kernel_candidates(matches: list[dict[str, str]]) -> list[dict[str, st
     out: list[dict[str, str]] = []
     for match in matches:
         path = match.get("path", "").lower()
-        text = (
-            match.get("matched_text", "") + " " + match.get("value_preview", "")
-        ).lower()
-        # A generic kernel token is not enough. Require the same metadata path
-        # to identify drizzle/resample context.
-        if "kernel" in text and ("resam" in path or "driz" in path):
+        matched_text = match.get("matched_text", "").lower()
+        # A container such as meta.resample may preview a child kernel value;
+        # that is not itself an explicit kernel field. Require the matched node
+        # to be a kernel key inside drizzle/resample metadata.
+        if (
+            match.get("match_kind") == "key"
+            and "kernel" in matched_text
+            and ("resam" in path or "driz" in path)
+        ):
             out.append(match)
     return out
 
