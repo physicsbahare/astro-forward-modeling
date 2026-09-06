@@ -1,26 +1,47 @@
-#!/usr/bin/env python3
-"""Gate D2a: metadata-only COSMOS-Web exposure provenance feasibility audit.
-
-The live path queries MAST for public JWST/NIRCam F444W calibrated-exposure
-candidates at the frozen Gate-D anchor.  It never downloads science pixels and
-never authorizes a source-shot realization merely because archive candidates
-exist.
-"""
 from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable
 
 
-FROZEN_RELEASE_EVIDENCE = {
-    "survey": "COSMOS-Web DR1",
-    "release_pipeline_version": "1.14.0",
-    "release_crds_context": "pmap 1223",
-    "release_tile": "A1",
-    "release_pixel_scale_mas": 30,
-    "published_full_i2d_planes": [
+OBS_FIELDS = (
+    "obsid",
+    "obs_id",
+    "obs_collection",
+    "proposal_id",
+    "instrument_name",
+    "filters",
+    "dataproduct_type",
+    "dataRights",
+    "calib_level",
+    "target_name",
+    "s_ra",
+    "s_dec",
+    "t_min",
+    "t_max",
+)
+
+PRODUCT_FIELDS = (
+    "obsID",
+    "obs_id",
+    "productFilename",
+    "dataURI",
+    "productSubGroupDescription",
+    "productType",
+    "calib_level",
+    "size",
+    "dataRights",
+    "description",
+)
+
+FROZEN_RELEASE_EVIDENCE: dict[str, Any] = {
+    "cosmos_web_dr1_pipeline_version": "1.14.0",
+    "cosmos_web_dr1_crds_pmap": "1223",
+    "cosmos_web_dr1_final_pixel_scale_mas": 30.0,
+    "cosmos_web_dr1_documented_full_i2d_extensions": [
         "SCI",
         "ERR",
         "CON",
@@ -29,154 +50,122 @@ FROZEN_RELEASE_EVIDENCE = {
         "VAR_RNOISE",
         "VAR_FLAT",
     ],
-    "published_pre_resample_input_class": "survey-processed *_crf.fits",
-    "published_custom_processing": [
-        "survey-specific detector/image corrections",
+    "survey_specific_processing_documented": True,
+    "survey_specific_steps": [
         "JHAT astrometric calibration",
-        "custom background removal",
+        "custom background treatment",
         "visit/tile association construction",
+        "final resampling of selected *_crf.fits inputs",
     ],
-    # These booleans are intentionally conservative.  The cited public release
-    # documentation describes the reduction but is not itself an exact machine-
-    # readable membership/configuration manifest for the frozen point.
     "exact_release_asn_membership_supplied_to_audit": False,
     "literal_release_pre_resample_inputs_supplied_to_audit": False,
     "actual_contributing_cal_variance_inventory_supplied_to_audit": False,
     "exact_historical_resample_configuration_supplied_to_audit": False,
 }
 
-OBS_FIELDS = (
-    "obsid",
-    "obs_id",
-    "obs_collection",
-    "instrument_name",
-    "filters",
-    "proposal_id",
-    "calib_level",
-    "dataRights",
-    "t_min",
-    "t_max",
-    "s_ra",
-    "s_dec",
-    "distance",
-)
-PRODUCT_FIELDS = (
-    "obsID",
-    "obs_id",
-    "productFilename",
-    "productSubGroupDescription",
-    "productType",
-    "calib_level",
-    "dataRights",
-    "size",
-    "dataURI",
-    "description",
-)
 
-
-def _json_scalar(value: Any) -> Any:
-    """Convert common Astropy/Numpy scalars and masked values safely to JSON."""
-    if value is None or isinstance(value, (str, int, float, bool)):
-        return value
+def _jsonable(value: Any) -> Any:
+    if value is None:
+        return None
     try:
-        if bool(getattr(value, "mask", False)):
+        if getattr(value, "mask", False) is True:
             return None
     except Exception:
         pass
-    try:
-        item = value.item()
-    except Exception:
-        item = value
-    if item is None or isinstance(item, (str, int, float, bool)):
-        return item
-    text = str(item)
-    return None if text in {"--", "masked", "MaskedConstant"} else text
+    if hasattr(value, "item"):
+        try:
+            value = value.item()
+        except Exception:
+            pass
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    if isinstance(value, (str, int, float, bool)):
+        return value
+    return str(value)
 
 
 def _records(table: Any, fields: Iterable[str]) -> list[dict[str, Any]]:
     names = set(getattr(table, "colnames", []))
-    keep = [name for name in fields if name in names]
-    return [
-        {name: _json_scalar(row[name]) for name in keep}
-        for row in table
-    ]
+    rows: list[dict[str, Any]] = []
+    for row in table:
+        rows.append({field: _jsonable(row[field]) if field in names else None for field in fields})
+    return rows
 
 
-def canonical_exposure_root(filename: str | None) -> str:
-    """Return an exposure root while preserving detector/exposure identity."""
+def canonical_exposure_root(filename: str | None) -> str | None:
     if not filename:
-        return ""
-    name = Path(str(filename)).name.lower()
-    if name.endswith(".fits"):
-        name = name[:-5]
-    for suffix in ("_cal", "_crf", "_jhat", "_rate", "_rateints", "_uncal"):
-        if name.endswith(suffix):
+        return None
+    name = Path(str(filename)).name
+    for suffix in (
+        "_cal.fits",
+        "_crf.fits",
+        "_jhat.fits",
+        "_rate.fits",
+        "_rateints.fits",
+    ):
+        if name.lower().endswith(suffix):
             return name[: -len(suffix)]
-    return name
+    match = re.match(r"^(jw\d{11}_\d{5}_\d{5}_[a-z0-9]+)", name.lower())
+    return match.group(1) if match else None
 
 
-def is_cal_candidate(record: Mapping[str, Any]) -> bool:
-    subgroup = str(record.get("productSubGroupDescription") or "").upper()
-    filename = str(record.get("productFilename") or "").lower()
-    product_type = str(record.get("productType") or "").upper()
-    rights = str(record.get("dataRights") or "").upper()
-    if product_type and product_type != "SCIENCE":
-        return False
-    if rights and rights != "PUBLIC":
-        return False
-    return subgroup == "CAL" or filename.endswith("_cal.fits")
-
-
-def select_cal_candidates(records: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
-    selected: dict[str, dict[str, Any]] = {}
-    for record in records:
-        if not is_cal_candidate(record):
-            continue
-        out = dict(record)
-        out["exposure_root"] = canonical_exposure_root(out.get("productFilename"))
-        key = str(out.get("dataURI") or out.get("productFilename") or out["exposure_root"])
-        selected[key] = out
-    return sorted(
-        selected.values(),
-        key=lambda row: (str(row.get("productFilename") or ""), str(row.get("dataURI") or "")),
+def is_cal_candidate(row: dict[str, Any]) -> bool:
+    filename = str(row.get("productFilename") or "")
+    subgroup = str(row.get("productSubGroupDescription") or "")
+    rights = str(row.get("dataRights") or "")
+    product_type = str(row.get("productType") or "")
+    return (
+        rights.upper() == "PUBLIC"
+        and product_type.upper() == "SCIENCE"
+        and (subgroup.upper() == "CAL" or filename.lower().endswith("_cal.fits"))
     )
 
 
+def select_cal_candidates(product_records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    selected: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for row in product_records:
+        if not is_cal_candidate(row):
+            continue
+        key = str(row.get("dataURI") or row.get("productFilename") or "")
+        if key in seen:
+            continue
+        seen.add(key)
+        enriched = dict(row)
+        enriched["exposure_root"] = canonical_exposure_root(row.get("productFilename"))
+        selected.append(enriched)
+    return selected
+
+
 def assess_literal_release_provenance(
-    cal_candidates: Iterable[Mapping[str, Any]],
-    release_evidence: Mapping[str, Any],
+    candidates: list[dict[str, Any]],
+    release_evidence: dict[str, Any],
 ) -> dict[str, Any]:
-    candidates = list(cal_candidates)
     requirements = {
-        "archive_cal_candidates_found": len(candidates) > 0,
+        "archive_cal_candidates_found": bool(candidates),
         "exact_release_asn_membership_available": bool(
             release_evidence.get("exact_release_asn_membership_supplied_to_audit")
         ),
         "literal_release_pre_resample_inputs_available": bool(
             release_evidence.get("literal_release_pre_resample_inputs_supplied_to_audit")
         ),
-        "actual_contributing_cal_variance_inventory_verified": bool(
+        "actual_contributing_cal_variance_inventory_available": bool(
             release_evidence.get("actual_contributing_cal_variance_inventory_supplied_to_audit")
         ),
         "exact_historical_resample_configuration_available": bool(
             release_evidence.get("exact_historical_resample_configuration_supplied_to_audit")
         ),
-        "historical_release_pipeline_and_crds_identified": bool(
-            release_evidence.get("release_pipeline_version")
-            and release_evidence.get("release_crds_context")
+        "historical_pipeline_and_crds_provenance_declared": bool(
+            release_evidence.get("cosmos_web_dr1_pipeline_version")
+            and release_evidence.get("cosmos_web_dr1_crds_pmap")
         ),
     }
-    permitted = all(requirements.values())
-    missing = [name for name, ok in requirements.items() if not ok]
+    missing = [name for name, available in requirements.items() if not available]
     return {
         "requirements": requirements,
         "missing_requirements": missing,
-        "source_shot_realization_permitted": permitted,
         "archive_cal_candidates_alone_establish_literal_release_membership": False,
-        "current_default_image3_is_literal_release_replay": False,
-        "standard_pipeline_reprocessing_status": (
-            "possible future approximation/control only; not literal DR1 reproduction"
-        ),
+        "source_shot_realization_permitted": not missing,
     }
 
 
@@ -208,7 +197,11 @@ def query_mast(
     obs_records = _records(observations, OBS_FIELDS)
     if len(observations) == 0:
         return obs_records, [], str(astroquery.__version__)
-    products = Observations.get_unique_product_list(observations, batch_size=100)
+    # astroquery 0.4.11 is intentionally frozen for this audit. Its
+    # Observations.get_unique_product_list API does not expose batch_size;
+    # later development versions do. Use the version-compatible public API
+    # without changing the scientific query or product-selection criteria.
+    products = Observations.get_unique_product_list(observations)
     return obs_records, _records(products, PRODUCT_FIELDS), str(astroquery.__version__)
 
 
