@@ -1,0 +1,52 @@
+name: gate-d-cosmosweb-source-shot-covariance-preflight
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - benchmarks/gate_d/COSMOSWEB_D1_SOURCE_SHOT_COVARIANCE_PREFLIGHT_PROTOCOL.md
+      - scripts/audit_gate_d_cosmosweb_source_shot_covariance_preflight.py
+      - tests/test_gate_d_cosmosweb_source_shot_covariance_preflight.py
+      - .github/workflows/gate-d-cosmosweb-source-shot-covariance-preflight.yml
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: gate-d-cosmosweb-source-shot-covariance-preflight-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source-shot-covariance-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REAL_CUTOUT_SHA256: 764d542f2417810c904bce711455b3eb69c70cf388f97348cb857b056b2dd66d
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -e '.[test]' astropy
+      - run: python -m pytest -q tests/test_gate_d_cosmosweb_source_shot_covariance_preflight.py
+      - name: Download immutable real COSMOS-Web L1 cutout
+        run: |
+          mkdir -p real_artifact
+          gh run download 33941326833 -n gate-d-cosmosweb-real-cutout -D real_artifact
+          echo "$REAL_CUTOUT_SHA256  real_artifact/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits" | sha256sum -c -
+      - name: Audit L1 source-shot/covariance identifiability
+        run: |
+          mkdir -p gate_d_source_shot_preflight
+          python scripts/audit_gate_d_cosmosweb_source_shot_covariance_preflight.py \
+            --fits real_artifact/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits \
+            --representation drizzled_mosaic \
+            --expected-sha256 "$REAL_CUTOUT_SHA256" \
+            --out gate_d_source_shot_preflight/summary.json \
+            | tee gate_d_source_shot_preflight/stdout.txt
+          python -m pip freeze > gate_d_source_shot_preflight/pip-freeze.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-d-cosmosweb-source-shot-covariance-preflight
+          path: gate_d_source_shot_preflight/
+          if-no-files-found: warn
