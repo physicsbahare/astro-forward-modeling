@@ -11,7 +11,9 @@ import run_gate_d_cosmosweb_real_injection as inj
 
 NAMES = ("broad", "global", "narrow")
 FILES = {k: f"OBS_084_F444W_{k}_PSF.fits" for k in NAMES}
-FROZEN_SOURCE_SCALE_ARCSEC = 0.03
+# Zhuang, Li & Shen public release notes document these PSF products at
+# 15 mas/pixel, oversampled by two relative to the 30 mas/pixel mosaics.
+PUBLISHED_PSF_SCALE_ARCSEC = 0.015
 
 
 def sha256(path: Path) -> str:
@@ -34,7 +36,7 @@ def infer_scale_arcsec(header) -> tuple[float, str]:
         return abs(float(header["CDELT1"])) * 3600.0, "CDELT1"
     if "CD1_1" in header and float(header["CD1_1"]) != 0:
         return abs(float(header["CD1_1"])) * 3600.0, "CD1_1"
-    return FROZEN_SOURCE_SCALE_ARCSEC, "frozen_release_grid_fallback"
+    return PUBLISHED_PSF_SCALE_ARCSEC, "official_release_notes_15mas_psf_grid"
 
 
 def positive_metrics(a: np.ndarray, scale: float) -> dict:

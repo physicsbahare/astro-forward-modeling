@@ -8,10 +8,10 @@ SPEC=importlib.util.spec_from_file_location('d1ne',ROOT/'scripts'/'run_gate_d_co
 d1ne=importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(d1ne)
 
 
-def test_scale_inference_fallback_is_frozen_30mas():
+def test_scale_inference_fallback_uses_official_15mas_psf_grid():
     scale, source=d1ne.infer_scale_arcsec({})
-    assert scale == 0.03
-    assert source == 'frozen_release_grid_fallback'
+    assert scale == 0.015
+    assert source == 'official_release_notes_15mas_psf_grid'
 
 
 def test_positive_metrics_preserve_negative_diagnostics():
