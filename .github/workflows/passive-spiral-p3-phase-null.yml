@@ -1,0 +1,63 @@
+name: passive-spiral-p3-phase-null
+
+on:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - "benchmarks/passive_spiral_redshift/P3_PROTOCOL.md"
+      - "verification/passive_spiral_phase_null.py"
+      - "tests/test_passive_spiral_phase_null.py"
+      - "scripts/run_passive_spiral_phase_null_p3.py"
+      - ".github/workflows/passive-spiral-p3-phase-null.yml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+    paths:
+      - "benchmarks/passive_spiral_redshift/P3_PROTOCOL.md"
+      - "verification/passive_spiral_phase_null.py"
+      - "tests/test_passive_spiral_phase_null.py"
+      - "scripts/run_passive_spiral_phase_null_p3.py"
+      - ".github/workflows/passive-spiral-p3-phase-null.yml"
+  workflow_dispatch:
+
+jobs:
+  p3-phase-null:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+      - name: Record software provenance
+        run: python -m pip freeze | tee passive-spiral-p3-pip-freeze.txt
+      - name: Run P3 regression tests
+        run: pytest -q tests/test_passive_spiral_phase_null.py
+      - name: Download exact frozen Gate-D real cutout
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p real_artifact
+          gh run download 33941326833 -n gate-d-cosmosweb-real-cutout -D real_artifact
+          echo '764d542f2417810c904bce711455b3eb69c70cf388f97348cb857b056b2dd66d  real_artifact/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits' | sha256sum --check --strict
+      - name: Run frozen P3 phase-null experiment
+        run: |
+          python scripts/run_passive_spiral_phase_null_p3.py \
+            --real-fits real_artifact/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits \
+            --matrix benchmarks/gate_d/COSMOSWEB_D1_INJECTION_MATRIX.json \
+            --out benchmark_output/passive_spiral_redshift/p3_phase_null \
+            | tee passive-spiral-p3-stdout.txt
+      - name: Upload P3 metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: passive-spiral-p3-phase-null
+          path: |
+            passive-spiral-p3-pip-freeze.txt
+            passive-spiral-p3-stdout.txt
+            benchmark_output/passive_spiral_redshift/p3_phase_null/
+          if-no-files-found: warn
