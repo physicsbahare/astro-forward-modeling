@@ -114,10 +114,16 @@ def run(mosaic: Path, out_json: Path, contributor_indices: tuple[int, ...]) -> d
         asdf_inventory: dict[str, Any]
         if "ASDF" in names:
             asdf_hdu = hdul["ASDF"]
+            # Astropy represents the JWST ASDF FITS extension as a BinTableHDU.
+            # BinTableHDU itself does not expose `.shape`; its table data does.
+            # Reading this metadata extension is permitted by the frozen D2d
+            # protocol and does not touch SCI/ERR/WHT or variance arrays.
+            asdf_data = asdf_hdu.data
+            asdf_shape = getattr(asdf_data, "shape", None)
             asdf_inventory = {
                 "present": True,
                 "hdu_class": type(asdf_hdu).__name__,
-                "shape": list(asdf_hdu.shape) if asdf_hdu.shape is not None else None,
+                "shape": list(asdf_shape) if asdf_shape is not None else None,
                 "columns": list(asdf_hdu.columns.names or []) if hasattr(asdf_hdu, "columns") else [],
                 "data_tree_parsed": False,
                 "note": (
