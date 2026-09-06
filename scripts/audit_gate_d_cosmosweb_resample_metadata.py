@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -54,7 +55,14 @@ def _jsonable(value: Any) -> Any:
             value = value.item()
         except Exception:
             pass
-    if isinstance(value, (str, int, float, bool)):
+    if isinstance(value, float):
+        # FITS binary tables may expose absent floating/string-like metadata as
+        # NaN.  Preserve absence as JSON null rather than emitting the
+        # non-standard JSON token NaN or treating each NaN as a distinct value.
+        if not math.isfinite(value):
+            return None
+        return value
+    if isinstance(value, (str, int, bool)):
         return value
     return str(value)
 
@@ -108,8 +116,16 @@ def run(mosaic: Path, out_json: Path, contributor_indices: tuple[int, ...]) -> d
                 record[field] = _jsonable(row[field]) if field in colnames else None
             contributors.append(record)
 
-        unique_drizpars = _nonempty([row.get("R_DRZPAR") for row in contributors])
-        unique_resample_refs = _nonempty([row.get("R_RESAMP") for row in contributors])
+        drizpar_values = [row.get("R_DRZPAR") for row in contributors]
+        resample_ref_values = [row.get("R_RESAMP") for row in contributors]
+        unique_drizpars = _nonempty(drizpar_values)
+        unique_resample_refs = _nonempty(resample_ref_values)
+        drizpar_recorded_for_all = bool(contributors) and all(
+            value is not None for value in drizpar_values
+        )
+        resample_ref_recorded_for_all = bool(contributors) and all(
+            value is not None for value in resample_ref_values
+        )
 
         asdf_inventory: dict[str, Any]
         if "ASDF" in names:
@@ -157,8 +173,12 @@ def run(mosaic: Path, out_json: Path, contributor_indices: tuple[int, ...]) -> d
                 "contributors": contributors,
                 "unique_R_DRZPAR": unique_drizpars,
                 "unique_R_RESAMP": unique_resample_refs,
-                "all_contributors_share_R_DRZPAR": len(unique_drizpars) == 1,
-                "all_contributors_share_R_RESAMP": len(unique_resample_refs) == 1,
+                "R_DRZPAR_recorded_for_all_contributors": drizpar_recorded_for_all,
+                "R_RESAMP_recorded_for_all_contributors": resample_ref_recorded_for_all,
+                "all_contributors_share_R_DRZPAR": drizpar_recorded_for_all
+                and len(unique_drizpars) == 1,
+                "all_contributors_share_R_RESAMP": resample_ref_recorded_for_all
+                and len(unique_resample_refs) == 1,
             },
             "assessment": {
                 "pixfrac_recorded": primary.get("PIXFRAC") is not None,
@@ -192,8 +212,8 @@ def run(mosaic: Path, out_json: Path, contributor_indices: tuple[int, ...]) -> d
         }
 
     out_json.parent.mkdir(parents=True, exist_ok=True)
-    out_json.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
-    print(json.dumps(result, indent=2, sort_keys=True))
+    out_json.write_text(json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n")
+    print(json.dumps(result, indent=2, sort_keys=True, allow_nan=False))
     return result
 
 
