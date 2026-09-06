@@ -130,7 +130,7 @@ def run(mosaic: Path, out_json: Path) -> dict[str, Any]:
         raise FileNotFoundError(mosaic)
 
     try:
-        import asdf
+        from asdf import util as asdf_util
     except ImportError as exc:
         raise RuntimeError(
             "Gate D2e requires ASDF 3.1.x for metadata-only YAML parsing. "
@@ -162,7 +162,7 @@ def run(mosaic: Path, out_json: Path) -> dict[str, Any]:
     yaml_bytes = _yaml_prefix(payload)
     yaml_text = yaml_bytes.decode("utf-8", errors="replace")
 
-    tree = asdf.util.load_yaml(io.BytesIO(payload), tagged=False)
+    tree = asdf_util.load_yaml(io.BytesIO(payload), tagged=False)
     matches = _collect_matches(tree)
     raw_hits = _raw_line_hits(yaml_text)
     kernel_candidates = _final_kernel_candidates(matches)
