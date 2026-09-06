@@ -1,0 +1,47 @@
+name: gate-d-cosmosweb-exposure-provenance-preflight
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - benchmarks/gate_d/COSMOSWEB_D2_EXPOSURE_PROVENANCE_PREFLIGHT_PROTOCOL.md
+      - scripts/audit_gate_d_cosmosweb_exposure_provenance_preflight.py
+      - tests/test_gate_d_cosmosweb_exposure_provenance_preflight.py
+      - .github/workflows/gate-d-cosmosweb-exposure-provenance-preflight.yml
+permissions:
+  contents: read
+concurrency:
+  group: gate-d-cosmosweb-exposure-provenance-preflight-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  exposure-provenance-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install frozen audit dependencies
+        run: python -m pip install -e '.[test]' astroquery==0.4.11
+      - name: Unit-test frozen provenance logic
+        run: python -m pytest -q tests/test_gate_d_cosmosweb_exposure_provenance_preflight.py
+      - name: Query MAST and audit literal-release provenance
+        run: |
+          mkdir -p gate_d_exposure_provenance_preflight
+          python scripts/audit_gate_d_cosmosweb_exposure_provenance_preflight.py \
+            --out-dir gate_d_exposure_provenance_preflight \
+            --ra 149.8671500 \
+            --dec 2.1294010 \
+            --radius-arcsec 1.0 \
+            --proposal-id 1727 \
+            --filter F444W \
+            | tee gate_d_exposure_provenance_preflight/stdout.txt
+          python -m pip freeze > gate_d_exposure_provenance_preflight/pip-freeze.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-d-cosmosweb-exposure-provenance-preflight
+          path: gate_d_exposure_provenance_preflight/
+          if-no-files-found: warn
