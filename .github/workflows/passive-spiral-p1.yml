@@ -1,0 +1,61 @@
+name: passive-spiral-p1
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "benchmarks/passive_spiral_redshift/P1_PROTOCOL.md"
+      - "verification/passive_spiral_redshift.py"
+      - "tests/test_passive_spiral_redshift.py"
+      - "scripts/run_passive_spiral_redshift_p1.py"
+      - ".github/workflows/passive-spiral-p1.yml"
+      - "pyproject.toml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths:
+      - "benchmarks/passive_spiral_redshift/P1_PROTOCOL.md"
+      - "verification/passive_spiral_redshift.py"
+      - "tests/test_passive_spiral_redshift.py"
+      - "scripts/run_passive_spiral_redshift_p1.py"
+      - ".github/workflows/passive-spiral-p1.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  p1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee passive-spiral-p1-pip-freeze.txt
+
+      - name: Run P1 regression tests
+        run: pytest -q tests/test_passive_spiral_redshift.py
+
+      - name: Generate P1 metrics
+        run: python scripts/run_passive_spiral_redshift_p1.py
+
+      - name: Upload P1 metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: passive-spiral-p1
+          path: |
+            passive-spiral-p1-pip-freeze.txt
+            benchmark_output/passive_spiral_redshift/
+          if-no-files-found: warn
