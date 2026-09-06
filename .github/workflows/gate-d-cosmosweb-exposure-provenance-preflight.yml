@@ -29,6 +29,7 @@ jobs:
         run: python -m pytest -q tests/test_gate_d_cosmosweb_exposure_provenance_preflight.py
       - name: Query MAST and audit literal-release provenance
         run: |
+          set -o pipefail
           mkdir -p gate_d_exposure_provenance_preflight
           python scripts/audit_gate_d_cosmosweb_exposure_provenance_preflight.py \
             --out-dir gate_d_exposure_provenance_preflight \
