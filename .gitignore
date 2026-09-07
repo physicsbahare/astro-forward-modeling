@@ -1,0 +1,18 @@
+# Verification benchmark data are retrieved reproducibly and never committed.
+external_data/
+benchmark_output/
+
+# Python/build artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Local environments/editors
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+.DS_Store

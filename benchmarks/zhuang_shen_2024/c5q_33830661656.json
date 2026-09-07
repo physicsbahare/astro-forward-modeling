@@ -1,0 +1,24 @@
+{
+  "run_id": 33830661656,
+  "commit": "ff39701f7ec5b9f698873064bd85da53ca417544",
+  "github_conclusion": "success",
+  "artifacts": {
+    "A": {
+      "artifact_id": 9921687659,
+      "zip_sha256": "a73a852c10a8e2577487767dc26f6d7ab3613de30830b9e5f3468988f2254cd5"
+    },
+    "B": {
+      "artifact_id": 9921689299,
+      "zip_sha256": "e95ddad7561fecb59d5e92345bb2a9001faaf040c4c8f360a1833028f3527f1b"
+    }
+  },
+  "module_A": {
+    "seed_20260904": {"returncode": 124, "wall_seconds": 180.00303736100003, "finite": false},
+    "seed_20260905": {"returncode": 124, "wall_seconds": 180.003806967, "finite": false}
+  },
+  "module_B": {
+    "seed_20260904": {"returncode": 124, "wall_seconds": 180.003145958, "finite": false},
+    "seed_20260905": {"returncode": 124, "wall_seconds": 180.00299721200008, "finite": false}
+  },
+  "interpretation": "Both jobs and strict audits passed as diagnostic executions. All four seeded DE-LHS processes reached the unchanged 180-second cap without complete products. This is a resource-bounded non-result from the global solver, not convergence, recovery, or a reason to expand the cap."
+}

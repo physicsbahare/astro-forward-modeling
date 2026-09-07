@@ -1,0 +1,89 @@
+name: passive-spiral-p2-real-context
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "benchmarks/passive_spiral_redshift/P2_PROTOCOL.md"
+      - "verification/passive_spiral_real_context.py"
+      - "verification/passive_spiral_redshift.py"
+      - "tests/test_passive_spiral_real_context.py"
+      - "scripts/run_passive_spiral_real_context_p2.py"
+      - "benchmarks/gate_d/COSMOSWEB_D1_INJECTION_MATRIX.json"
+      - ".github/workflows/passive-spiral-p2-real-context.yml"
+      - "pyproject.toml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths:
+      - "benchmarks/passive_spiral_redshift/P2_PROTOCOL.md"
+      - "verification/passive_spiral_real_context.py"
+      - "verification/passive_spiral_redshift.py"
+      - "tests/test_passive_spiral_real_context.py"
+      - "scripts/run_passive_spiral_real_context_p2.py"
+      - "benchmarks/gate_d/COSMOSWEB_D1_INJECTION_MATRIX.json"
+      - ".github/workflows/passive-spiral-p2-real-context.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: passive-spiral-p2-real-context-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  p2-real-context:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee passive-spiral-p2-pip-freeze.txt
+
+      - name: Run P2 numerical-invariant tests
+        run: pytest -q tests/test_passive_spiral_real_context.py
+
+      - name: Download exact frozen Gate-D real cutout
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p real_artifact
+          gh run download 33941326833 -n gate-d-cosmosweb-real-cutout -D real_artifact
+          echo '764d542f2417810c904bce711455b3eb69c70cf388f97348cb857b056b2dd66d  real_artifact/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits' | sha256sum --check --strict
+
+      - name: Run frozen P2 real-context experiment
+        run: |
+          python scripts/run_passive_spiral_real_context_p2.py \
+            --real-fits real_artifact/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits \
+            --matrix benchmarks/gate_d/COSMOSWEB_D1_INJECTION_MATRIX.json \
+            --out benchmark_output/passive_spiral_redshift/p2_real_context \
+            | tee passive-spiral-p2-stdout.txt
+
+      - name: Upload P2 metrics, figure, and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: passive-spiral-p2-real-context
+          path: |
+            passive-spiral-p2-pip-freeze.txt
+            passive-spiral-p2-stdout.txt
+            benchmark_output/passive_spiral_redshift/p2_real_context/
+          if-no-files-found: warn

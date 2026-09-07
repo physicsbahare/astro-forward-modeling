@@ -1,0 +1,39 @@
+name: gate-c-agn-sampling
+on:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - scripts/run_agn_sampling.py
+      - tests/test_agn_sampling.py
+      - .github/workflows/gate-c-agn-sampling.yml
+  workflow_dispatch:
+jobs:
+  sampling:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        host_n: [1, 4]
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest -q tests/test_agn_sampling.py tests/test_agn_nuclear_fraction_noiseless.py tests/test_agn_nuclear_fraction.py
+      - name: Record provenance
+        run: |
+          mkdir -p benchmark_output/agn_sampling
+          git rev-parse HEAD > benchmark_output/agn_sampling/commit.txt
+          python -m pip freeze > benchmark_output/agn_sampling/pip-freeze.txt
+      - run: python scripts/run_agn_sampling.py --host-n ${{ matrix.host_n }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agn-sampling-n${{ matrix.host_n }}
+          path: benchmark_output/agn_sampling/
+          if-no-files-found: error

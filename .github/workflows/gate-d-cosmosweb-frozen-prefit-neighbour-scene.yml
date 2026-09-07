@@ -1,0 +1,78 @@
+name: gate-d-cosmosweb-frozen-prefit-neighbour-scene
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - benchmarks/gate_d/COSMOSWEB_D1_FROZEN_PREFIT_NEIGHBOUR_SCENE_PROTOCOL.md
+      - scripts/run_gate_d_cosmosweb_forced_recovery.py
+      - scripts/run_gate_d_cosmosweb_deblended_neighbour_templates.py
+      - scripts/run_gate_d_cosmosweb_parametric_neighbour_sersic.py
+      - scripts/run_gate_d_cosmosweb_frozen_prefit_neighbour_scene.py
+      - tests/test_gate_d_cosmosweb_frozen_prefit_neighbour_scene.py
+      - .github/workflows/gate-d-cosmosweb-frozen-prefit-neighbour-scene.yml
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: gate-d-cosmosweb-frozen-prefit-neighbour-scene-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  frozen-prefit-neighbour-scene:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      STPSF_DATA_VERSION: "2.2.0"
+      STPSF_DATA_URL: "https://stsci.box.com/shared/static/mjst9j056ibf2uph4gxy8qxmi89tjzwk.gz"
+      STPSF_DATA_SHA256: "bbdfbe7c5aa7ee7fdb60efed13720ba3e0619c976b77aa0d63941dd59a4b6a98"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -e '.[test]' astropy scipy
+      - run: python -m pip install -r requirements-crosscode-jwst-stpsf.txt
+      - run: python -m pip install photutils==3.0.0 scikit-image==0.25.2
+      - run: >-
+          python -m pytest -q
+          tests/test_gate_d_cosmosweb_forced_recovery.py
+          tests/test_gate_d_cosmosweb_deblended_neighbour_templates.py
+          tests/test_gate_d_cosmosweb_parametric_neighbour_sersic.py
+          tests/test_gate_d_cosmosweb_frozen_prefit_neighbour_scene.py
+      - name: Download exact pinned STPSF reference data
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/stpsf-data-${STPSF_DATA_VERSION}.tar.gz"
+          root="$RUNNER_TEMP/stpsf-reference"; mkdir -p "$root"
+          curl --fail --location --retry 5 --retry-delay 2 "$STPSF_DATA_URL" -o "$archive"
+          printf '%s  %s\n' "$STPSF_DATA_SHA256" "$archive" | sha256sum --check --strict
+          tar -xzf "$archive" -C "$root"
+          data_dir="$(dirname "$(find "$root" -type f -name version.txt -print -quit)")"
+          test "$(cat "$data_dir/version.txt")" = "$STPSF_DATA_VERSION"
+          echo "STPSF_PATH=$data_dir" >> "$GITHUB_ENV"
+      - name: Download frozen successful D1d injection artifact
+        run: |
+          mkdir -p injection_artifact
+          gh run download 33949290838 -n gate-d-cosmosweb-real-injection -D injection_artifact
+          test -s injection_artifact/injected_scenes.fits
+          test -s injection_artifact/summary.json
+      - name: Run pre-injection fitted/frozen-neighbour diagnostic
+        run: |
+          mkdir -p gate_d_frozen_prefit_neighbours
+          python scripts/run_gate_d_cosmosweb_frozen_prefit_neighbour_scene.py \
+            --injected-fits injection_artifact/injected_scenes.fits \
+            --injection-summary injection_artifact/summary.json \
+            --out-json gate_d_frozen_prefit_neighbours/summary.json \
+            | tee gate_d_frozen_prefit_neighbours/stdout.txt
+          python -m pip freeze > gate_d_frozen_prefit_neighbours/pip-freeze.txt
+          echo '--- D1m summary.json ---'
+          cat gate_d_frozen_prefit_neighbours/summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-d-cosmosweb-frozen-prefit-neighbour-scene
+          path: gate_d_frozen_prefit_neighbours/
+          if-no-files-found: warn

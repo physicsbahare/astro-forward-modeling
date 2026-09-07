@@ -1,0 +1,103 @@
+name: gate-d-cosmosweb-residual-tangent-promote
+on:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - .github/workflows/gate-d-cosmosweb-residual-tangent-promote.yml
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gate-d-cosmosweb-residual-tangent-promote-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  promote-result:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN: "34012104662"
+      SOURCE_ARTIFACT_ID: "9982788083"
+      SOURCE_ARTIFACT_DIGEST: "sha256:e808789e3ce05797a47cb0dd936168cba80a7aad8eb955dbec34d9cc92de9059"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: verification-v0.1
+      - name: Download immutable successful D1n-i artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source_artifact
+          gh run download "$SOURCE_RUN" -n gate-d-cosmosweb-residual-tangent -D source_artifact
+          test -s source_artifact/summary.json
+      - name: Render immutable result receipt from machine-readable artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          s=json.loads(Path('source_artifact/summary.json').read_text())
+          lines=[]
+          lines.append('# COSMOS-Web Gate D1n-i — residual / target-tangent result')
+          lines.append('')
+          lines.append('## Immutable execution receipt')
+          lines.append('')
+          lines.append(f"- workflow run: `{os.environ['SOURCE_RUN']}`")
+          lines.append('- conclusion: `success`')
+          lines.append(f"- artifact id: `{os.environ['SOURCE_ARTIFACT_ID']}`")
+          lines.append(f"- artifact digest: `{os.environ['SOURCE_ARTIFACT_DIGEST']}`")
+          lines.append('')
+          lines.append('This receipt is rendered directly from the immutable machine-readable `summary.json` produced by the successful D1n-i workflow. It records a diagnostic result, not a production acceptance criterion.')
+          lines.append('')
+          lines.append('## Frozen semantics')
+          lines.append('')
+          sem=s.get('semantics',{})
+          for k in sorted(sem):
+              lines.append(f"- `{k}`: `{sem[k]}`")
+          lines.append('')
+          lines.append('## Machine-readable scientific metrics')
+          lines.append('')
+          for r in s.get('rows',[]):
+              lines.append(f"### {r.get('role')} — {r.get('class')} index {r.get('index')} at ({r.get('x')},{r.get('y')})")
+              lines.append('')
+              if not r.get('finite_prefit',False):
+                  lines.append(f"- finite prefit: false; reason: `{r.get('reason')}`")
+                  lines.append('')
+                  continue
+              p=r['projection']
+              lines.append(f"- valid fraction: `{r.get('valid_fraction'):.9g}`")
+              lines.append(f"- neighbour models: `{r.get('n_neighbour_models')}`")
+              lines.append(f"- weighted residual L2 before background removal: `{r.get('weighted_residual_l2_before_background_removal'):.12g}`")
+              lines.append(f"- background-residualized residual L2: `{p.get('background_residualized_residual_l2'):.12g}`")
+              lines.append(f"- target-tangent projection L2: `{p.get('target_tangent_projection_l2'):.12g}`")
+              lines.append(f"- target-tangent power fraction: `{p.get('target_tangent_power_fraction'):.12g}`")
+              lines.append(f"- tangent rank: `{p.get('rank')}`")
+              lines.append(f"- tangent condition number: `{p.get('condition_number'):.12g}`")
+              lines.append('- singular values: `' + ', '.join(f'{v:.12g}' for v in p.get('singular_values',[])) + '`')
+              lines.append('- predicted first-order shift per alpha:')
+              for k,v in p.get('delta_theta_per_alpha',{}).items():
+                  lines.append(f"  - `{k}`: `{v:.12g}`")
+              lines.append('- parameter cosine alignment:')
+              for k,v in p.get('parameter_cosine_alignment',{}).items():
+                  lines.append(f"  - `{k}`: `{v:.12g}`")
+              lines.append('- D1n-h alpha=0→0.25 derivative cross-check:')
+              for k,v in r.get('small_dose_crosscheck',{}).items():
+                  lines.append(f"  - `{k}`: predicted `{v['predicted_per_alpha']:.12g}`, observed `{v['observed_alpha0_to_0p25_per_alpha']:.12g}`, same_sign `{v['same_sign']}`, observed_minus_predicted `{v['observed_minus_predicted']:.12g}`")
+              lines.append('')
+          lines.append('## Interpretation guardrail')
+          lines.append('')
+          lines.append('Preserve rank/conditioning, projection strength, sign disagreements, nonlinear departures, and control/failure overlap as results. Do not regularize the tangent, drop parameters, widen target bounds, alter ERR weighting, change optimizer requirements, or define a post-hoc morphology acceptance threshold from this diagnostic.')
+          path=Path('benchmarks/gate_d/COSMOSWEB_D1_RESIDUAL_TANGENT_RESULT.md')
+          path.write_text('\n'.join(lines)+'\n')
+          PY
+      - name: Commit immutable receipt only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add benchmarks/gate_d/COSMOSWEB_D1_RESIDUAL_TANGENT_RESULT.md
+          git diff --cached --quiet && exit 0
+          git commit -m 'Record immutable D1n-i residual tangent result'
+          git push origin HEAD:verification-v0.1

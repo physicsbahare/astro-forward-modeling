@@ -1,0 +1,56 @@
+name: gate-c-paulino-afonso-psf-transfer-sampling
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "scripts/run_paulino_afonso_psf_transfer_sampling_diagnosis.py"
+      - ".github/workflows/gate-c-paulino-afonso-psf-transfer-sampling.yml"
+      - "verification/paulino_afonso_sersic_floor.py"
+      - "pyproject.toml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths:
+      - "scripts/run_paulino_afonso_psf_transfer_sampling_diagnosis.py"
+      - ".github/workflows/gate-c-paulino-afonso-psf-transfer-sampling.yml"
+      - "verification/paulino_afonso_sersic_floor.py"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  sampling-diagnosis:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) && !(github.event_name == 'push' && github.ref == 'refs/heads/verification-v0.1' && github.event.before == '88f3fb646a0b89e6cb9b8b8ee1aacae377edca56' && contains(github.event.head_commit.message, '[C5e isolated]')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-paulino-afonso-psf-transfer-sampling-pip-freeze.txt
+
+      - name: Diagnose detector sampling in PSF transfer
+        run: python scripts/run_paulino_afonso_psf_transfer_sampling_diagnosis.py
+
+      - name: Upload sampling diagnostic metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-paulino-afonso-psf-transfer-sampling
+          path: |
+            gate-c-paulino-afonso-psf-transfer-sampling-pip-freeze.txt
+            benchmark_output/paulino_afonso_2017/psf_transfer_sampling_diagnosis/
+          if-no-files-found: warn

@@ -1,0 +1,6 @@
+# C5d verification only; not production dependencies.
+numpy==2.5.2
+scipy==1.18.1
+galsim==2.8.4
+astropy==8.0.1
+pytest==8.4.2

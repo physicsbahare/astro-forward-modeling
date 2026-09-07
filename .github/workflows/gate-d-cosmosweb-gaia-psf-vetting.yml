@@ -1,0 +1,64 @@
+name: gate-d-cosmosweb-gaia-psf-vetting
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - benchmarks/gate_d/COSMOSWEB_D1_GAIA_PSF_VETTING_PROTOCOL.md
+      - scripts/run_gate_d_cosmosweb_gaia_psf_vetting.py
+      - tests/test_gate_d_cosmosweb_gaia_psf_vetting.py
+      - .github/workflows/gate-d-cosmosweb-gaia-psf-vetting.yml
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: gate-d-cosmosweb-gaia-psf-vetting-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  gaia-psf-vetting:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REAL_CUTOUT_SHA256: "764d542f2417810c904bce711455b3eb69c70cf388f97348cb857b056b2dd66d"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -e '.[test]' astropy scipy photutils==3.0.0 astroquery==0.4.11
+      - run: python -m pytest -q tests/test_gate_d_cosmosweb_gaia_psf_vetting.py
+      - name: Download exact successful D1n-b artifact
+        run: |
+          mkdir -p d1nb_artifact
+          gh run download 33994133478 -n gate-d-cosmosweb-empirical-psf-support -D d1nb_artifact
+          test -s d1nb_artifact/summary.json
+          test -s d1nb_artifact/stamps_and_stack.npz
+      - name: Download frozen real COSMOS-Web cutout
+        run: |
+          mkdir -p real_cutout
+          gh run download 33941326833 -n gate-d-cosmosweb-real-cutout -D real_cutout
+          test -s real_cutout/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits
+          printf '%s  %s\n' "$REAL_CUTOUT_SHA256" real_cutout/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits | sha256sum --check --strict
+      - name: Run Gaia-vetted compact-source support diagnostic
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p gate_d_gaia_psf_vetting
+          python scripts/run_gate_d_cosmosweb_gaia_psf_vetting.py \
+            --real-fits real_cutout/cosmosweb_f444w_30mas_A1_ID4204_real_cutout.fits \
+            --d1nb-summary d1nb_artifact/summary.json \
+            --d1nb-npz d1nb_artifact/stamps_and_stack.npz \
+            --out-json gate_d_gaia_psf_vetting/summary.json \
+            --out-npz gate_d_gaia_psf_vetting/gaia_vetted_stack.npz \
+            2>&1 | tee gate_d_gaia_psf_vetting/stdout.txt
+          python -m pip freeze > gate_d_gaia_psf_vetting/pip-freeze.txt
+          echo '--- D1n-d summary.json ---'
+          cat gate_d_gaia_psf_vetting/summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-d-cosmosweb-gaia-psf-vetting
+          path: gate_d_gaia_psf_vetting/
+          if-no-files-found: warn

@@ -1,0 +1,41 @@
+name: gate-d-cosmosweb-access-preflight
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - benchmarks/gate_d/COSMOSWEB_D0_PROTOCOL.md
+      - scripts/run_gate_d_cosmosweb_access_preflight.py
+      - tests/test_gate_d_cosmosweb_access_preflight.py
+      - .github/workflows/gate-d-cosmosweb-access-preflight.yml
+permissions:
+  contents: read
+concurrency:
+  group: gate-d-cosmosweb-access-preflight-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  access-provenance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install verification test dependencies
+        run: python -m pip install -e '.[test]'
+      - name: Static D0 contract tests
+        run: python -m pytest -q tests/test_gate_d_cosmosweb_access_preflight.py
+      - name: Probe declared COSMOS-Web DR1 metadata endpoints only
+        run: python scripts/run_gate_d_cosmosweb_access_preflight.py --out gate-d0-output --timeout 30
+      - if: always()
+        run: |
+          mkdir -p gate-d0-output
+          git rev-parse HEAD > gate-d0-output/commit.txt
+          python -m pip freeze > gate-d0-output/pip-freeze.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-d-cosmosweb-access-preflight
+          path: gate-d0-output
+          if-no-files-found: error

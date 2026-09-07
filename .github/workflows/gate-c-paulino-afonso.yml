@@ -1,0 +1,110 @@
+name: gate-c-paulino-afonso
+
+on:
+  push:
+    branches:
+      - verification-v0.1
+    paths:
+      - "verification/paulino_afonso_2017.py"
+      - "verification/paulino_afonso_sersic_floor.py"
+      - "tests/test_paulino_afonso_2017.py"
+      - "tests/test_paulino_afonso_sersic_floor.py"
+      - "scripts/run_paulino_afonso_2017_anchor_benchmark.py"
+      - "scripts/run_paulino_afonso_sersic_floor.py"
+      - "scripts/run_paulino_afonso_noiseless_identifiability.py"
+      - "scripts/run_paulino_afonso_optimizer_diagnosis.py"
+      - "scripts/run_paulino_afonso_solver_convergence.py"
+      - "scripts/run_paulino_afonso_parameterization_diagnosis.py"
+      - "scripts/run_paulino_afonso_independent_optimizer.py"
+      - "scripts/run_paulino_afonso_jacobian_diagnosis.py"
+      - "scripts/run_paulino_afonso_multistart_3point.py"
+      - "benchmarks/paulino_afonso_2017/**"
+      - ".github/workflows/gate-c-paulino-afonso.yml"
+      - "pyproject.toml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+    paths:
+      - "verification/paulino_afonso_2017.py"
+      - "verification/paulino_afonso_sersic_floor.py"
+      - "tests/test_paulino_afonso_2017.py"
+      - "tests/test_paulino_afonso_sersic_floor.py"
+      - "scripts/run_paulino_afonso_2017_anchor_benchmark.py"
+      - "scripts/run_paulino_afonso_sersic_floor.py"
+      - "scripts/run_paulino_afonso_noiseless_identifiability.py"
+      - "scripts/run_paulino_afonso_optimizer_diagnosis.py"
+      - "scripts/run_paulino_afonso_solver_convergence.py"
+      - "scripts/run_paulino_afonso_parameterization_diagnosis.py"
+      - "scripts/run_paulino_afonso_independent_optimizer.py"
+      - "scripts/run_paulino_afonso_jacobian_diagnosis.py"
+      - "scripts/run_paulino_afonso_multistart_3point.py"
+      - "benchmarks/paulino_afonso_2017/**"
+      - ".github/workflows/gate-c-paulino-afonso.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+jobs:
+  anchor-radiometry-and-sersic-floor:
+    # Routing only; skipped jobs are NOT new scientific results. See docs/VERIFICATION_CI_ROUTING.md.
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.number == 5 && github.event.pull_request.draft) && !(github.event_name == 'push' && github.ref == 'refs/heads/verification-v0.1' && github.event.before == '88f3fb646a0b89e6cb9b8b8ee1aacae377edca56' && contains(github.event.head_commit.message, '[C5e isolated]')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install verification harness
+        run: python -m pip install -e ".[test]"
+
+      - name: Record software provenance
+        run: python -m pip freeze | tee gate-c-paulino-afonso-pip-freeze.txt
+
+      - name: Run C2 anchor and radiometric checks
+        run: pytest -q tests/test_paulino_afonso_2017.py
+
+      - name: Run C2 image-level invariant checks
+        run: pytest -q tests/test_paulino_afonso_sersic_floor.py
+
+      - name: Generate machine-readable C2 anchor report
+        run: python scripts/run_paulino_afonso_2017_anchor_benchmark.py
+
+      - name: Diagnose same-model noiseless identifiability
+        run: python scripts/run_paulino_afonso_noiseless_identifiability.py
+
+      - name: Diagnose high-n optimizer basins
+        run: python scripts/run_paulino_afonso_optimizer_diagnosis.py
+
+      - name: Diagnose high-n solver convergence controls
+        run: python scripts/run_paulino_afonso_solver_convergence.py
+
+      - name: Diagnose high-n internal parameter scaling
+        run: python scripts/run_paulino_afonso_parameterization_diagnosis.py
+
+      - name: Cross-check high-n recovery with independent optimizer family
+        run: python scripts/run_paulino_afonso_independent_optimizer.py
+
+      - name: Diagnose high-n Jacobian conditioning
+        run: python scripts/run_paulino_afonso_jacobian_diagnosis.py
+
+      - name: Test fixed 3-point multi-start basin recovery
+        run: python scripts/run_paulino_afonso_multistart_3point.py
+
+      - name: Generate machine-readable C2 Sérsic-floor report
+        run: python scripts/run_paulino_afonso_sersic_floor.py
+
+      - name: Upload C2 metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-c-paulino-afonso
+          path: |
+            gate-c-paulino-afonso-pip-freeze.txt
+            benchmark_output/paulino_afonso_2017/
+          if-no-files-found: warn

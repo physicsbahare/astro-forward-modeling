@@ -1,0 +1,45 @@
+name: gate-c-chromatic-source-sed-mismatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - scripts/run_chromatic_source_sed_mismatch.py
+      - scripts/audit_chromatic_source_sed_mismatch.py
+      - tests/test_chromatic_source_sed_mismatch.py
+      - benchmarks/chromatic_psf/C7_PROTOCOL.md
+      - .github/workflows/gate-c-chromatic-source-sed-mismatch.yml
+permissions:
+  contents: read
+concurrency:
+  group: gate-c-chromatic-source-sed-mismatch-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  chromatic-source-sed-mismatch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-verification.txt
+      - run: python -m pip install -r requirements-verification.txt -e '.[test]'
+      - name: Frozen C7 controls
+        run: python -m pytest -q tests/test_chromatic_source_sed_mismatch.py
+      - name: Run C7 source-SED mismatch stress test
+        run: python scripts/run_chromatic_source_sed_mismatch.py --out chromatic-source-sed-output
+      - name: Read-only C7 audit
+        run: python scripts/audit_chromatic_source_sed_mismatch.py --source chromatic-source-sed-output
+      - if: always()
+        run: |
+          mkdir -p chromatic-source-sed-output
+          git rev-parse HEAD > chromatic-source-sed-output/commit.txt
+          python -m pip freeze > chromatic-source-sed-output/pip-freeze.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chromatic-source-sed-mismatch-c7
+          path: chromatic-source-sed-output
+          if-no-files-found: error

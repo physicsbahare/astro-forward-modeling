@@ -1,0 +1,44 @@
+name: gate-d-cosmosweb-real-cutout
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - benchmarks/gate_d/COSMOSWEB_D1_REAL_CUTOUT_PROTOCOL.md
+      - scripts/run_gate_d_cosmosweb_remote_cutout.py
+      - tests/test_gate_d_cosmosweb_remote_cutout.py
+      - .github/workflows/gate-d-cosmosweb-real-cutout.yml
+permissions:
+  contents: read
+concurrency:
+  group: gate-d-cosmosweb-real-cutout-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  real-cutout:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python and CFITSIO dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcfitsio-bin
+          python -m pip install -e '.[test]' astropy matplotlib
+      - name: Unit-check frozen geometry helpers
+        run: python -m pytest -q tests/test_gate_d_cosmosweb_remote_cutout.py
+      - name: Acquire official real COSMOS-Web cutout
+        run: |
+          df -h
+          python scripts/run_gate_d_cosmosweb_remote_cutout.py --out gate_d_real_cutout
+          df -h
+          cat gate_d_real_cutout/manifest.json
+      - name: Upload compact real-data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-d-cosmosweb-real-cutout
+          path: gate_d_real_cutout/
+          if-no-files-found: error
+          retention-days: 30

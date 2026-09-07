@@ -1,0 +1,2886 @@
+{
+  "scope": "LOCAL incomplete C5m; never dispatched to CI",
+  "github_run_id": null,
+  "diagnosis": "Initial PSF key-schema adapter error repaired without science settings changes; then all sampling16 Imfit convolutions failed memory allocation under unchanged 6GiB cap. Sampling8 replays passed. No failed stage replaced or passed.",
+  "timer_package": {
+    "url": "https://archive.ubuntu.com/ubuntu/pool/main/t/time/time_1.9-0.2build1_amd64.deb",
+    "sha256": "abe09ee9806b336cc255c013cc726b39cbf9d56ff9dc7c2acff5762ab0f07be8",
+    "reason": "Existing GNU_TIME relocation used because local /usr/bin/time absent; official Ubuntu package, no custom timer."
+  },
+  "shards": [
+    {
+      "phase": "local",
+      "host_n": 1,
+      "summary": {
+        "config": {
+          "stage": "C5m bounded Imfit sampling refinement",
+          "host_n": 1,
+          "cases": [
+            {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            }
+          ],
+          "samples": [
+            8,
+            16
+          ],
+          "github_run_id": null,
+          "github_sha": null,
+          "parent_run": 33798675379,
+          "parent_commit": "094de88e88b668015658536d13583c201cfaaaf2",
+          "parent_audit_sha256": "f5e8d0ac7e913697f302589a3c6f72af7eab60ba206df9dc829ec70a0d5faa08",
+          "protocol_sha256": "0e8303ddcc6154dfac31a1bc60b171f6c54d71158090d7eddc48628e16bc436e",
+          "producer_sha256": "c1109c3cbc04b32526a4e7f07e6fb292543ae9122d07163f3cd04d4933e41403",
+          "historical_adapter_sha256": "93458ba50b5db0c4e27db6e4a295c24c1197a8acd379abd99568f2062f00996f",
+          "pins": {
+            "numpy": "2.5.2",
+            "scipy": "1.18.1",
+            "galsim": "2.8.4",
+            "astropy": "8.0.1",
+            "photutils": "3.0.0"
+          },
+          "runtime_versions": {
+            "numpy": "2.5.2",
+            "scipy": "1.18.1",
+            "galsim": "2.8.4",
+            "astropy": "8.0.1",
+            "photutils": "3.0.0"
+          },
+          "binary_sha256": "4fe27a3d3e48f0c4931ee3fb5ad571330fdbf27f6c327f48990418bdcb965984",
+          "timeout_seconds": 120,
+          "address_space_bytes": 6442450944,
+          "expected_workers": 8,
+          "expected_starts": 16,
+          "expected_pairs": 4,
+          "expected_new_arrays": 84,
+          "acceptance": "complete provenance and inherited algebra only"
+        },
+        "workers": [
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'A_normalized_input is not a file in the archive'",
+            "wall_seconds": 2.129991415999939,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_A_s8",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "A",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'A_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.8764877710000292,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_A_s16",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "A",
+            "sampling": 16
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'B_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.845024125000009,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_B_s8",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "B",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'B_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.8757226339999988,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_B_s16",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "B",
+            "sampling": 16
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'A_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.769347549000031,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_A_s8",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "A",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'A_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.6268663080001033,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_A_s16",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "A",
+            "sampling": 16
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'B_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.6623565260000532,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_B_s8",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "B",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'B_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.7470657410000285,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_B_s16",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "B",
+            "sampling": 16
+          }
+        ],
+        "results": [],
+        "starts": [],
+        "pairwise": [],
+        "complete": false
+      },
+      "failures_and_logs": [
+        {
+          "worker": "corner_re0.5_q0.15_A_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'A_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.031366645000048266\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_A_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'A_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.030923040999937257\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_B_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'B_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.030703306000077646\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_B_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'B_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.029571509000106744\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_A_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'A_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.02789163299996744\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_A_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'A_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.011513324000020475\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_B_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'B_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.010020722999911413\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_B_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'B_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.032747603999951025\n}\n"
+          }
+        }
+      ],
+      "manifest": {}
+    },
+    {
+      "phase": "local",
+      "host_n": 4,
+      "summary": {
+        "config": {
+          "stage": "C5m bounded Imfit sampling refinement",
+          "host_n": 4,
+          "cases": [
+            {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            }
+          ],
+          "samples": [
+            8,
+            16
+          ],
+          "github_run_id": null,
+          "github_sha": null,
+          "parent_run": 33798675379,
+          "parent_commit": "094de88e88b668015658536d13583c201cfaaaf2",
+          "parent_audit_sha256": "f5e8d0ac7e913697f302589a3c6f72af7eab60ba206df9dc829ec70a0d5faa08",
+          "protocol_sha256": "0e8303ddcc6154dfac31a1bc60b171f6c54d71158090d7eddc48628e16bc436e",
+          "producer_sha256": "c1109c3cbc04b32526a4e7f07e6fb292543ae9122d07163f3cd04d4933e41403",
+          "historical_adapter_sha256": "93458ba50b5db0c4e27db6e4a295c24c1197a8acd379abd99568f2062f00996f",
+          "pins": {
+            "numpy": "2.5.2",
+            "scipy": "1.18.1",
+            "galsim": "2.8.4",
+            "astropy": "8.0.1",
+            "photutils": "3.0.0"
+          },
+          "runtime_versions": {
+            "numpy": "2.5.2",
+            "scipy": "1.18.1",
+            "galsim": "2.8.4",
+            "astropy": "8.0.1",
+            "photutils": "3.0.0"
+          },
+          "binary_sha256": "4fe27a3d3e48f0c4931ee3fb5ad571330fdbf27f6c327f48990418bdcb965984",
+          "timeout_seconds": 120,
+          "address_space_bytes": 6442450944,
+          "expected_workers": 8,
+          "expected_starts": 16,
+          "expected_pairs": 4,
+          "expected_new_arrays": 84,
+          "acceptance": "complete provenance and inherited algebra only"
+        },
+        "workers": [
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'A_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.8398270239999874,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_A_s8",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "A",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'A_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.806284886999947,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_A_s16",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "A",
+            "sampling": 16
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'B_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.6316300039999305,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_B_s8",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "B",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'B_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.6556593880000037,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_B_s16",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "B",
+            "sampling": 16
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'A_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.6338087189999442,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_A_s8",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "A",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'A_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.6292726340000172,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_A_s16",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "A",
+            "sampling": 16
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'B_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.7828163070000755,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_B_s8",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "B",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "KeyError",
+            "message": "'B_normalized_input is not a file in the archive'",
+            "wall_seconds": 1.8932317869999906,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_B_s16",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "B",
+            "sampling": 16
+          }
+        ],
+        "results": [],
+        "starts": [],
+        "pairwise": [],
+        "complete": false
+      },
+      "failures_and_logs": [
+        {
+          "worker": "corner_re0.5_q0.15_A_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'A_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.03393544900006873\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_A_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'A_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.011638493000077688\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_B_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'B_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.01138749300002928\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_B_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'B_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.009998059999929865\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_A_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'A_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.011373997999953644\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_A_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'A_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.010641529000054106\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_B_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'B_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.010658532999968884\n}\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_B_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"KeyError\",\n  \"message\": \"'B_normalized_input is not a file in the archive'\",\n  \"wall_seconds\": 0.01706077300002562\n}\n"
+          }
+        }
+      ],
+      "manifest": {}
+    },
+    {
+      "phase": "repaired",
+      "host_n": 1,
+      "summary": {
+        "config": {
+          "stage": "C5m bounded Imfit sampling refinement",
+          "host_n": 1,
+          "cases": [
+            {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            }
+          ],
+          "samples": [
+            8,
+            16
+          ],
+          "github_run_id": null,
+          "github_sha": null,
+          "parent_run": 33798675379,
+          "parent_commit": "094de88e88b668015658536d13583c201cfaaaf2",
+          "parent_audit_sha256": "f5e8d0ac7e913697f302589a3c6f72af7eab60ba206df9dc829ec70a0d5faa08",
+          "protocol_sha256": "0e8303ddcc6154dfac31a1bc60b171f6c54d71158090d7eddc48628e16bc436e",
+          "producer_sha256": "054705e5b48d46b8af6e7af28537d492fbed95c7cac75d9ab58e1bee3542e9b0",
+          "historical_adapter_sha256": "93458ba50b5db0c4e27db6e4a295c24c1197a8acd379abd99568f2062f00996f",
+          "pins": {
+            "numpy": "2.5.2",
+            "scipy": "1.18.1",
+            "galsim": "2.8.4",
+            "astropy": "8.0.1",
+            "photutils": "3.0.0"
+          },
+          "runtime_versions": {
+            "numpy": "2.5.2",
+            "scipy": "1.18.1",
+            "galsim": "2.8.4",
+            "astropy": "8.0.1",
+            "photutils": "3.0.0"
+          },
+          "binary_sha256": "4fe27a3d3e48f0c4931ee3fb5ad571330fdbf27f6c327f48990418bdcb965984",
+          "timeout_seconds": 120,
+          "address_space_bytes": 6442450944,
+          "expected_workers": 8,
+          "expected_starts": 16,
+          "expected_pairs": 4,
+          "expected_new_arrays": 84,
+          "acceptance": "complete provenance and inherited algebra only"
+        },
+        "workers": [
+          {
+            "success": true,
+            "wall_seconds": 26.138678021999908,
+            "imfit_wall_seconds": 21.82,
+            "peak_child_rss_kib": 2299344,
+            "fits_bitpix": -32,
+            "fine_sha256": "db99b89248641dee7e988c3e58444d53d4838e032ad23526b3ab43f38bfda7ca",
+            "fine_shape": [
+              1601,
+              1601
+            ],
+            "native_sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46",
+            "signed_sum": 0.9829477147261834,
+            "absolute_sum": 1.0479453368159755,
+            "negative_pixels": 18008,
+            "negative_absolute_fraction": 0.03101193345030656,
+            "signed_centroid_x_pix": 0.16637797306013058,
+            "signed_centroid_y_pix": -0.08497270381968593,
+            "signed_mxx_pix2": 31.69417440626605,
+            "signed_myy_pix2": 32.327023705460554,
+            "signed_mxy_pix2": 23.221142863762836,
+            "imfit_bn": 0.6933997882144678,
+            "exact_bn": 0.6931471805599455,
+            "kernel_sha256": "a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf",
+            "kernel_stats": {
+              "sum": 1.0000000000000009,
+              "negative_pixels": 900171,
+              "shape": [
+                1665,
+                1665
+              ]
+            },
+            "total_worker_seconds": 23.71395512899994,
+            "returncode": 0,
+            "name": "corner_re0.5_q0.15_A_s8",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "A",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "RuntimeError",
+            "message": "Imfit failure; see retained imfit/result.json and logs",
+            "wall_seconds": 6.742474148000042,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_A_s16",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "A",
+            "sampling": 16
+          },
+          {
+            "success": true,
+            "wall_seconds": 23.202784651,
+            "imfit_wall_seconds": 20.3,
+            "peak_child_rss_kib": 2299104,
+            "fits_bitpix": -32,
+            "fine_sha256": "95b5705d0365f6aef4def10ed660cc11f7355181ccf536ec35619374b9ee366d",
+            "fine_shape": [
+              1601,
+              1601
+            ],
+            "native_sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5",
+            "signed_sum": 0.987204922295343,
+            "absolute_sum": 1.196424869973526,
+            "negative_pixels": 18337,
+            "negative_absolute_fraction": 0.0874354725185597,
+            "signed_centroid_x_pix": 0.04351423347314706,
+            "signed_centroid_y_pix": -0.6489542027632176,
+            "signed_mxx_pix2": 115.98349472185213,
+            "signed_myy_pix2": 40.48831923553555,
+            "signed_mxy_pix2": 12.701549847412815,
+            "imfit_bn": 0.6933997882144678,
+            "exact_bn": 0.6931471805599455,
+            "kernel_sha256": "2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2",
+            "kernel_stats": {
+              "sum": 1.0000000000000009,
+              "negative_pixels": 900905,
+              "shape": [
+                1665,
+                1665
+              ]
+            },
+            "total_worker_seconds": 21.429949057000044,
+            "returncode": 0,
+            "name": "corner_re0.5_q0.15_B_s8",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "B",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "RuntimeError",
+            "message": "Imfit failure; see retained imfit/result.json and logs",
+            "wall_seconds": 7.339833096999996,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_B_s16",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "B",
+            "sampling": 16
+          },
+          {
+            "success": true,
+            "wall_seconds": 19.460396876999994,
+            "imfit_wall_seconds": 16.54,
+            "peak_child_rss_kib": 2299344,
+            "fits_bitpix": -32,
+            "fine_sha256": "d2ce31af7e9c4015f4e7ca64e710e9399b1bad5cfce094db1508fa2912a655d9",
+            "fine_shape": [
+              1601,
+              1601
+            ],
+            "native_sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695",
+            "signed_sum": 0.9993846791960175,
+            "absolute_sum": 1.0619659144497167,
+            "negative_pixels": 18093,
+            "negative_absolute_fraction": 0.02946480409690327,
+            "signed_centroid_x_pix": 0.15794159241464575,
+            "signed_centroid_y_pix": -0.06855399479055488,
+            "signed_mxx_pix2": 31.777075704902327,
+            "signed_myy_pix2": 32.453300848619484,
+            "signed_mxy_pix2": 23.119185564560794,
+            "imfit_bn": 0.6933997882144678,
+            "exact_bn": 0.6931471805599455,
+            "kernel_sha256": "a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf",
+            "kernel_stats": {
+              "sum": 1.0000000000000009,
+              "negative_pixels": 900171,
+              "shape": [
+                1665,
+                1665
+              ]
+            },
+            "total_worker_seconds": 17.736330684999984,
+            "returncode": 0,
+            "name": "corner_re0.5_q1_A_s8",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "A",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "RuntimeError",
+            "message": "Imfit failure; see retained imfit/result.json and logs",
+            "wall_seconds": 6.759717304999981,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_A_s16",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "A",
+            "sampling": 16
+          },
+          {
+            "success": true,
+            "wall_seconds": 20.483662520000053,
+            "imfit_wall_seconds": 17.45,
+            "peak_child_rss_kib": 2299232,
+            "fits_bitpix": -32,
+            "fine_sha256": "d665e233ac153c773d5b210792304241658076cf2bdc234da056554285723854",
+            "fine_shape": [
+              1601,
+              1601
+            ],
+            "native_sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0",
+            "signed_sum": 0.9982491354011191,
+            "absolute_sum": 1.1967213079321692,
+            "negative_pixels": 17840,
+            "negative_absolute_fraction": 0.08292330520712161,
+            "signed_centroid_x_pix": 0.04582470519904203,
+            "signed_centroid_y_pix": -0.6523685198359547,
+            "signed_mxx_pix2": 116.65165791074551,
+            "signed_myy_pix2": 40.75914263918298,
+            "signed_mxy_pix2": 12.676840375450007,
+            "imfit_bn": 0.6933997882144678,
+            "exact_bn": 0.6931471805599455,
+            "kernel_sha256": "2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2",
+            "kernel_stats": {
+              "sum": 1.0000000000000009,
+              "negative_pixels": 900905,
+              "shape": [
+                1665,
+                1665
+              ]
+            },
+            "total_worker_seconds": 18.658306712000012,
+            "returncode": 0,
+            "name": "corner_re0.5_q1_B_s8",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "B",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "RuntimeError",
+            "message": "Imfit failure; see retained imfit/result.json and logs",
+            "wall_seconds": 8.019671718999916,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_B_s16",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 0.5,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "B",
+            "sampling": 16
+          }
+        ],
+        "results": [
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9999999999999996,
+            "hit_amplitude_zero": false,
+            "cost": 4.2465483355292254e-27,
+            "gradient": -3.941008297085656e-18,
+            "scaled_l1_over_reference_l1": 4.458927407910172e-16,
+            "template_sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46",
+            "reference_sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q0.15_A_s8_imfit8",
+            "render": "corner_re0.5_q0.15_A_s8",
+            "n": 0.5,
+            "q": 0.15,
+            "module": "A",
+            "sampling": 8,
+            "reference": "imfit8"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.017286910138603,
+            "hit_amplitude_zero": false,
+            "cost": 0.0211605819071804,
+            "gradient": -9.567237139237322e-19,
+            "scaled_l1_over_reference_l1": 0.0007633379579119004,
+            "template_sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46",
+            "reference_sha256": "f9a28d4c4278210256cc3f7f5203b5150f23276e024ceb867aea84e3b2d2467c",
+            "l1_over_reference_l1": 0.016710042465159655,
+            "max_abs_difference": 0.00038692801104739383,
+            "signed_sum_difference": -0.01669665842317647,
+            "case": "corner_re0.5_q0.15_A_s8_galsim_no_cell",
+            "render": "corner_re0.5_q0.15_A_s8",
+            "n": 0.5,
+            "q": 0.15,
+            "module": "A",
+            "sampling": 8,
+            "reference": "galsim_no_cell"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9999999999999997,
+            "hit_amplitude_zero": false,
+            "cost": 2.598747823174119e-27,
+            "gradient": -3.187506033480655e-18,
+            "scaled_l1_over_reference_l1": 3.566885459212673e-16,
+            "template_sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5",
+            "reference_sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q0.15_B_s8_imfit8",
+            "render": "corner_re0.5_q0.15_B_s8",
+            "n": 0.5,
+            "q": 0.15,
+            "module": "B",
+            "sampling": 8,
+            "reference": "imfit8"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.017831509031264,
+            "hit_amplitude_zero": false,
+            "cost": 0.012974785028187134,
+            "gradient": 4.526438191008574e-18,
+            "scaled_l1_over_reference_l1": 0.000835212130315221,
+            "template_sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5",
+            "reference_sha256": "da6f1694af21b024f87e4ab6d4704023a64d399f985f4636fa7b0bb9db47cd11",
+            "l1_over_reference_l1": 0.017107219300547854,
+            "max_abs_difference": 0.0004268807122686999,
+            "signed_sum_difference": -0.017239653874923988,
+            "case": "corner_re0.5_q0.15_B_s8_galsim_no_cell",
+            "render": "corner_re0.5_q0.15_B_s8",
+            "n": 0.5,
+            "q": 0.15,
+            "module": "B",
+            "sampling": 8,
+            "reference": "galsim_no_cell"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1,
+            "hit_amplitude_zero": false,
+            "cost": 0,
+            "gradient": 0,
+            "scaled_l1_over_reference_l1": 0,
+            "template_sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695",
+            "reference_sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q1_A_s8_imfit8",
+            "render": "corner_re0.5_q1_A_s8",
+            "n": 0.5,
+            "q": 1,
+            "module": "A",
+            "sampling": 8,
+            "reference": "imfit8"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0009716146510776,
+            "hit_amplitude_zero": false,
+            "cost": 0.00019773361640230424,
+            "gradient": 5.754530085408903e-19,
+            "scaled_l1_over_reference_l1": 0.0001466682889788013,
+            "template_sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695",
+            "reference_sha256": "e3ee8081684faa536a5e7fa7d5c0114987b04989dee2fe2cffc69b9737e128b2",
+            "l1_over_reference_l1": 0.0009399635055218733,
+            "max_abs_difference": 0.000022745688217661042,
+            "signed_sum_difference": -0.0009102992145935129,
+            "case": "corner_re0.5_q1_A_s8_galsim_no_cell",
+            "render": "corner_re0.5_q1_A_s8",
+            "n": 0.5,
+            "q": 1,
+            "module": "A",
+            "sampling": 8,
+            "reference": "galsim_no_cell"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1,
+            "hit_amplitude_zero": false,
+            "cost": 0,
+            "gradient": 0,
+            "scaled_l1_over_reference_l1": 0,
+            "template_sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0",
+            "reference_sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q1_B_s8_imfit8",
+            "render": "corner_re0.5_q1_B_s8",
+            "n": 0.5,
+            "q": 1,
+            "module": "B",
+            "sampling": 8,
+            "reference": "imfit8"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0009349836477166,
+            "hit_amplitude_zero": false,
+            "cost": 0.0005223751028452021,
+            "gradient": -3.0775618649504918e-18,
+            "scaled_l1_over_reference_l1": 0.00026977425531625807,
+            "template_sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0",
+            "reference_sha256": "53f6dd5e882cb08b816889be2474330e32c50717fd7d6fda59e5e0196652d0a9",
+            "l1_over_reference_l1": 0.0009895915123920417,
+            "max_abs_difference": 0.000023143671475139155,
+            "signed_sum_difference": -0.000876244788228342,
+            "case": "corner_re0.5_q1_B_s8_galsim_no_cell",
+            "render": "corner_re0.5_q1_B_s8",
+            "n": 0.5,
+            "q": 1,
+            "module": "B",
+            "sampling": 8,
+            "reference": "galsim_no_cell"
+          }
+        ],
+        "starts": [
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9999999999999996,
+            "hit_amplitude_zero": false,
+            "cost": 4.2465483355292254e-27,
+            "gradient": -3.941008297085656e-18,
+            "scaled_l1_over_reference_l1": 4.458927407910172e-16,
+            "template_sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46",
+            "reference_sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q0.15_A_s8_imfit8",
+            "render": "corner_re0.5_q0.15_A_s8",
+            "n": 0.5,
+            "q": 0.15,
+            "module": "A",
+            "sampling": 8,
+            "reference": "imfit8",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.017286910138603,
+            "hit_amplitude_zero": false,
+            "cost": 0.0211605819071804,
+            "gradient": -9.567237139237322e-19,
+            "scaled_l1_over_reference_l1": 0.0007633379579119004,
+            "template_sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46",
+            "reference_sha256": "f9a28d4c4278210256cc3f7f5203b5150f23276e024ceb867aea84e3b2d2467c",
+            "l1_over_reference_l1": 0.016710042465159655,
+            "max_abs_difference": 0.00038692801104739383,
+            "signed_sum_difference": -0.01669665842317647,
+            "case": "corner_re0.5_q0.15_A_s8_galsim_no_cell",
+            "render": "corner_re0.5_q0.15_A_s8",
+            "n": 0.5,
+            "q": 0.15,
+            "module": "A",
+            "sampling": 8,
+            "reference": "galsim_no_cell",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9999999999999997,
+            "hit_amplitude_zero": false,
+            "cost": 2.598747823174119e-27,
+            "gradient": -3.187506033480655e-18,
+            "scaled_l1_over_reference_l1": 3.566885459212673e-16,
+            "template_sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5",
+            "reference_sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q0.15_B_s8_imfit8",
+            "render": "corner_re0.5_q0.15_B_s8",
+            "n": 0.5,
+            "q": 0.15,
+            "module": "B",
+            "sampling": 8,
+            "reference": "imfit8",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.017831509031264,
+            "hit_amplitude_zero": false,
+            "cost": 0.012974785028187134,
+            "gradient": 4.526438191008574e-18,
+            "scaled_l1_over_reference_l1": 0.000835212130315221,
+            "template_sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5",
+            "reference_sha256": "da6f1694af21b024f87e4ab6d4704023a64d399f985f4636fa7b0bb9db47cd11",
+            "l1_over_reference_l1": 0.017107219300547854,
+            "max_abs_difference": 0.0004268807122686999,
+            "signed_sum_difference": -0.017239653874923988,
+            "case": "corner_re0.5_q0.15_B_s8_galsim_no_cell",
+            "render": "corner_re0.5_q0.15_B_s8",
+            "n": 0.5,
+            "q": 0.15,
+            "module": "B",
+            "sampling": 8,
+            "reference": "galsim_no_cell",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1,
+            "hit_amplitude_zero": false,
+            "cost": 0,
+            "gradient": 0,
+            "scaled_l1_over_reference_l1": 0,
+            "template_sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695",
+            "reference_sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q1_A_s8_imfit8",
+            "render": "corner_re0.5_q1_A_s8",
+            "n": 0.5,
+            "q": 1,
+            "module": "A",
+            "sampling": 8,
+            "reference": "imfit8",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0009716146510776,
+            "hit_amplitude_zero": false,
+            "cost": 0.00019773361640230424,
+            "gradient": 5.754530085408903e-19,
+            "scaled_l1_over_reference_l1": 0.0001466682889788013,
+            "template_sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695",
+            "reference_sha256": "e3ee8081684faa536a5e7fa7d5c0114987b04989dee2fe2cffc69b9737e128b2",
+            "l1_over_reference_l1": 0.0009399635055218733,
+            "max_abs_difference": 0.000022745688217661042,
+            "signed_sum_difference": -0.0009102992145935129,
+            "case": "corner_re0.5_q1_A_s8_galsim_no_cell",
+            "render": "corner_re0.5_q1_A_s8",
+            "n": 0.5,
+            "q": 1,
+            "module": "A",
+            "sampling": 8,
+            "reference": "galsim_no_cell",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1,
+            "hit_amplitude_zero": false,
+            "cost": 0,
+            "gradient": 0,
+            "scaled_l1_over_reference_l1": 0,
+            "template_sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0",
+            "reference_sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q1_B_s8_imfit8",
+            "render": "corner_re0.5_q1_B_s8",
+            "n": 0.5,
+            "q": 1,
+            "module": "B",
+            "sampling": 8,
+            "reference": "imfit8",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0009349836477166,
+            "hit_amplitude_zero": false,
+            "cost": 0.0005223751028452021,
+            "gradient": -3.0775618649504918e-18,
+            "scaled_l1_over_reference_l1": 0.00026977425531625807,
+            "template_sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0",
+            "reference_sha256": "53f6dd5e882cb08b816889be2474330e32c50717fd7d6fda59e5e0196652d0a9",
+            "l1_over_reference_l1": 0.0009895915123920417,
+            "max_abs_difference": 0.000023143671475139155,
+            "signed_sum_difference": -0.000876244788228342,
+            "case": "corner_re0.5_q1_B_s8_galsim_no_cell",
+            "render": "corner_re0.5_q1_B_s8",
+            "n": 0.5,
+            "q": 1,
+            "module": "B",
+            "sampling": 8,
+            "reference": "galsim_no_cell",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          }
+        ],
+        "pairwise": [],
+        "complete": false
+      },
+      "failures_and_logs": [
+        {
+          "worker": "corner_re0.5_q0.15_A_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 21.844747834999907,\n  \"imfit_wall_seconds\": 21.82,\n  \"peak_child_rss_kib\": 2299344,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"db99b89248641dee7e988c3e58444d53d4838e032ad23526b3ab43f38bfda7ca\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46\",\n  \"signed_sum\": 0.9829477147261834,\n  \"absolute_sum\": 1.0479453368159755,\n  \"negative_pixels\": 18008,\n  \"negative_absolute_fraction\": 0.03101193345030656,\n  \"signed_centroid_x_pix\": 0.16637797306013058,\n  \"signed_centroid_y_pix\": -0.08497270381968593,\n  \"signed_mxx_pix2\": 31.69417440626605,\n  \"signed_myy_pix2\": 32.327023705460554,\n  \"signed_mxy_pix2\": 23.221142863762836,\n  \"imfit_bn\": 0.6933997882144678,\n  \"exact_bn\": 0.6931471805599455,\n  \"kernel_sha256\": \"a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf\",\n  \"kernel_stats\": {\n    \"sum\": 1.0000000000000009,\n    \"negative_pixels\": 900171,\n    \"shape\": [\n      1665,\n      1665\n    ]\n  },\n  \"total_worker_seconds\": 23.71395512899994\n}\n",
+            "imfit/result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 21.844747834999907,\n  \"imfit_wall_seconds\": 21.82,\n  \"peak_child_rss_kib\": 2299344,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"db99b89248641dee7e988c3e58444d53d4838e032ad23526b3ab43f38bfda7ca\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46\",\n  \"signed_sum\": 0.9829477147261834,\n  \"absolute_sum\": 1.0479453368159755,\n  \"negative_pixels\": 18008,\n  \"negative_absolute_fraction\": 0.03101193345030656,\n  \"signed_centroid_x_pix\": 0.16637797306013058,\n  \"signed_centroid_y_pix\": -0.08497270381968593,\n  \"signed_mxx_pix2\": 31.69417440626605,\n  \"signed_myy_pix2\": 32.327023705460554,\n  \"signed_mxy_pix2\": 23.221142863762836,\n  \"imfit_bn\": 0.6933997882144678,\n  \"exact_bn\": 0.6931471805599455\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_A_s8/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_A_s8/kernel.fits\") ...\nnaxis1 [# pixels/row] = 1665, naxis2 [# pixels/col] = 1665; nPixels_tot = 2772225\nFunction: Sersic\nModel Object: 2563201 data values (pixels)\n7 total parameters\n\nSaving output model image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_A_s8/imfit/fine.fits\") ...\nDone!\n\n",
+            "imfit/stderr.txt": "",
+            "imfit/time.txt": "21.82 2299344\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_A_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"RuntimeError\",\n  \"message\": \"Imfit failure; see retained imfit/result.json and logs\",\n  \"wall_seconds\": 4.969198936999987\n}\n",
+            "imfit/result.json": "{\n  \"success\": false,\n  \"wall_seconds\": 0.1254777340000146,\n  \"exception_type\": \"RuntimeError\",\n  \"message\": \"makeimage exited 255; retained logs\"\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_A_s16/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_A_s16/kernel.fits\") ...\nnaxis1 [# pixels/row] = 3329, naxis2 [# pixels/col] = 3329; nPixels_tot = 11082241\n",
+            "imfit/stderr.txt": "*** WARNING: Convolver::DoFullSetup: memory allocation failure!\n*** Error returned from Convolver::DoFullSetup!\n*** ERROR: Failure in ModelObject::SetupModelImage!\n\n",
+            "imfit/time.txt": "Command exited with non-zero status 255\n0.12 179368\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_B_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 20.317039618999956,\n  \"imfit_wall_seconds\": 20.3,\n  \"peak_child_rss_kib\": 2299104,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"95b5705d0365f6aef4def10ed660cc11f7355181ccf536ec35619374b9ee366d\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5\",\n  \"signed_sum\": 0.987204922295343,\n  \"absolute_sum\": 1.196424869973526,\n  \"negative_pixels\": 18337,\n  \"negative_absolute_fraction\": 0.0874354725185597,\n  \"signed_centroid_x_pix\": 0.04351423347314706,\n  \"signed_centroid_y_pix\": -0.6489542027632176,\n  \"signed_mxx_pix2\": 115.98349472185213,\n  \"signed_myy_pix2\": 40.48831923553555,\n  \"signed_mxy_pix2\": 12.701549847412815,\n  \"imfit_bn\": 0.6933997882144678,\n  \"exact_bn\": 0.6931471805599455,\n  \"kernel_sha256\": \"2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2\",\n  \"kernel_stats\": {\n    \"sum\": 1.0000000000000009,\n    \"negative_pixels\": 900905,\n    \"shape\": [\n      1665,\n      1665\n    ]\n  },\n  \"total_worker_seconds\": 21.429949057000044\n}\n",
+            "imfit/result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 20.317039618999956,\n  \"imfit_wall_seconds\": 20.3,\n  \"peak_child_rss_kib\": 2299104,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"95b5705d0365f6aef4def10ed660cc11f7355181ccf536ec35619374b9ee366d\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5\",\n  \"signed_sum\": 0.987204922295343,\n  \"absolute_sum\": 1.196424869973526,\n  \"negative_pixels\": 18337,\n  \"negative_absolute_fraction\": 0.0874354725185597,\n  \"signed_centroid_x_pix\": 0.04351423347314706,\n  \"signed_centroid_y_pix\": -0.6489542027632176,\n  \"signed_mxx_pix2\": 115.98349472185213,\n  \"signed_myy_pix2\": 40.48831923553555,\n  \"signed_mxy_pix2\": 12.701549847412815,\n  \"imfit_bn\": 0.6933997882144678,\n  \"exact_bn\": 0.6931471805599455\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_B_s8/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_B_s8/kernel.fits\") ...\nnaxis1 [# pixels/row] = 1665, naxis2 [# pixels/col] = 1665; nPixels_tot = 2772225\nFunction: Sersic\nModel Object: 2563201 data values (pixels)\n7 total parameters\n\nSaving output model image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_B_s8/imfit/fine.fits\") ...\nDone!\n\n",
+            "imfit/stderr.txt": "",
+            "imfit/time.txt": "20.30 2299104\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_B_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"RuntimeError\",\n  \"message\": \"Imfit failure; see retained imfit/result.json and logs\",\n  \"wall_seconds\": 4.89889123599994\n}\n",
+            "imfit/result.json": "{\n  \"success\": false,\n  \"wall_seconds\": 0.14104734399995777,\n  \"exception_type\": \"RuntimeError\",\n  \"message\": \"makeimage exited 255; retained logs\"\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_B_s16/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q0.15_B_s16/kernel.fits\") ...\nnaxis1 [# pixels/row] = 3329, naxis2 [# pixels/col] = 3329; nPixels_tot = 11082241\n",
+            "imfit/stderr.txt": "*** WARNING: Convolver::DoFullSetup: memory allocation failure!\n*** Error returned from Convolver::DoFullSetup!\n*** ERROR: Failure in ModelObject::SetupModelImage!\n\n",
+            "imfit/time.txt": "Command exited with non-zero status 255\n0.13 179368\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_A_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 16.563429082000084,\n  \"imfit_wall_seconds\": 16.54,\n  \"peak_child_rss_kib\": 2299344,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"d2ce31af7e9c4015f4e7ca64e710e9399b1bad5cfce094db1508fa2912a655d9\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695\",\n  \"signed_sum\": 0.9993846791960175,\n  \"absolute_sum\": 1.0619659144497167,\n  \"negative_pixels\": 18093,\n  \"negative_absolute_fraction\": 0.02946480409690327,\n  \"signed_centroid_x_pix\": 0.15794159241464575,\n  \"signed_centroid_y_pix\": -0.06855399479055488,\n  \"signed_mxx_pix2\": 31.777075704902327,\n  \"signed_myy_pix2\": 32.453300848619484,\n  \"signed_mxy_pix2\": 23.119185564560794,\n  \"imfit_bn\": 0.6933997882144678,\n  \"exact_bn\": 0.6931471805599455,\n  \"kernel_sha256\": \"a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf\",\n  \"kernel_stats\": {\n    \"sum\": 1.0000000000000009,\n    \"negative_pixels\": 900171,\n    \"shape\": [\n      1665,\n      1665\n    ]\n  },\n  \"total_worker_seconds\": 17.736330684999984\n}\n",
+            "imfit/result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 16.563429082000084,\n  \"imfit_wall_seconds\": 16.54,\n  \"peak_child_rss_kib\": 2299344,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"d2ce31af7e9c4015f4e7ca64e710e9399b1bad5cfce094db1508fa2912a655d9\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695\",\n  \"signed_sum\": 0.9993846791960175,\n  \"absolute_sum\": 1.0619659144497167,\n  \"negative_pixels\": 18093,\n  \"negative_absolute_fraction\": 0.02946480409690327,\n  \"signed_centroid_x_pix\": 0.15794159241464575,\n  \"signed_centroid_y_pix\": -0.06855399479055488,\n  \"signed_mxx_pix2\": 31.777075704902327,\n  \"signed_myy_pix2\": 32.453300848619484,\n  \"signed_mxy_pix2\": 23.119185564560794,\n  \"imfit_bn\": 0.6933997882144678,\n  \"exact_bn\": 0.6931471805599455\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_A_s8/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_A_s8/kernel.fits\") ...\nnaxis1 [# pixels/row] = 1665, naxis2 [# pixels/col] = 1665; nPixels_tot = 2772225\nFunction: Sersic\nModel Object: 2563201 data values (pixels)\n7 total parameters\n\nSaving output model image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_A_s8/imfit/fine.fits\") ...\nDone!\n\n",
+            "imfit/stderr.txt": "",
+            "imfit/time.txt": "16.54 2299344\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_A_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"RuntimeError\",\n  \"message\": \"Imfit failure; see retained imfit/result.json and logs\",\n  \"wall_seconds\": 5.017874328000062\n}\n",
+            "imfit/result.json": "{\n  \"success\": false,\n  \"wall_seconds\": 0.13078503999997793,\n  \"exception_type\": \"RuntimeError\",\n  \"message\": \"makeimage exited 255; retained logs\"\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_A_s16/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_A_s16/kernel.fits\") ...\nnaxis1 [# pixels/row] = 3329, naxis2 [# pixels/col] = 3329; nPixels_tot = 11082241\n",
+            "imfit/stderr.txt": "*** WARNING: Convolver::DoFullSetup: memory allocation failure!\n*** Error returned from Convolver::DoFullSetup!\n*** ERROR: Failure in ModelObject::SetupModelImage!\n\n",
+            "imfit/time.txt": "Command exited with non-zero status 255\n0.12 179368\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_B_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 17.478460713999993,\n  \"imfit_wall_seconds\": 17.45,\n  \"peak_child_rss_kib\": 2299232,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"d665e233ac153c773d5b210792304241658076cf2bdc234da056554285723854\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0\",\n  \"signed_sum\": 0.9982491354011191,\n  \"absolute_sum\": 1.1967213079321692,\n  \"negative_pixels\": 17840,\n  \"negative_absolute_fraction\": 0.08292330520712161,\n  \"signed_centroid_x_pix\": 0.04582470519904203,\n  \"signed_centroid_y_pix\": -0.6523685198359547,\n  \"signed_mxx_pix2\": 116.65165791074551,\n  \"signed_myy_pix2\": 40.75914263918298,\n  \"signed_mxy_pix2\": 12.676840375450007,\n  \"imfit_bn\": 0.6933997882144678,\n  \"exact_bn\": 0.6931471805599455,\n  \"kernel_sha256\": \"2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2\",\n  \"kernel_stats\": {\n    \"sum\": 1.0000000000000009,\n    \"negative_pixels\": 900905,\n    \"shape\": [\n      1665,\n      1665\n    ]\n  },\n  \"total_worker_seconds\": 18.658306712000012\n}\n",
+            "imfit/result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 17.478460713999993,\n  \"imfit_wall_seconds\": 17.45,\n  \"peak_child_rss_kib\": 2299232,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"d665e233ac153c773d5b210792304241658076cf2bdc234da056554285723854\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0\",\n  \"signed_sum\": 0.9982491354011191,\n  \"absolute_sum\": 1.1967213079321692,\n  \"negative_pixels\": 17840,\n  \"negative_absolute_fraction\": 0.08292330520712161,\n  \"signed_centroid_x_pix\": 0.04582470519904203,\n  \"signed_centroid_y_pix\": -0.6523685198359547,\n  \"signed_mxx_pix2\": 116.65165791074551,\n  \"signed_myy_pix2\": 40.75914263918298,\n  \"signed_mxy_pix2\": 12.676840375450007,\n  \"imfit_bn\": 0.6933997882144678,\n  \"exact_bn\": 0.6931471805599455\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_B_s8/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_B_s8/kernel.fits\") ...\nnaxis1 [# pixels/row] = 1665, naxis2 [# pixels/col] = 1665; nPixels_tot = 2772225\nFunction: Sersic\nModel Object: 2563201 data values (pixels)\n7 total parameters\n\nSaving output model image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_B_s8/imfit/fine.fits\") ...\nDone!\n\n",
+            "imfit/stderr.txt": "",
+            "imfit/time.txt": "17.45 2299232\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_B_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"RuntimeError\",\n  \"message\": \"Imfit failure; see retained imfit/result.json and logs\",\n  \"wall_seconds\": 6.202927383999963\n}\n",
+            "imfit/result.json": "{\n  \"success\": false,\n  \"wall_seconds\": 0.13087229600000683,\n  \"exception_type\": \"RuntimeError\",\n  \"message\": \"makeimage exited 255; retained logs\"\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_B_s16/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n1/renders/corner_re0.5_q1_B_s16/kernel.fits\") ...\nnaxis1 [# pixels/row] = 3329, naxis2 [# pixels/col] = 3329; nPixels_tot = 11082241\n",
+            "imfit/stderr.txt": "*** WARNING: Convolver::DoFullSetup: memory allocation failure!\n*** Error returned from Convolver::DoFullSetup!\n*** ERROR: Failure in ModelObject::SetupModelImage!\n\n",
+            "imfit/time.txt": "Command exited with non-zero status 255\n0.12 179368\n"
+          }
+        }
+      ],
+      "manifest": {
+        "comparisons/corner_re0.5_q0.15_A_s8_galsim_no_cell.npz": {
+          "file_sha256": "cf1b51d94e01fa95f0d0337183ded4bf8066289718136f71c3438c3beb41320a",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "f9a28d4c4278210256cc3f7f5203b5150f23276e024ceb867aea84e3b2d2467c"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "29b0f931026c25eff5ffa719c03857e11d4ceec3a41df5cfa07869b45e1ac921"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "c2e278d19c1f4f9d0272a2b465e81f302ff9ac4ec8a6f7375fa151a2ed8c9dbb"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q0.15_A_s8_imfit8.npz": {
+          "file_sha256": "09990f24bff372c092b99adc2691f862e446be6c98a1f1867ffec1508848cac7",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "ef2e206356cf4ec1c687939685a01a94e4dc489720c24d1fdaa9a597a096f5c0"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "f4027710faf99f29993ceac06f009018fc56402c04afab25eab399a4c24d8fc9"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q0.15_B_s8_galsim_no_cell.npz": {
+          "file_sha256": "4f89c14beae5d59df07798383e294f0ec0d146caa5e7ff9730ee7c85ef23d6f8",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "da6f1694af21b024f87e4ab6d4704023a64d399f985f4636fa7b0bb9db47cd11"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "b0d1b4600d79a6a866486dc6caf4f632177c0fbf7282e2e9f0342eb4ed053e95"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "257b3b5fd31111b9c63e5722a038aed4cf453434af3655d0e1acbb4170e17f8d"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q0.15_B_s8_imfit8.npz": {
+          "file_sha256": "921dd494c516a05a5bcae59936bcf9d97f07e24294445d2e05bfc9b4b70a0c17",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "cfc657392de24e596091a43d8c6a1da2ba3f2430af4bf236038e0f813e1a252f"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "66167de700d972bbec927cd5b0f748fcaa080f15260315ed770bc899e40f353a"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q1_A_s8_galsim_no_cell.npz": {
+          "file_sha256": "8a35410a9fbdfe90e7d7deee95b98439e7616f850b8b9eb903a51625c365a61b",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "e3ee8081684faa536a5e7fa7d5c0114987b04989dee2fe2cffc69b9737e128b2"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "9a38d0e471ceee0bc91016ed7e8e8305b1ec1217dead16bc0464d01c12496e9e"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "bba8821f53f4c99807c3150b6c3319a05480e9f07a05ab20800c53d3f9ca3f83"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q1_A_s8_imfit8.npz": {
+          "file_sha256": "1f06ba042450d60609e4717fe3ca46683f896c3e0036d7a2be1125f08c94e301",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "3f4ac6bd0e3ffbbeb4458790011a3b3482a904b78d543f6b72c9e1e02a5e05b3"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q1_B_s8_galsim_no_cell.npz": {
+          "file_sha256": "1d8c3a0233f31879ef2c84e9d9aa1cfd03d0a3fb84bbf0bf132e2bf1fdf54548",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "53f6dd5e882cb08b816889be2474330e32c50717fd7d6fda59e5e0196652d0a9"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "e36524942537f460796704effa5d868604b31b591b0e8daf55248b22be5144a6"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "48c025e3b4bed645018cfcfc1de87a5ac682a50b4e20122c2fbe465ff54ac554"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q1_B_s8_imfit8.npz": {
+          "file_sha256": "fdea3ca4838fdfe1cfa43501c56d80173afacf352e01a04a981be3526d333d5d",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "3f4ac6bd0e3ffbbeb4458790011a3b3482a904b78d543f6b72c9e1e02a5e05b3"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_A_s16/kernel.npz": {
+          "file_sha256": "076c0e9c266ae277b3f63b90176e67e634c5d96556522d3935dcd06a620db353",
+          "arrays": {
+            "image": {
+              "shape": [
+                3329,
+                3329
+              ],
+              "dtype": "float64",
+              "sha256": "357362b24579bce0562a19d68f4fc59a96a1e79cb724d339ff2d80e68af4d57f"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_A_s8/imfit/native.npz": {
+          "file_sha256": "1de3c74b58c5fb3136328a825ec8de34286d553d1920750cf3652ebf0c94ac5c",
+          "arrays": {
+            "image": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "f8e7d4afd6fdbec41a86432f90734fa94603d4ad510491b5f6ac6634d1cacc46"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_A_s8/kernel.npz": {
+          "file_sha256": "2a77f12d043bef13bdbe8a1e12a60a2a1e718192b879dabcde89ad086fd2cd4f",
+          "arrays": {
+            "image": {
+              "shape": [
+                1665,
+                1665
+              ],
+              "dtype": "float64",
+              "sha256": "a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_B_s16/kernel.npz": {
+          "file_sha256": "e90d0242c4c43823dcc944e69ad463eb9c17b2d2009223cf0f6be3190f0eff77",
+          "arrays": {
+            "image": {
+              "shape": [
+                3329,
+                3329
+              ],
+              "dtype": "float64",
+              "sha256": "20cd8036582d11517d74963877dd8d52bc6e408d06e4aab95ec642d1ab398b91"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_B_s8/imfit/native.npz": {
+          "file_sha256": "33af478cd590178dde88a5f12d73a7043a1f13ebfebbd0b8c0ba7f391278f30f",
+          "arrays": {
+            "image": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "1df97e42fca4c5c2aae75de5af301e3dfbc47ae7a18eaff263c4f023b95d22c5"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_B_s8/kernel.npz": {
+          "file_sha256": "25c2da569d6bc1b281e6353e46957f53a2bda13455577af955f5cfac23f4de2b",
+          "arrays": {
+            "image": {
+              "shape": [
+                1665,
+                1665
+              ],
+              "dtype": "float64",
+              "sha256": "2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_A_s16/kernel.npz": {
+          "file_sha256": "076c0e9c266ae277b3f63b90176e67e634c5d96556522d3935dcd06a620db353",
+          "arrays": {
+            "image": {
+              "shape": [
+                3329,
+                3329
+              ],
+              "dtype": "float64",
+              "sha256": "357362b24579bce0562a19d68f4fc59a96a1e79cb724d339ff2d80e68af4d57f"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_A_s8/imfit/native.npz": {
+          "file_sha256": "808bca84c07b1304f562c8f71cfc788042bacf82eee1dadf8e6c14c6dcec879a",
+          "arrays": {
+            "image": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "cb458feb8b8402d785c6057091872da586bc8b0de1ded861c2277babc5c98695"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_A_s8/kernel.npz": {
+          "file_sha256": "2a77f12d043bef13bdbe8a1e12a60a2a1e718192b879dabcde89ad086fd2cd4f",
+          "arrays": {
+            "image": {
+              "shape": [
+                1665,
+                1665
+              ],
+              "dtype": "float64",
+              "sha256": "a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_B_s16/kernel.npz": {
+          "file_sha256": "e90d0242c4c43823dcc944e69ad463eb9c17b2d2009223cf0f6be3190f0eff77",
+          "arrays": {
+            "image": {
+              "shape": [
+                3329,
+                3329
+              ],
+              "dtype": "float64",
+              "sha256": "20cd8036582d11517d74963877dd8d52bc6e408d06e4aab95ec642d1ab398b91"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_B_s8/imfit/native.npz": {
+          "file_sha256": "e05a3019866126dcd2521f79b6422b7d2dc499859fb152546a9b72fd31831b8e",
+          "arrays": {
+            "image": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "82ce0b10330c43f1f99040feadb510862fcd1dcf3483ab09b24fc62881a8bba0"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_B_s8/kernel.npz": {
+          "file_sha256": "25c2da569d6bc1b281e6353e46957f53a2bda13455577af955f5cfac23f4de2b",
+          "arrays": {
+            "image": {
+              "shape": [
+                1665,
+                1665
+              ],
+              "dtype": "float64",
+              "sha256": "2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2"
+            }
+          }
+        }
+      }
+    },
+    {
+      "phase": "repaired",
+      "host_n": 4,
+      "summary": {
+        "config": {
+          "stage": "C5m bounded Imfit sampling refinement",
+          "host_n": 4,
+          "cases": [
+            {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            }
+          ],
+          "samples": [
+            8,
+            16
+          ],
+          "github_run_id": null,
+          "github_sha": null,
+          "parent_run": 33798675379,
+          "parent_commit": "094de88e88b668015658536d13583c201cfaaaf2",
+          "parent_audit_sha256": "f5e8d0ac7e913697f302589a3c6f72af7eab60ba206df9dc829ec70a0d5faa08",
+          "protocol_sha256": "0e8303ddcc6154dfac31a1bc60b171f6c54d71158090d7eddc48628e16bc436e",
+          "producer_sha256": "054705e5b48d46b8af6e7af28537d492fbed95c7cac75d9ab58e1bee3542e9b0",
+          "historical_adapter_sha256": "93458ba50b5db0c4e27db6e4a295c24c1197a8acd379abd99568f2062f00996f",
+          "pins": {
+            "numpy": "2.5.2",
+            "scipy": "1.18.1",
+            "galsim": "2.8.4",
+            "astropy": "8.0.1",
+            "photutils": "3.0.0"
+          },
+          "runtime_versions": {
+            "numpy": "2.5.2",
+            "scipy": "1.18.1",
+            "galsim": "2.8.4",
+            "astropy": "8.0.1",
+            "photutils": "3.0.0"
+          },
+          "binary_sha256": "4fe27a3d3e48f0c4931ee3fb5ad571330fdbf27f6c327f48990418bdcb965984",
+          "timeout_seconds": 120,
+          "address_space_bytes": 6442450944,
+          "expected_workers": 8,
+          "expected_starts": 16,
+          "expected_pairs": 4,
+          "expected_new_arrays": 84,
+          "acceptance": "complete provenance and inherited algebra only"
+        },
+        "workers": [
+          {
+            "success": true,
+            "wall_seconds": 24.582905708999988,
+            "imfit_wall_seconds": 20.53,
+            "peak_child_rss_kib": 2299496,
+            "fits_bitpix": -32,
+            "fine_sha256": "c449d25c5382efece135a933b932f9c1b24c6f8399c69125d7658fbb921bc4e1",
+            "fine_shape": [
+              1601,
+              1601
+            ],
+            "native_sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32",
+            "signed_sum": 1.0038108284281428,
+            "absolute_sum": 1.05953464766386,
+            "negative_pixels": 18033,
+            "negative_absolute_fraction": 0.026296364804389058,
+            "signed_centroid_x_pix": 0.15668751066518558,
+            "signed_centroid_y_pix": -0.07000024593486703,
+            "signed_mxx_pix2": 37.38483006114251,
+            "signed_myy_pix2": 37.908515545747406,
+            "signed_mxy_pix2": 28.586147856194415,
+            "imfit_bn": 11.668363309711484,
+            "exact_bn": 11.668363153044767,
+            "kernel_sha256": "a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf",
+            "kernel_stats": {
+              "sum": 1.0000000000000009,
+              "negative_pixels": 900171,
+              "shape": [
+                1665,
+                1665
+              ]
+            },
+            "total_worker_seconds": 22.36095431199999,
+            "returncode": 0,
+            "name": "corner_re0.5_q0.15_A_s8",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "A",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "RuntimeError",
+            "message": "Imfit failure; see retained imfit/result.json and logs",
+            "wall_seconds": 6.970053356999983,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_A_s16",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "A",
+            "sampling": 16
+          },
+          {
+            "success": true,
+            "wall_seconds": 22.63283391899995,
+            "imfit_wall_seconds": 19.46,
+            "peak_child_rss_kib": 2299332,
+            "fits_bitpix": -32,
+            "fine_sha256": "4d04c2c2fe74ef9fc8af6e2d8ff5d8daeba1867ebf1bd6911a62798891f95046",
+            "fine_shape": [
+              1601,
+              1601
+            ],
+            "native_sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4",
+            "signed_sum": 1.0001336270089975,
+            "absolute_sum": 1.1748415048414809,
+            "negative_pixels": 16313,
+            "negative_absolute_fraction": 0.07435380734870115,
+            "signed_centroid_x_pix": 0.039281858462694455,
+            "signed_centroid_y_pix": -0.6650990961048201,
+            "signed_mxx_pix2": 122.14522873134084,
+            "signed_myy_pix2": 46.45829377169179,
+            "signed_mxy_pix2": 18.217213792413872,
+            "imfit_bn": 11.668363309711484,
+            "exact_bn": 11.668363153044767,
+            "kernel_sha256": "2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2",
+            "kernel_stats": {
+              "sum": 1.0000000000000009,
+              "negative_pixels": 900905,
+              "shape": [
+                1665,
+                1665
+              ]
+            },
+            "total_worker_seconds": 20.699344018000033,
+            "returncode": 0,
+            "name": "corner_re0.5_q0.15_B_s8",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "B",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "RuntimeError",
+            "message": "Imfit failure; see retained imfit/result.json and logs",
+            "wall_seconds": 7.496623233999912,
+            "returncode": 1,
+            "name": "corner_re0.5_q0.15_B_s16",
+            "case": {
+              "name": "corner_re0.5_q0.15",
+              "n": 6,
+              "re": 0.5,
+              "q": 0.15
+            },
+            "module": "B",
+            "sampling": 16
+          },
+          {
+            "success": true,
+            "wall_seconds": 20.075895744000036,
+            "imfit_wall_seconds": 16.92,
+            "peak_child_rss_kib": 2299368,
+            "fits_bitpix": -32,
+            "fine_sha256": "03be86c864131b19da6677639c0a81d52ecd4fa9e1013c2abc28cecd8f6dc328",
+            "fine_shape": [
+              1601,
+              1601
+            ],
+            "native_sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0",
+            "signed_sum": 0.9993340267243741,
+            "absolute_sum": 1.0476720938914112,
+            "negative_pixels": 14153,
+            "negative_absolute_fraction": 0.02306927303346081,
+            "signed_centroid_x_pix": 0.15306888147452585,
+            "signed_centroid_y_pix": -0.062190889570808816,
+            "signed_mxx_pix2": 42.209689148868726,
+            "signed_myy_pix2": 42.67387705995909,
+            "signed_mxy_pix2": 23.031307568353423,
+            "imfit_bn": 11.668363309711484,
+            "exact_bn": 11.668363153044767,
+            "kernel_sha256": "a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf",
+            "kernel_stats": {
+              "sum": 1.0000000000000009,
+              "negative_pixels": 900171,
+              "shape": [
+                1665,
+                1665
+              ]
+            },
+            "total_worker_seconds": 18.224592232999953,
+            "returncode": 0,
+            "name": "corner_re0.5_q1_A_s8",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "A",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "RuntimeError",
+            "message": "Imfit failure; see retained imfit/result.json and logs",
+            "wall_seconds": 6.912994428000047,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_A_s16",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "A",
+            "sampling": 16
+          },
+          {
+            "success": true,
+            "wall_seconds": 20.048008614000082,
+            "imfit_wall_seconds": 17.08,
+            "peak_child_rss_kib": 2299232,
+            "fits_bitpix": -32,
+            "fine_sha256": "893409cbc52f281a77be30d0623006ff6503330ab632b045f42912ed10e7601e",
+            "fine_shape": [
+              1601,
+              1601
+            ],
+            "native_sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716",
+            "signed_sum": 0.993421672163642,
+            "absolute_sum": 1.1424463867715446,
+            "negative_pixels": 14377,
+            "negative_absolute_fraction": 0.06522175409431412,
+            "signed_centroid_x_pix": 0.03873024669764571,
+            "signed_centroid_y_pix": -0.6665662645246995,
+            "signed_mxx_pix2": 127.03083222703616,
+            "signed_myy_pix2": 51.418210158102255,
+            "signed_mxy_pix2": 12.727151002554654,
+            "imfit_bn": 11.668363309711484,
+            "exact_bn": 11.668363153044767,
+            "kernel_sha256": "2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2",
+            "kernel_stats": {
+              "sum": 1.0000000000000009,
+              "negative_pixels": 900905,
+              "shape": [
+                1665,
+                1665
+              ]
+            },
+            "total_worker_seconds": 18.296871330000045,
+            "returncode": 0,
+            "name": "corner_re0.5_q1_B_s8",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "B",
+            "sampling": 8
+          },
+          {
+            "success": false,
+            "error_type": "RuntimeError",
+            "message": "Imfit failure; see retained imfit/result.json and logs",
+            "wall_seconds": 7.752406268999948,
+            "returncode": 1,
+            "name": "corner_re0.5_q1_B_s16",
+            "case": {
+              "name": "corner_re0.5_q1",
+              "n": 6,
+              "re": 0.5,
+              "q": 1
+            },
+            "module": "B",
+            "sampling": 16
+          }
+        ],
+        "results": [
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0000000000000002,
+            "hit_amplitude_zero": false,
+            "cost": 9.252725613876239e-28,
+            "gradient": 1.6153224280712659e-18,
+            "scaled_l1_over_reference_l1": 2.1323514803821073e-16,
+            "template_sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32",
+            "reference_sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q0.15_A_s8_imfit8",
+            "render": "corner_re0.5_q0.15_A_s8",
+            "n": 6,
+            "q": 0.15,
+            "module": "A",
+            "sampling": 8,
+            "reference": "imfit8"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9977375077839842,
+            "hit_amplitude_zero": false,
+            "cost": 0.007385487643941477,
+            "gradient": 5.101679441312651e-18,
+            "scaled_l1_over_reference_l1": 0.0005797471800683746,
+            "template_sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32",
+            "reference_sha256": "bd55fdc84043b82ea4cecc1e77e5cee7c80b02b096b71c07fdfd8f4931abc69f",
+            "l1_over_reference_l1": 0.0022506137352692897,
+            "max_abs_difference": 0.00005036167015257109,
+            "signed_sum_difference": 0.002199928420903108,
+            "case": "corner_re0.5_q0.15_A_s8_galsim_no_cell",
+            "render": "corner_re0.5_q0.15_A_s8",
+            "n": 6,
+            "q": 0.15,
+            "module": "A",
+            "sampling": 8,
+            "reference": "galsim_no_cell"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0000000000000002,
+            "hit_amplitude_zero": false,
+            "cost": 9.34757061564168e-28,
+            "gradient": 1.6432058290229807e-18,
+            "scaled_l1_over_reference_l1": 2.1434644116494176e-16,
+            "template_sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4",
+            "reference_sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q0.15_B_s8_imfit8",
+            "render": "corner_re0.5_q0.15_B_s8",
+            "n": 6,
+            "q": 0.15,
+            "module": "B",
+            "sampling": 8,
+            "reference": "imfit8"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9980836746479554,
+            "hit_amplitude_zero": false,
+            "cost": 0.003944726601264498,
+            "gradient": -6.790557259019319e-19,
+            "scaled_l1_over_reference_l1": 0.0006614093154432516,
+            "template_sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4",
+            "reference_sha256": "247b2b340e01c49fde85dc4cc0d1523fdeb7267ccdc829c73ea0f8135e473331",
+            "l1_over_reference_l1": 0.0021480127997730255,
+            "max_abs_difference": 0.00004054325043636314,
+            "signed_sum_difference": 0.0019119809670162802,
+            "case": "corner_re0.5_q0.15_B_s8_galsim_no_cell",
+            "render": "corner_re0.5_q0.15_B_s8",
+            "n": 6,
+            "q": 0.15,
+            "module": "B",
+            "sampling": 8,
+            "reference": "galsim_no_cell"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0000000000000004,
+            "hit_amplitude_zero": false,
+            "cost": 3.55642491383251e-27,
+            "gradient": 2.8354860285239276e-18,
+            "scaled_l1_over_reference_l1": 4.2649533119069485e-16,
+            "template_sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0",
+            "reference_sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q1_A_s8_imfit8",
+            "render": "corner_re0.5_q1_A_s8",
+            "n": 6,
+            "q": 1,
+            "module": "A",
+            "sampling": 8,
+            "reference": "imfit8"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.002927761275542,
+            "hit_amplitude_zero": false,
+            "cost": 0.021069187700600733,
+            "gradient": 2.813049357390735e-18,
+            "scaled_l1_over_reference_l1": 0.00098590191052558,
+            "template_sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0",
+            "reference_sha256": "0a42ccabba055cf857785988dbae4591dc0603cdc3e1ecaf59e623271a3444aa",
+            "l1_over_reference_l1": 0.002507666706918354,
+            "max_abs_difference": 0.00007463988311157826,
+            "signed_sum_difference": -0.002418116528824066,
+            "case": "corner_re0.5_q1_A_s8_galsim_no_cell",
+            "render": "corner_re0.5_q1_A_s8",
+            "n": 6,
+            "q": 1,
+            "module": "A",
+            "sampling": 8,
+            "reference": "galsim_no_cell"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9999999999999998,
+            "hit_amplitude_zero": false,
+            "cost": 9.813447966897369e-28,
+            "gradient": -1.4807797761730658e-18,
+            "scaled_l1_over_reference_l1": 2.160951641620387e-16,
+            "template_sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716",
+            "reference_sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q1_B_s8_imfit8",
+            "render": "corner_re0.5_q1_B_s8",
+            "n": 6,
+            "q": 1,
+            "module": "B",
+            "sampling": 8,
+            "reference": "imfit8"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0029143146868171,
+            "hit_amplitude_zero": false,
+            "cost": 0.033169008887419714,
+            "gradient": 8.323157497957569e-19,
+            "scaled_l1_over_reference_l1": 0.0011850566774363634,
+            "template_sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716",
+            "reference_sha256": "ebb6d52de0f8e42a19e97f19d18da4150d0cf544f268eaff81d8858b401bdd2a",
+            "l1_over_reference_l1": 0.0027256866025060335,
+            "max_abs_difference": 0.00007510504883135455,
+            "signed_sum_difference": -0.0023657082028566423,
+            "case": "corner_re0.5_q1_B_s8_galsim_no_cell",
+            "render": "corner_re0.5_q1_B_s8",
+            "n": 6,
+            "q": 1,
+            "module": "B",
+            "sampling": 8,
+            "reference": "galsim_no_cell"
+          }
+        ],
+        "starts": [
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0000000000000002,
+            "hit_amplitude_zero": false,
+            "cost": 9.252725613876239e-28,
+            "gradient": 1.6153224280712659e-18,
+            "scaled_l1_over_reference_l1": 2.1323514803821073e-16,
+            "template_sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32",
+            "reference_sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q0.15_A_s8_imfit8",
+            "render": "corner_re0.5_q0.15_A_s8",
+            "n": 6,
+            "q": 0.15,
+            "module": "A",
+            "sampling": 8,
+            "reference": "imfit8",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9977375077839842,
+            "hit_amplitude_zero": false,
+            "cost": 0.007385487643941477,
+            "gradient": 5.101679441312651e-18,
+            "scaled_l1_over_reference_l1": 0.0005797471800683746,
+            "template_sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32",
+            "reference_sha256": "bd55fdc84043b82ea4cecc1e77e5cee7c80b02b096b71c07fdfd8f4931abc69f",
+            "l1_over_reference_l1": 0.0022506137352692897,
+            "max_abs_difference": 0.00005036167015257109,
+            "signed_sum_difference": 0.002199928420903108,
+            "case": "corner_re0.5_q0.15_A_s8_galsim_no_cell",
+            "render": "corner_re0.5_q0.15_A_s8",
+            "n": 6,
+            "q": 0.15,
+            "module": "A",
+            "sampling": 8,
+            "reference": "galsim_no_cell",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0000000000000002,
+            "hit_amplitude_zero": false,
+            "cost": 9.34757061564168e-28,
+            "gradient": 1.6432058290229807e-18,
+            "scaled_l1_over_reference_l1": 2.1434644116494176e-16,
+            "template_sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4",
+            "reference_sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q0.15_B_s8_imfit8",
+            "render": "corner_re0.5_q0.15_B_s8",
+            "n": 6,
+            "q": 0.15,
+            "module": "B",
+            "sampling": 8,
+            "reference": "imfit8",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9980836746479554,
+            "hit_amplitude_zero": false,
+            "cost": 0.003944726601264498,
+            "gradient": -6.790557259019319e-19,
+            "scaled_l1_over_reference_l1": 0.0006614093154432516,
+            "template_sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4",
+            "reference_sha256": "247b2b340e01c49fde85dc4cc0d1523fdeb7267ccdc829c73ea0f8135e473331",
+            "l1_over_reference_l1": 0.0021480127997730255,
+            "max_abs_difference": 0.00004054325043636314,
+            "signed_sum_difference": 0.0019119809670162802,
+            "case": "corner_re0.5_q0.15_B_s8_galsim_no_cell",
+            "render": "corner_re0.5_q0.15_B_s8",
+            "n": 6,
+            "q": 0.15,
+            "module": "B",
+            "sampling": 8,
+            "reference": "galsim_no_cell",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0000000000000004,
+            "hit_amplitude_zero": false,
+            "cost": 3.55642491383251e-27,
+            "gradient": 2.8354860285239276e-18,
+            "scaled_l1_over_reference_l1": 4.2649533119069485e-16,
+            "template_sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0",
+            "reference_sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q1_A_s8_imfit8",
+            "render": "corner_re0.5_q1_A_s8",
+            "n": 6,
+            "q": 1,
+            "module": "A",
+            "sampling": 8,
+            "reference": "imfit8",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.002927761275542,
+            "hit_amplitude_zero": false,
+            "cost": 0.021069187700600733,
+            "gradient": 2.813049357390735e-18,
+            "scaled_l1_over_reference_l1": 0.00098590191052558,
+            "template_sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0",
+            "reference_sha256": "0a42ccabba055cf857785988dbae4591dc0603cdc3e1ecaf59e623271a3444aa",
+            "l1_over_reference_l1": 0.002507666706918354,
+            "max_abs_difference": 0.00007463988311157826,
+            "signed_sum_difference": -0.002418116528824066,
+            "case": "corner_re0.5_q1_A_s8_galsim_no_cell",
+            "render": "corner_re0.5_q1_A_s8",
+            "n": 6,
+            "q": 1,
+            "module": "A",
+            "sampling": 8,
+            "reference": "galsim_no_cell",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 0.9999999999999998,
+            "hit_amplitude_zero": false,
+            "cost": 9.813447966897369e-28,
+            "gradient": -1.4807797761730658e-18,
+            "scaled_l1_over_reference_l1": 2.160951641620387e-16,
+            "template_sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716",
+            "reference_sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716",
+            "l1_over_reference_l1": 0,
+            "max_abs_difference": 0,
+            "signed_sum_difference": 0,
+            "case": "corner_re0.5_q1_B_s8_imfit8",
+            "render": "corner_re0.5_q1_B_s8",
+            "n": 6,
+            "q": 1,
+            "module": "B",
+            "sampling": 8,
+            "reference": "imfit8",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          },
+          {
+            "solver": "scipy.optimize.nnls",
+            "success": true,
+            "amplitude": 1.0029143146868171,
+            "hit_amplitude_zero": false,
+            "cost": 0.033169008887419714,
+            "gradient": 8.323157497957569e-19,
+            "scaled_l1_over_reference_l1": 0.0011850566774363634,
+            "template_sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716",
+            "reference_sha256": "ebb6d52de0f8e42a19e97f19d18da4150d0cf544f268eaff81d8858b401bdd2a",
+            "l1_over_reference_l1": 0.0027256866025060335,
+            "max_abs_difference": 0.00007510504883135455,
+            "signed_sum_difference": -0.0023657082028566423,
+            "case": "corner_re0.5_q1_B_s8_galsim_no_cell",
+            "render": "corner_re0.5_q1_B_s8",
+            "n": 6,
+            "q": 1,
+            "module": "B",
+            "sampling": 8,
+            "reference": "galsim_no_cell",
+            "start": 0,
+            "start_type": "direct NNLS projection"
+          }
+        ],
+        "pairwise": [],
+        "complete": false
+      },
+      "failures_and_logs": [
+        {
+          "worker": "corner_re0.5_q0.15_A_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 20.553616805000047,\n  \"imfit_wall_seconds\": 20.53,\n  \"peak_child_rss_kib\": 2299496,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"c449d25c5382efece135a933b932f9c1b24c6f8399c69125d7658fbb921bc4e1\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32\",\n  \"signed_sum\": 1.0038108284281428,\n  \"absolute_sum\": 1.05953464766386,\n  \"negative_pixels\": 18033,\n  \"negative_absolute_fraction\": 0.026296364804389058,\n  \"signed_centroid_x_pix\": 0.15668751066518558,\n  \"signed_centroid_y_pix\": -0.07000024593486703,\n  \"signed_mxx_pix2\": 37.38483006114251,\n  \"signed_myy_pix2\": 37.908515545747406,\n  \"signed_mxy_pix2\": 28.586147856194415,\n  \"imfit_bn\": 11.668363309711484,\n  \"exact_bn\": 11.668363153044767,\n  \"kernel_sha256\": \"a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf\",\n  \"kernel_stats\": {\n    \"sum\": 1.0000000000000009,\n    \"negative_pixels\": 900171,\n    \"shape\": [\n      1665,\n      1665\n    ]\n  },\n  \"total_worker_seconds\": 22.36095431199999\n}\n",
+            "imfit/result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 20.553616805000047,\n  \"imfit_wall_seconds\": 20.53,\n  \"peak_child_rss_kib\": 2299496,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"c449d25c5382efece135a933b932f9c1b24c6f8399c69125d7658fbb921bc4e1\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32\",\n  \"signed_sum\": 1.0038108284281428,\n  \"absolute_sum\": 1.05953464766386,\n  \"negative_pixels\": 18033,\n  \"negative_absolute_fraction\": 0.026296364804389058,\n  \"signed_centroid_x_pix\": 0.15668751066518558,\n  \"signed_centroid_y_pix\": -0.07000024593486703,\n  \"signed_mxx_pix2\": 37.38483006114251,\n  \"signed_myy_pix2\": 37.908515545747406,\n  \"signed_mxy_pix2\": 28.586147856194415,\n  \"imfit_bn\": 11.668363309711484,\n  \"exact_bn\": 11.668363153044767\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_A_s8/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_A_s8/kernel.fits\") ...\nnaxis1 [# pixels/row] = 1665, naxis2 [# pixels/col] = 1665; nPixels_tot = 2772225\nFunction: Sersic\nModel Object: 2563201 data values (pixels)\n7 total parameters\n\nSaving output model image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_A_s8/imfit/fine.fits\") ...\nDone!\n\n",
+            "imfit/stderr.txt": "",
+            "imfit/time.txt": "20.53 2299496\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_A_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"RuntimeError\",\n  \"message\": \"Imfit failure; see retained imfit/result.json and logs\",\n  \"wall_seconds\": 5.088342356999988\n}\n",
+            "imfit/result.json": "{\n  \"success\": false,\n  \"wall_seconds\": 0.12447885399990355,\n  \"exception_type\": \"RuntimeError\",\n  \"message\": \"makeimage exited 255; retained logs\"\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_A_s16/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_A_s16/kernel.fits\") ...\nnaxis1 [# pixels/row] = 3329, naxis2 [# pixels/col] = 3329; nPixels_tot = 11082241\n",
+            "imfit/stderr.txt": "*** WARNING: Convolver::DoFullSetup: memory allocation failure!\n*** Error returned from Convolver::DoFullSetup!\n*** ERROR: Failure in ModelObject::SetupModelImage!\n\n",
+            "imfit/time.txt": "Command exited with non-zero status 255\n0.12 179368\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_B_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 19.490458063000005,\n  \"imfit_wall_seconds\": 19.46,\n  \"peak_child_rss_kib\": 2299332,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"4d04c2c2fe74ef9fc8af6e2d8ff5d8daeba1867ebf1bd6911a62798891f95046\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4\",\n  \"signed_sum\": 1.0001336270089975,\n  \"absolute_sum\": 1.1748415048414809,\n  \"negative_pixels\": 16313,\n  \"negative_absolute_fraction\": 0.07435380734870115,\n  \"signed_centroid_x_pix\": 0.039281858462694455,\n  \"signed_centroid_y_pix\": -0.6650990961048201,\n  \"signed_mxx_pix2\": 122.14522873134084,\n  \"signed_myy_pix2\": 46.45829377169179,\n  \"signed_mxy_pix2\": 18.217213792413872,\n  \"imfit_bn\": 11.668363309711484,\n  \"exact_bn\": 11.668363153044767,\n  \"kernel_sha256\": \"2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2\",\n  \"kernel_stats\": {\n    \"sum\": 1.0000000000000009,\n    \"negative_pixels\": 900905,\n    \"shape\": [\n      1665,\n      1665\n    ]\n  },\n  \"total_worker_seconds\": 20.699344018000033\n}\n",
+            "imfit/result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 19.490458063000005,\n  \"imfit_wall_seconds\": 19.46,\n  \"peak_child_rss_kib\": 2299332,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"4d04c2c2fe74ef9fc8af6e2d8ff5d8daeba1867ebf1bd6911a62798891f95046\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4\",\n  \"signed_sum\": 1.0001336270089975,\n  \"absolute_sum\": 1.1748415048414809,\n  \"negative_pixels\": 16313,\n  \"negative_absolute_fraction\": 0.07435380734870115,\n  \"signed_centroid_x_pix\": 0.039281858462694455,\n  \"signed_centroid_y_pix\": -0.6650990961048201,\n  \"signed_mxx_pix2\": 122.14522873134084,\n  \"signed_myy_pix2\": 46.45829377169179,\n  \"signed_mxy_pix2\": 18.217213792413872,\n  \"imfit_bn\": 11.668363309711484,\n  \"exact_bn\": 11.668363153044767\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_B_s8/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_B_s8/kernel.fits\") ...\nnaxis1 [# pixels/row] = 1665, naxis2 [# pixels/col] = 1665; nPixels_tot = 2772225\nFunction: Sersic\nModel Object: 2563201 data values (pixels)\n7 total parameters\n\nSaving output model image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_B_s8/imfit/fine.fits\") ...\nDone!\n\n",
+            "imfit/stderr.txt": "",
+            "imfit/time.txt": "19.46 2299332\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q0.15_B_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"RuntimeError\",\n  \"message\": \"Imfit failure; see retained imfit/result.json and logs\",\n  \"wall_seconds\": 5.141389000000004\n}\n",
+            "imfit/result.json": "{\n  \"success\": false,\n  \"wall_seconds\": 0.13528299999995852,\n  \"exception_type\": \"RuntimeError\",\n  \"message\": \"makeimage exited 255; retained logs\"\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_B_s16/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q0.15_B_s16/kernel.fits\") ...\nnaxis1 [# pixels/row] = 3329, naxis2 [# pixels/col] = 3329; nPixels_tot = 11082241\n",
+            "imfit/stderr.txt": "*** WARNING: Convolver::DoFullSetup: memory allocation failure!\n*** Error returned from Convolver::DoFullSetup!\n*** ERROR: Failure in ModelObject::SetupModelImage!\n\n",
+            "imfit/time.txt": "Command exited with non-zero status 255\n0.13 179368\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_A_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 16.944358448000003,\n  \"imfit_wall_seconds\": 16.92,\n  \"peak_child_rss_kib\": 2299368,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"03be86c864131b19da6677639c0a81d52ecd4fa9e1013c2abc28cecd8f6dc328\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0\",\n  \"signed_sum\": 0.9993340267243741,\n  \"absolute_sum\": 1.0476720938914112,\n  \"negative_pixels\": 14153,\n  \"negative_absolute_fraction\": 0.02306927303346081,\n  \"signed_centroid_x_pix\": 0.15306888147452585,\n  \"signed_centroid_y_pix\": -0.062190889570808816,\n  \"signed_mxx_pix2\": 42.209689148868726,\n  \"signed_myy_pix2\": 42.67387705995909,\n  \"signed_mxy_pix2\": 23.031307568353423,\n  \"imfit_bn\": 11.668363309711484,\n  \"exact_bn\": 11.668363153044767,\n  \"kernel_sha256\": \"a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf\",\n  \"kernel_stats\": {\n    \"sum\": 1.0000000000000009,\n    \"negative_pixels\": 900171,\n    \"shape\": [\n      1665,\n      1665\n    ]\n  },\n  \"total_worker_seconds\": 18.224592232999953\n}\n",
+            "imfit/result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 16.944358448000003,\n  \"imfit_wall_seconds\": 16.92,\n  \"peak_child_rss_kib\": 2299368,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"03be86c864131b19da6677639c0a81d52ecd4fa9e1013c2abc28cecd8f6dc328\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0\",\n  \"signed_sum\": 0.9993340267243741,\n  \"absolute_sum\": 1.0476720938914112,\n  \"negative_pixels\": 14153,\n  \"negative_absolute_fraction\": 0.02306927303346081,\n  \"signed_centroid_x_pix\": 0.15306888147452585,\n  \"signed_centroid_y_pix\": -0.062190889570808816,\n  \"signed_mxx_pix2\": 42.209689148868726,\n  \"signed_myy_pix2\": 42.67387705995909,\n  \"signed_mxy_pix2\": 23.031307568353423,\n  \"imfit_bn\": 11.668363309711484,\n  \"exact_bn\": 11.668363153044767\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_A_s8/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_A_s8/kernel.fits\") ...\nnaxis1 [# pixels/row] = 1665, naxis2 [# pixels/col] = 1665; nPixels_tot = 2772225\nFunction: Sersic\nModel Object: 2563201 data values (pixels)\n7 total parameters\n\nSaving output model image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_A_s8/imfit/fine.fits\") ...\nDone!\n\n",
+            "imfit/stderr.txt": "",
+            "imfit/time.txt": "16.92 2299368\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_A_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"RuntimeError\",\n  \"message\": \"Imfit failure; see retained imfit/result.json and logs\",\n  \"wall_seconds\": 4.856273152000085\n}\n",
+            "imfit/result.json": "{\n  \"success\": false,\n  \"wall_seconds\": 0.1489321320000272,\n  \"exception_type\": \"RuntimeError\",\n  \"message\": \"makeimage exited 255; retained logs\"\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_A_s16/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_A_s16/kernel.fits\") ...\nnaxis1 [# pixels/row] = 3329, naxis2 [# pixels/col] = 3329; nPixels_tot = 11082241\n",
+            "imfit/stderr.txt": "*** WARNING: Convolver::DoFullSetup: memory allocation failure!\n*** Error returned from Convolver::DoFullSetup!\n*** ERROR: Failure in ModelObject::SetupModelImage!\n\n",
+            "imfit/time.txt": "Command exited with non-zero status 255\n0.14 179368\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_B_s8",
+          "files": {
+            "worker_result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 17.10589325000001,\n  \"imfit_wall_seconds\": 17.08,\n  \"peak_child_rss_kib\": 2299232,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"893409cbc52f281a77be30d0623006ff6503330ab632b045f42912ed10e7601e\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716\",\n  \"signed_sum\": 0.993421672163642,\n  \"absolute_sum\": 1.1424463867715446,\n  \"negative_pixels\": 14377,\n  \"negative_absolute_fraction\": 0.06522175409431412,\n  \"signed_centroid_x_pix\": 0.03873024669764571,\n  \"signed_centroid_y_pix\": -0.6665662645246995,\n  \"signed_mxx_pix2\": 127.03083222703616,\n  \"signed_myy_pix2\": 51.418210158102255,\n  \"signed_mxy_pix2\": 12.727151002554654,\n  \"imfit_bn\": 11.668363309711484,\n  \"exact_bn\": 11.668363153044767,\n  \"kernel_sha256\": \"2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2\",\n  \"kernel_stats\": {\n    \"sum\": 1.0000000000000009,\n    \"negative_pixels\": 900905,\n    \"shape\": [\n      1665,\n      1665\n    ]\n  },\n  \"total_worker_seconds\": 18.296871330000045\n}\n",
+            "imfit/result.json": "{\n  \"success\": true,\n  \"wall_seconds\": 17.10589325000001,\n  \"imfit_wall_seconds\": 17.08,\n  \"peak_child_rss_kib\": 2299232,\n  \"fits_bitpix\": -32,\n  \"fine_sha256\": \"893409cbc52f281a77be30d0623006ff6503330ab632b045f42912ed10e7601e\",\n  \"fine_shape\": [\n    1601,\n    1601\n  ],\n  \"native_sha256\": \"a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716\",\n  \"signed_sum\": 0.993421672163642,\n  \"absolute_sum\": 1.1424463867715446,\n  \"negative_pixels\": 14377,\n  \"negative_absolute_fraction\": 0.06522175409431412,\n  \"signed_centroid_x_pix\": 0.03873024669764571,\n  \"signed_centroid_y_pix\": -0.6665662645246995,\n  \"signed_mxx_pix2\": 127.03083222703616,\n  \"signed_myy_pix2\": 51.418210158102255,\n  \"signed_mxy_pix2\": 12.727151002554654,\n  \"imfit_bn\": 11.668363309711484,\n  \"exact_bn\": 11.668363153044767\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_B_s8/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_B_s8/kernel.fits\") ...\nnaxis1 [# pixels/row] = 1665, naxis2 [# pixels/col] = 1665; nPixels_tot = 2772225\nFunction: Sersic\nModel Object: 2563201 data values (pixels)\n7 total parameters\n\nSaving output model image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_B_s8/imfit/fine.fits\") ...\nDone!\n\n",
+            "imfit/stderr.txt": "",
+            "imfit/time.txt": "17.08 2299232\n"
+          }
+        },
+        {
+          "worker": "corner_re0.5_q1_B_s16",
+          "files": {
+            "worker_result.json": "{\n  \"success\": false,\n  \"error_type\": \"RuntimeError\",\n  \"message\": \"Imfit failure; see retained imfit/result.json and logs\",\n  \"wall_seconds\": 5.977428035999992\n}\n",
+            "imfit/result.json": "{\n  \"success\": false,\n  \"wall_seconds\": 0.1212668709999889,\n  \"exception_type\": \"RuntimeError\",\n  \"message\": \"makeimage exited 255; retained logs\"\n}\n",
+            "imfit/stdout.txt": "\tPSF image = /workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_B_s16/kernel.fits\nReading PSF image (\"/workspace/scratch/6cbca0e4fd65/c5m_work/repaired_n4/renders/corner_re0.5_q1_B_s16/kernel.fits\") ...\nnaxis1 [# pixels/row] = 3329, naxis2 [# pixels/col] = 3329; nPixels_tot = 11082241\n",
+            "imfit/stderr.txt": "*** WARNING: Convolver::DoFullSetup: memory allocation failure!\n*** Error returned from Convolver::DoFullSetup!\n*** ERROR: Failure in ModelObject::SetupModelImage!\n\n",
+            "imfit/time.txt": "Command exited with non-zero status 255\n0.11 179368\n"
+          }
+        }
+      ],
+      "manifest": {
+        "comparisons/corner_re0.5_q0.15_A_s8_galsim_no_cell.npz": {
+          "file_sha256": "6d66b6256e7a415ba463c78e2eaa9cd5d24defb31445b4a9459ec78090f8138c",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "bd55fdc84043b82ea4cecc1e77e5cee7c80b02b096b71c07fdfd8f4931abc69f"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "5a9a6af36c6bd0520eb35f6a86035e7c9be072d14982528d34284bc1f2c0d18c"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "20ea32d47fa27bfef07d089bb2678df26d50c78f2a8d6761c9dc6003a59a2221"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q0.15_A_s8_imfit8.npz": {
+          "file_sha256": "a8ae2e9b3184b2b49bfe38bb6ab52137453f77541454f121defcbd68362f21fa",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "e5c1b65148116086a193f23e4485a1c2c317a427ad97081c11b2656357f5e39c"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "6f786a2c7bb1cb9a92ae9c5622749a893889abb9b8fd0b14e02297ef2b283d65"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q0.15_B_s8_galsim_no_cell.npz": {
+          "file_sha256": "eb2c36ffc7ea9d66e02604a4eec35322c0a2c36170e02dadc8e10e88a099c8d8",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "247b2b340e01c49fde85dc4cc0d1523fdeb7267ccdc829c73ea0f8135e473331"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "ab7c3de23669137e84bf0ca287fc14eb18ed0ef5bb3886a3defa735336d6b80b"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "5c9a39f4f05e44d32964ceb30e03852a1ceebca52bb71a8305605ff4fbb4221d"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q0.15_B_s8_imfit8.npz": {
+          "file_sha256": "4e52ed3221a81a339c084dbde5344615b29f92ab239b50fd1bf6839061808733",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "4e65f9e190f503ac7df312e92a9aea59ccbc9fcc96d108dac523d10d626551dd"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "52d82713dea946d878f17ee6ebaa5df42bc03f2217b0ac696ba0d83fdc11553e"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q1_A_s8_galsim_no_cell.npz": {
+          "file_sha256": "fc78efaa87e9c2492d88aca9ddb378575478ac126fd2289f150cec8ca33513a6",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "0a42ccabba055cf857785988dbae4591dc0603cdc3e1ecaf59e623271a3444aa"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "4d4f2fb18bc9f92a155339b417b400784032a7a0cdef1efc892e2fe97e9cf26e"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "7b3880d505e2dbfb4f44db2a2a12f0c6dc0aa620ceb29a2a407e1ba80d942247"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q1_A_s8_imfit8.npz": {
+          "file_sha256": "87cef93734845ddbb9f4746aa9800f522eb946759c502c9244a7722bfd71804e",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "ee02945d7c8bfc44cd1833c65e1920f89f50af7ead40fef4aeb6bec5c111e2e8"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "d586eb4eac536136845688c82e9efbed29bb69263ee879a82c85a335a911c4e3"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q1_B_s8_galsim_no_cell.npz": {
+          "file_sha256": "b32bd5e461b64df80efb839d66501dd84f6219b7fb5a30f1d78db09d253f01f3",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "ebb6d52de0f8e42a19e97f19d18da4150d0cf544f268eaff81d8858b401bdd2a"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "ff49926c95347ca3daa290a77770bc44b25e0ab2d863bfdf44fc220ddd846bc2"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "935a50c69e9804c3d0150e636a880fb57fc68bfe3a89b3521239a24a48aa449f"
+            }
+          }
+        },
+        "comparisons/corner_re0.5_q1_B_s8_imfit8.npz": {
+          "file_sha256": "ba66f723c85dbb25f19c0eeaaf4f068d3d5963976aaf9f31b0b455564d669dc0",
+          "arrays": {
+            "template": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716"
+            },
+            "reference": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716"
+            },
+            "prediction": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "268ba41200a7d2e924f336fe8bc14a1308cac60a74d517ddb6567d8c4980e3a0"
+            },
+            "residual": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "bed8d5270dffbb888bb27a3a5c99d6c1e557c315d56042a0d87270a8155ac65b"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_A_s16/kernel.npz": {
+          "file_sha256": "076c0e9c266ae277b3f63b90176e67e634c5d96556522d3935dcd06a620db353",
+          "arrays": {
+            "image": {
+              "shape": [
+                3329,
+                3329
+              ],
+              "dtype": "float64",
+              "sha256": "357362b24579bce0562a19d68f4fc59a96a1e79cb724d339ff2d80e68af4d57f"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_A_s8/imfit/native.npz": {
+          "file_sha256": "c4763d5d2fe04fb3c5118d445532690064fc5ae77894bee3b0ce8837a97555f4",
+          "arrays": {
+            "image": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "1ccaffedbfbee383c630619ae1d9f08d8d90343020915cbd5135f78809f25c32"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_A_s8/kernel.npz": {
+          "file_sha256": "2a77f12d043bef13bdbe8a1e12a60a2a1e718192b879dabcde89ad086fd2cd4f",
+          "arrays": {
+            "image": {
+              "shape": [
+                1665,
+                1665
+              ],
+              "dtype": "float64",
+              "sha256": "a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_B_s16/kernel.npz": {
+          "file_sha256": "e90d0242c4c43823dcc944e69ad463eb9c17b2d2009223cf0f6be3190f0eff77",
+          "arrays": {
+            "image": {
+              "shape": [
+                3329,
+                3329
+              ],
+              "dtype": "float64",
+              "sha256": "20cd8036582d11517d74963877dd8d52bc6e408d06e4aab95ec642d1ab398b91"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_B_s8/imfit/native.npz": {
+          "file_sha256": "af8bb0ba4581d4d4e14ce2e6215bfe3dd1465eb5e3d435e00bdd5a9b05e7a067",
+          "arrays": {
+            "image": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "e94039d25a21c0ee381048d9ea8e287a31dd5d880444c84cb34235a9e3129ac4"
+            }
+          }
+        },
+        "renders/corner_re0.5_q0.15_B_s8/kernel.npz": {
+          "file_sha256": "25c2da569d6bc1b281e6353e46957f53a2bda13455577af955f5cfac23f4de2b",
+          "arrays": {
+            "image": {
+              "shape": [
+                1665,
+                1665
+              ],
+              "dtype": "float64",
+              "sha256": "2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_A_s16/kernel.npz": {
+          "file_sha256": "076c0e9c266ae277b3f63b90176e67e634c5d96556522d3935dcd06a620db353",
+          "arrays": {
+            "image": {
+              "shape": [
+                3329,
+                3329
+              ],
+              "dtype": "float64",
+              "sha256": "357362b24579bce0562a19d68f4fc59a96a1e79cb724d339ff2d80e68af4d57f"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_A_s8/imfit/native.npz": {
+          "file_sha256": "dbeb541facee27fdd58dcc71de8640cc4d51e44f9710298c95f95e7a961b52d9",
+          "arrays": {
+            "image": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "c99ee639cea59282ebde314c2637480483ad03964f4f70192f657f4a6b155fb0"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_A_s8/kernel.npz": {
+          "file_sha256": "2a77f12d043bef13bdbe8a1e12a60a2a1e718192b879dabcde89ad086fd2cd4f",
+          "arrays": {
+            "image": {
+              "shape": [
+                1665,
+                1665
+              ],
+              "dtype": "float64",
+              "sha256": "a920147df89d23b692d1b1d078c70ac5ce0e7f4bd01b1866bbe5db587681fdcf"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_B_s16/kernel.npz": {
+          "file_sha256": "e90d0242c4c43823dcc944e69ad463eb9c17b2d2009223cf0f6be3190f0eff77",
+          "arrays": {
+            "image": {
+              "shape": [
+                3329,
+                3329
+              ],
+              "dtype": "float64",
+              "sha256": "20cd8036582d11517d74963877dd8d52bc6e408d06e4aab95ec642d1ab398b91"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_B_s8/imfit/native.npz": {
+          "file_sha256": "23190c388443f4244231ddf48a568f3b5309f262530f784d565b49730403d1a2",
+          "arrays": {
+            "image": {
+              "shape": [
+                201,
+                201
+              ],
+              "dtype": "float64",
+              "sha256": "a5696b8f128ca6297099a8c4196f7aa62c95641fb38c04a235365c651fd57716"
+            }
+          }
+        },
+        "renders/corner_re0.5_q1_B_s8/kernel.npz": {
+          "file_sha256": "25c2da569d6bc1b281e6353e46957f53a2bda13455577af955f5cfac23f4de2b",
+          "arrays": {
+            "image": {
+              "shape": [
+                1665,
+                1665
+              ],
+              "dtype": "float64",
+              "sha256": "2dd56f7a78eff9c0b6aba96b2d3960b5d82f4bba425d3bfa91471f6de6e3f8a2"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

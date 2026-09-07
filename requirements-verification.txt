@@ -1,0 +1,6 @@
+# Minimal runtime requirements for the independent verification harness.
+# These are intentionally separate from the future production framework.
+numpy>=1.26
+scipy>=1.11
+matplotlib>=3.8
+pytest>=8

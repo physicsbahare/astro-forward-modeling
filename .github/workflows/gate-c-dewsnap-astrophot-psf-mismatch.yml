@@ -1,0 +1,56 @@
+name: gate-c-dewsnap-astrophot-psf-mismatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [verification-v0.1]
+    paths:
+      - requirements-dewsnap-astrophot.txt
+      - scripts/run_dewsnap_astrophot_common_scene.py
+      - scripts/run_dewsnap_astrophot_psf_mismatch.py
+      - scripts/audit_dewsnap_astrophot_psf_mismatch.py
+      - tests/test_dewsnap_astrophot_psf_mismatch.py
+      - benchmarks/dewsnap_2025/C6C_PROTOCOL.md
+      - benchmarks/zhuang_shen_2024/c5r_33842347328.json
+      - .github/workflows/gate-c-dewsnap-astrophot-psf-mismatch.yml
+permissions:
+  contents: read
+  actions: read
+jobs:
+  crossed-psf:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dewsnap-astrophot.txt
+      - name: Install pinned CPU runtime and AstroPhot
+        run: |
+          python -m pip install 'torch==2.14.0+cpu' --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements-dewsnap-astrophot.txt -e '.[test]'
+      - name: Require exact selected versions
+        run: python -c "import importlib.metadata as m, torch; assert m.version('astrophot') == '0.18.0'; assert torch.__version__ == '2.14.0+cpu'"
+      - run: python -m pytest -q tests/test_dewsnap_astrophot_psf_mismatch.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: agn-imfit-free-shape-n1
+          run-id: 33819349854
+          github-token: ${{ github.token }}
+          path: parent-c5o
+      - name: Run frozen C6c crossed-PSF diagnostic
+        run: python scripts/run_dewsnap_astrophot_psf_mismatch.py --source parent-c5o --out dewsnap-astrophot-psf-mismatch-output
+      - name: Read-only C6c audit
+        run: python scripts/audit_dewsnap_astrophot_psf_mismatch.py --source dewsnap-astrophot-psf-mismatch-output
+      - if: always()
+        run: |
+          mkdir -p dewsnap-astrophot-psf-mismatch-output
+          git rev-parse HEAD > dewsnap-astrophot-psf-mismatch-output/commit.txt
+          python -m pip freeze > dewsnap-astrophot-psf-mismatch-output/pip-freeze.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dewsnap-astrophot-psf-mismatch-c6c
+          path: dewsnap-astrophot-psf-mismatch-output
+          if-no-files-found: error
