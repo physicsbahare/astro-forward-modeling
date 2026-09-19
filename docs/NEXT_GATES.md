@@ -47,7 +47,7 @@ Use the validated Lenstronomy renderer.
 
 ## Gate 3 - production schema freeze
 
-Status: **ACTIVE**
+Status: **PASS**
 
 Before 403 objects, freeze output columns for:
 
@@ -70,9 +70,9 @@ Before 403 objects, freeze output columns for:
 
 ## Gate 4 - GOLD403 production
 
-Status: **PENDING**
+Status: **ACTIVE (restart-safe batch launched 2026-09-19)**
 
-- [ ] Run all 403 objects.
+- [ ] Run all 403 objects (F444W E0 primary + F444W E1J sensitivity; 806 checkpointed cases).
 - [ ] Preserve failures; do not silently drop them.
 - [ ] Produce completeness/recovery versus:
   - stellar mass
