@@ -40,6 +40,8 @@ CASES = [
 FIELDS = [
     "id", "source_id", "z_source", "target_filter", "evolution", "context_tile", "context_id",
     "status", "error", "morph_filter", "published_n", "input_bt", "input_disk",
+    "native_clean_n", "native_bt", "native_bt_abs_error", "native_bt_identifiable", "native_clean_disk",
+    "native_disk_re_pix", "native_bulge_re_pix",
     "clean_n", "clean_bt", "clean_single_chisq", "clean_bd_chisq", "clean_disk",
     "real_n", "real_re_arcsec", "real_q", "real_bt", "real_disk", "real_single_chisq", "real_bd_chisq",
     "delta_real_minus_clean_n", "delta_real_minus_clean_bt", "clean_to_real_flip",
@@ -78,6 +80,8 @@ def start_kernel(notebook: Path, diagnostics: Path, timeout: float):
         execute(client, code_function_definitions(nb.cells[37].source), timeout=timeout, label="flux definitions")
         execute(client, code_function_definitions(nb.cells[41].source), timeout=timeout, label="real fit definitions")
         execute(client, code_function_definitions(nb.cells[49].source), timeout=timeout, label="exact truth definitions")
+        execute(client, code_function_definitions(nb.cells[51].source), timeout=timeout, label="native baseline definitions")
+        execute(client, code_function_definitions(nb.cells[52].source), timeout=timeout, label="native PSF correction")
         # Execute the quality-control cell itself because it builds the valid-context
         # manifest and replaces the selector.  It makes no source injections or fits.
         execute(client, nb.cells[42].source, timeout=timeout, label="ERR context quality control")
@@ -90,6 +94,9 @@ BD_SELFTEST_DIAG = PILOT_DIAGNOSTICS / "clean"; BD_SELFTEST_DIAG.mkdir(exist_ok=
 MODEL_GALIGHT_PSO_REPEATS = 2
 BD_SELFTEST_PSO_REPEATS = 2
 BD_SELFTEST_TOTAL_FLUX = 1.0e4
+BASELINE_TOTAL_FLUX = 1.0e4
+BASELINE_PSO_REPEATS = 2
+NATIVE_BASELINE_DIAG = PILOT_DIAGNOSTICS / "native"; NATIVE_BASELINE_DIAG.mkdir(exist_ok=True)
 PILOT_FIT_RECORDS = []
 _pilot_run_galight_model = run_galight_model
 def _pilot_q(comp):
@@ -155,6 +162,7 @@ _oid={oid}; _filter={target_filter!r}; _evolution={evolution!r}; _seed={seed}
 random.seed(_seed); np.random.seed(_seed)
 _row=gold.loc[gold["id"].astype(int)==_oid].iloc[0]
 _context=choose_contexts_for_object(_oid,1).iloc[0]
+_native=run_native_clean_baseline(_row)
 _sci,_err,_seg=load_context(_context["tile"],int(_context["context_id"]),_filter)
 _image,_psf,_meta,_params,_truth0=make_exact_lenstronomy_bd_truth(_row,_filter,_context)
 _truth=dict(_truth0)
@@ -172,7 +180,7 @@ _valid=np.isfinite(_sci)&np.isfinite(_err)&(_err>0)
 _cy,_cx=_err.shape[0]//2,_err.shape[1]//2
 _clean=run_exact_bd_validation(_row,_filter,_context)
 _real=run_model_injected_galight_case(_row,_injected,_err,_seg,_psf,_truth,_filter,_evolution,_context)
-_out={{"id":{case_id},"source_id":_oid,"z_source":float(_row["z"]),"target_filter":_filter,"evolution":_evolution,"context_tile":str(_context["tile"]),"context_id":int(_context["context_id"]),"status":"OK","error":"","morph_filter":str(_morph["morph_filter"]),"published_n":float(_truth["published_single_n"]),"input_bt":float(_truth["truth_bt"]),"input_disk":bool(_truth["catalog_disk_classification"]),"clean_n":float(_clean["clean_single_n_from_bd"]),"clean_bt":float(_clean["recovered_bt"]),"clean_single_chisq":float(_clean["single_chisq"]),"clean_bd_chisq":float(_clean["bd_chisq"]),"clean_disk":bool(_clean["clean_model_disk_classification"]),"real_n":float(_real["recovered_n"]),"real_re_arcsec":float(_real["recovered_re_arcsec"]),"real_q":float(_real["recovered_q"]),"real_bt":float(_real["recovered_bt"]),"real_disk":bool(_real["recovered_disk"]),"real_single_chisq":float(_real["single_chisq"]),"real_bd_chisq":float(_real["bd_chisq"]),"delta_real_minus_clean_n":float(_real["recovered_n"]-_clean["clean_single_n_from_bd"]),"delta_real_minus_clean_bt":float(_real["recovered_bt"]-_clean["recovered_bt"]),"clean_to_real_flip":bool(_real["recovered_disk"]!=_clean["clean_model_disk_classification"]),"target_fnu_jy":_target_fnu,"measured_target_fnu_jy":_measured,"flux_conservation_frac":float(_measured/_target_fnu-1.0),"source_to_target_ratio":float(_ratio),"evolution_factor":float(_evo),"snr_empirical":float(_real["snr_empirical"]),"blank_ap_sigma":float(_real["blank_ap_sigma"]),"n_blank_ap":int(_real["n_blank_ap"]),"valid_err_fraction":float(np.mean(_valid)),"center_err_valid":bool(_valid[_cy,_cx]),"fit_radius_pix":int(_real["fit_radius_pix"]),"n_neighbours_modelled":int(_real["n_neighbours_modelled"]),"likelihood_fraction":float(_real["likelihood_fraction"]),"fit_records_json":json.dumps(PILOT_FIT_RECORDS,sort_keys=True),"seed":_seed,"render_method":"exact_lenstronomy_bd_truth_scaled_then_deterministic_SCI_addition"}}
+_out={{"id":{case_id},"source_id":_oid,"z_source":float(_row["z"]),"target_filter":_filter,"evolution":_evolution,"context_tile":str(_context["tile"]),"context_id":int(_context["context_id"]),"status":"OK","error":"","morph_filter":str(_morph["morph_filter"]),"published_n":float(_truth["published_single_n"]),"input_bt":float(_truth["truth_bt"]),"input_disk":bool(_truth["catalog_disk_classification"]),"native_clean_n":float(_native["native_single_n_from_bd"]),"native_bt":float(_native["native_recovered_bt"]),"native_bt_abs_error":float(abs(_native["native_recovered_bt"]-_native["truth_bt"])),"native_bt_identifiable":bool(abs(_native["native_recovered_bt"]-_native["truth_bt"])<=.10),"native_clean_disk":bool(_native["native_clean_disk_classification"]),"native_disk_re_pix":float(_native["native_disk_re_over_pixel"]),"native_bulge_re_pix":float(_native["native_bulge_re_over_pixel"]),"clean_n":float(_clean["clean_single_n_from_bd"]),"clean_bt":float(_clean["recovered_bt"]),"clean_single_chisq":float(_clean["single_chisq"]),"clean_bd_chisq":float(_clean["bd_chisq"]),"clean_disk":bool(_clean["clean_model_disk_classification"]),"real_n":float(_real["recovered_n"]),"real_re_arcsec":float(_real["recovered_re_arcsec"]),"real_q":float(_real["recovered_q"]),"real_bt":float(_real["recovered_bt"]),"real_disk":bool(_real["recovered_disk"]),"real_single_chisq":float(_real["single_chisq"]),"real_bd_chisq":float(_real["bd_chisq"]),"delta_real_minus_clean_n":float(_real["recovered_n"]-_clean["clean_single_n_from_bd"]),"delta_real_minus_clean_bt":float(_real["recovered_bt"]-_clean["recovered_bt"]),"clean_to_real_flip":bool(_real["recovered_disk"]!=_clean["clean_model_disk_classification"]),"target_fnu_jy":_target_fnu,"measured_target_fnu_jy":_measured,"flux_conservation_frac":float(_measured/_target_fnu-1.0),"source_to_target_ratio":float(_ratio),"evolution_factor":float(_evo),"snr_empirical":float(_real["snr_empirical"]),"blank_ap_sigma":float(_real["blank_ap_sigma"]),"n_blank_ap":int(_real["n_blank_ap"]),"valid_err_fraction":float(np.mean(_valid)),"center_err_valid":bool(_valid[_cy,_cx]),"fit_radius_pix":int(_real["fit_radius_pix"]),"n_neighbours_modelled":int(_real["n_neighbours_modelled"]),"likelihood_fraction":float(_real["likelihood_fraction"]),"fit_records_json":json.dumps(PILOT_FIT_RECORDS,sort_keys=True),"seed":_seed,"render_method":"exact_lenstronomy_bd_truth_scaled_then_deterministic_SCI_addition"}}
 print("GOLD403_PILOT_ROW="+json.dumps(_out,allow_nan=False,sort_keys=True))
 '''
         return marker(execute(client, code, timeout=args.timeout_seconds, label=f"pilot case {case_id}"), "GOLD403_PILOT_ROW=")

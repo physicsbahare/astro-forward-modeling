@@ -1,0 +1,15 @@
+{
+  "sample": "GOLD403, 403 unique catalog IDs",
+  "stage_chain": "published->native_clean->z3_clean->z3_real_background",
+  "target_scenarios": [
+    {"target_filter": "F444W", "evolution": "E0", "role": "primary"},
+    {"target_filter": "F444W", "evolution": "E1J", "role": "F444W-only sensitivity"}
+  ],
+  "renderer": "Lenstronomy ImageModel exact B+D truth",
+  "recovery": "Galight single plus B+D; two PSO repeats",
+  "psf": "position-dependent PSFEx, signed wings retained, signed-total normalization",
+  "background": "deterministic source addition to real SCI; retain real ERR/segmentation; no independent sky/background noise",
+  "checkpointing": "atomic CSV after every case; preserve ERROR rows; skip valid checkpoint IDs unless explicitly forced",
+  "classification_policy": "native clean B/T must be identifiable before z3 B/T physical interpretation; retain resolution-flip and bound-hit states",
+  "schema_version": "GOLD403-real-v1-2026-09-19"
+}
