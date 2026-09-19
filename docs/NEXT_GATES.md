@@ -34,21 +34,20 @@ Required output:
 
 ## Gate 2 - corrected real-background pilot
 
-Status: **ACTIVE**
+Status: **PASS**
 
 Use the validated Lenstronomy renderer.
 
-- [ ] Rebuild the model-injection renderer.
-- [ ] Keep context validity checks.
-- [ ] Run the small E0/E1J F444W/F277W pilot.
-- [ ] Verify flux conservation.
-- [ ] Verify no second background/noise realization is added.
-- [ ] Record S/N, background, neighbors, crowding, fit radius, bound hits, and failure codes.
-- [ ] Compare z3-real results against z3-clean baseline, not directly against the published catalog.
+- [x] Rebuild the model-injection renderer with exact Lenstronomy B+D truth.
+- [x] Keep context validity checks.
+- [x] Run the small E0/E1J F444W/F277W pilot (9/9 OK).
+- [x] Verify flux conservation and no second background/noise realization.
+- [x] Record S/N, background, neighbors, crowding, fit radius, bound hits, and failure codes.
+- [x] Compare z3-real results against z3-clean baseline, not directly against the published catalog.
 
 ## Gate 3 - production schema freeze
 
-Status: **PENDING**
+Status: **ACTIVE**
 
 Before 403 objects, freeze output columns for:
 
