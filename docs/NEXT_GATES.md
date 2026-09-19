@@ -22,6 +22,7 @@ Status: **ACTIVE**
 - [x] Same B+D truth -> single-Sersic recovery.
 - [x] Native-clean -> z=3-clean baseline on three diagnostic objects.
 - [x] Demonstrate a real compact-component failure mode (ID 751217).
+- [x] Controlled fixed-input PSO repeats: 751217 is multimodal/non-identifiable; 322095 and 162363 are stable controls.
 - [ ] Run ~30-object clean sweep spanning redshift and predicted z=3 size.
 - [ ] Freeze diagnostic/final identifiability fields.
 - [ ] Decide whether a hard component-size warning threshold is justified by the sweep.
