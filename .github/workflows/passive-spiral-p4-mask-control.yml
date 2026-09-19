@@ -3,7 +3,7 @@ name: passive-spiral-p4-mask-control
 on:
   push:
     branches:
-      - verification-v0.1
+      - main
     paths:
       - "benchmarks/passive_spiral_redshift/P4_PROTOCOL.md"
       - "verification/passive_spiral_mask_control.py"

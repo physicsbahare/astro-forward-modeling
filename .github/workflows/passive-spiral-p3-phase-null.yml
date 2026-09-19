@@ -2,7 +2,7 @@ name: passive-spiral-p3-phase-null
 
 on:
   push:
-    branches: [verification-v0.1]
+    branches: [main]
     paths:
       - "benchmarks/passive_spiral_redshift/P3_PROTOCOL.md"
       - "verification/passive_spiral_phase_null.py"

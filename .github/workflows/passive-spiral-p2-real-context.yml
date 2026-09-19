@@ -3,7 +3,7 @@ name: passive-spiral-p2-real-context
 on:
   push:
     branches:
-      - verification-v0.1
+      - main
     paths:
       - "benchmarks/passive_spiral_redshift/P2_PROTOCOL.md"
       - "verification/passive_spiral_real_context.py"

@@ -3,7 +3,7 @@ name: passive-spiral-p5-robust-loss
 on:
   push:
     branches:
-      - verification-v0.1
+      - main
     paths:
       - "benchmarks/passive_spiral_redshift/P5_PROTOCOL.md"
       - "verification/passive_spiral_robust_loss.py"
