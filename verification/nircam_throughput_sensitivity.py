@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import numpy as np
 
-_TRAPEZOID = getattr(np, "trapezoid", np.trapz)
+_TRAPEZOID = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
 
 DEFAULT_THROUGHPUT_FILES = {
     "F115W": "F115W_May2024_mean_system_throughput.txt",
