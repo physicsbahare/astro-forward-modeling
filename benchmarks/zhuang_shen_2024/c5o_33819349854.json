@@ -1,0 +1,23 @@
+{
+  "run_id": 33819349854,
+  "commit": "7041907231a26292f8c663c2df898f3192175a7e",
+  "github_conclusion": "failure",
+  "jobs": {
+    "n1": {"conclusion": "success", "artifact_id": 9917787955, "zip_sha256": "4d168eb8f26c7be0b2906cd659c12d99ae327b4ef3f2aabfb19422e35094d74b", "starts": 12, "cases": 4},
+    "n4": {"conclusion": "failure", "artifact_id": 9917827458, "zip_sha256": "9c1de493e075f3120598a4877b1611e46abea4a006851b521682659c3b420420", "recorded_starts": 6, "completed_cases": 1}
+  },
+  "failure": {
+    "case": "n4_A_ratio10",
+    "start": "compact",
+    "returncode": 124,
+    "wall_seconds": 180.00290667899998,
+    "reason": "frozen process timeout; no best-fit/model/residual products"
+  },
+  "successful_winners": {
+    "n1_n_range": [1.00105, 1.00145],
+    "n1_re_range": [15.9835, 16.0108],
+    "n1_q_range": [0.599614, 0.599719],
+    "n4_A": {"n": 4.13361, "re": 16.227, "q": 0.596151, "point_flux_ratio1": 0.997246, "point_flux_ratio10": 9.99725, "bound_hits": []}
+  },
+  "interpretation": "C5o is not a passed matched-PSF preflight. The n=1 shard is complete; the n=4 compact high-contrast LM path timed out while truth and extended starts reached the same finite no-bound solution. Preserve the split result and diagnose optimizer path separately."
+}

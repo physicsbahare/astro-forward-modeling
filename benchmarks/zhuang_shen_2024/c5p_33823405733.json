@@ -1,0 +1,20 @@
+{
+  "run_id": 33823405733,
+  "commit": "b5644c92fa1efc7204cd267acdc098636cf437b2",
+  "github_conclusion": "success",
+  "artifacts": {
+    "A": {"artifact_id": 9919733109, "zip_sha256": "d94424957a1bf636f7fc7ae7ba3ce088ac3aa04a9923044e728bc08756acbe3a"},
+    "B": {"artifact_id": 9920016772, "zip_sha256": "19cd284ea01d1ad7a830b1e3b3ebe21262cc80e598136177f528d1fcabc334ba"}
+  },
+  "module_A": {
+    "lm": {"returncode": 124, "wall_seconds": 180.00261948500003, "last_recorded_iteration": 498, "finite": false},
+    "nm": {"returncode": 0, "wall_seconds": 8.209595218999993, "finite": true, "n": 2.17139, "re": 9.41429, "q": 0.642354, "point_flux": 10.0151, "sse": 0.00000361391632850745, "bound_hits": []},
+    "nm_sse_over_c5o_finite_solution": 89.0440009096843
+  },
+  "module_B": {
+    "lm": {"returncode": 0, "wall_seconds": 10.128543800999992, "finite": true, "n": 4.227, "re": 16.1295, "q": 0.599318, "point_flux": 9.99344, "sse": 1.1408829887807324e-7, "bound_hits": []},
+    "nm": {"returncode": 0, "wall_seconds": 7.835590584999991, "finite": true, "n": 2.44553, "re": 9.15388, "q": 0.685389, "point_flux": 10.0048, "sse": 0.0000036665123150798136, "bound_hits": []},
+    "nm_sse_over_lm": 32.13749658059355
+  },
+  "interpretation": "Both jobs and strict audits passed. The compact start is solver- and module-dependent: Nelder-Mead terminates in an inferior compact-host basin for both modules; module-A LM times out on the same plateau, while module-B LM reaches the lower-cost extended-host solution. This is optimizer-path evidence, not physical recovery."
+}

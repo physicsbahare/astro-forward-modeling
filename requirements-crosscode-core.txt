@@ -1,0 +1,6 @@
+# Stable releases used for the first Gate-B core cross-code benchmark.
+# These are benchmark pins, not yet the future public package dependency policy.
+astropy==8.0.1
+reproject==0.21.0
+photutils==3.0.0
+GalSim==2.8.4

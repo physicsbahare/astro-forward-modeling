@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forward-modeling-verification"
+version = "0.1.0"
+description = "Verification and passive-disk artificial-redshifting tools for astronomical survey-transfer experiments."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "matplotlib>=3.8",
+  "astropy>=6.0",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8",
+  "photutils>=1.9",
+  "scikit-image>=0.25",
+]
+tutorial = [
+  "pandas>=2",
+  "jupyter>=1",
+]
+passive-disk = [
+  "pandas>=2",
+  "galsim>=2.5",
+  "galight==0.2.1",
+  "lenstronomy==1.12.0",
+  "photutils>=1.9",
+  "h5py>=3.10",
+]
+
+[tool.setuptools]
+packages = ["verification"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]

@@ -1,0 +1,29 @@
+{
+  "evidence": "LOCAL serialization diagnostic only; not CI and not a replacement scientific result",
+  "date": "2026-09-03",
+  "local_host_shard": 4,
+  "case": "corner_re0.5_q1_A_nominal_hlr_imfit_s4",
+  "original_bytes": 488590,
+  "original_sha256": "ad6a0cd989897900838df842e6fe6bfea0a21f5548dcc4ea3b69eb0cfed242af",
+  "original_zip_valid": false,
+  "original_eocd_offset": -1,
+  "original_local_headers": 2,
+  "candidate_bytes": 1098440,
+  "candidate_sha256": "22716b89869ce9ed98d6e2b438cc5ff0d8b0739a1eee8f9ff499f3cc471208d5",
+  "original_is_exact_prefix": true,
+  "candidate_eocd_offset": 1098418,
+  "stored_amplitude": 1.0053881732871748,
+  "stored_cost": 1.5679760996401924,
+  "recomputed_cost": 1.5679760996401924,
+  "reference_sha256": "efad0eda7f4e6486d1f819e1817f3f2f7326b4978e01be1cfcd4a168f7fa613f",
+  "template_sha256": "070fffcfbb702264c5a418a7f5b73ef3f9eee038fb09c7742d8a8aa82c7e8d49",
+  "diagnosis": "Incomplete local ZIP. Underlying truncation cause unestablished; do not attribute it to astrophysics or a proven NumPy bug.",
+  "candidate_method": "NumPy 2.5.2 savez_compressed into BytesIO using the already-saved reference/template and stored amplitude; no rerender or refit. Original file was not overwritten.",
+  "guard": "Temporary NumPy archive, flush/fsync, full array readback, atomic os.replace into a new destination; final file/array manifest. Fail, preserve temporary file and do not retry if validation fails.",
+  "scientific_changes": "None: original protocol, profiles, GSParams, sampling, bounds and criteria retained.",
+  "sources": [
+    "https://numpy.org/doc/stable/reference/generated/numpy.savez_compressed.html",
+    "https://docs.python.org/3.12/library/zipfile.html",
+    "https://docs.python.org/3.12/library/os.html#os.replace"
+  ]
+}
