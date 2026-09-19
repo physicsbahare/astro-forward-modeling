@@ -1,0 +1,4 @@
+id,z_source,morph_filter,published_n,native_clean_n,z3_clean_n,input_bt,native_recovered_bt,z3_recovered_bt,native_disk_re_pix,z3_disk_re_pix,native_bulge_re_pix,z3_bulge_re_pix,catalog_disk,native_clean_disk,z3_clean_disk,notes
+751217,0.1009,F115W,2.254607,1.525468,8.797613,0.268124,0.077148,0.092379,1.716355,0.418394,0.333353,0.081261,True,True,False,"Native B/T already non-identifiable; large native-to-z3 n jump is resolution/redshift driven."
+322095,0.8709,F150W,1.413573,1.459759,1.431337,0.303099,0.312616,0.311619,3.563171,3.586755,3.206774,3.227998,True,True,True,"Stable diagnostic case."
+162363,2.9478,F444W,0.774276,1.049920,1.049680,0.011345,0.008410,0.005877,9.895777,9.947348,2.597385,2.610921,True,True,True,"Stable classification; native synthetic single-n differs from published n."
