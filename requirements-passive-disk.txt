@@ -1,0 +1,13 @@
+# Active passive-disk / GOLD403 analysis environment
+# Keep Galight/Lenstronomy pinned because the notebook integration depends on
+# their current API and parameter conventions.
+numpy>=2.0
+scipy>=1.11
+pandas>=2.0
+astropy>=6.0
+matplotlib>=3.8
+galsim>=2.5
+galight==0.2.1
+lenstronomy==1.12.0
+photutils>=1.9
+h5py>=3.10
