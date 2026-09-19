@@ -59,7 +59,9 @@ For the other two representative objects, native-clean and z=3-clean morphology 
 
 ## Active next step
 
-Run the **30-object clean identifiability / resolution sweep** before any 403-object real-background production run.
+The restart-safe **31-object clean identifiability / resolution sweep** completed 31/31 successful fits. It confirms 751217 as a compact, structurally non-identifiable case and distinguishes an identifiable n-boundary flip (514739) from fit failure. See [the clean-sweep receipt](docs/CLEAN_SWEEP_2026-09-19.md).
+
+Run the corrected small real-background E0/E1J pilot before any 403-object production run.
 
 The sweep should span source redshift and predicted z=3 component size and should record:
 

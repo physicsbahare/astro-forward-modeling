@@ -8,7 +8,8 @@
 4. [Runbook](RUNBOOK.md) - operational instructions for resuming and running the analysis.
 5. [Next gates](NEXT_GATES.md) - short checklist of what blocks the full GOLD403 production run.
 6. [Controlled recovery diagnostic](CONTROLLED_RECOVERY_2026-09-19.md) - fixed-input PSO repeat gate after the interrupted sweep.
-7. [Repository cleanup record](REPOSITORY_CLEANUP_2026-09-19.md) - what was removed from the active tree and what remains preserved in history.
+7. [Representative clean sweep](CLEAN_SWEEP_2026-09-19.md) - checkpointed 31-object identifiability/resolution result and policy.
+8. [Repository cleanup record](REPOSITORY_CLEANUP_2026-09-19.md) - what was removed from the active tree and what remains preserved in history.
 
 ## Active code
 
@@ -23,6 +24,7 @@
 - `../data/validation/GOLD403_lenstronomy_closed_loop_receipt.csv`
 - `../data/validation/GOLD403_three_object_native_z3_receipt.csv`
 - `../data/validation/GOLD403_controlled_z3_recovery_2026-09-19.csv`
+- `../data/validation/GOLD403_clean_sweep_31_2026-09-19.csv`
 
 ## Historical scientific evidence
 
@@ -34,8 +36,8 @@ Historical benchmark material is retained because it supports the scientific con
 
 ## Current checkpoint
 
-The controlled recovery gate has passed: 751217 is demonstrably structurally non-identifiable at z=3, while 322095 and 162363 are stable controls. The next required science product is the representative restart-safe clean identifiability/resolution sweep:
+The controlled recovery and representative clean-sweep gates have passed. 751217 is structurally non-identifiable at z=3; 514739 is an identifiable n-boundary flip; the remaining sampled cases have stable B/T recovery. The next required science product is the corrected small real-background E0/E1J pilot:
 
-`clean_native_to_z3_identifiability_sweep_30.csv`
+`z3-clean -> z3-real E0/E1J pilot receipt`
 
 The 403-object real-background run remains intentionally blocked until the clean sweep and corrected real-context pilot are reviewed.

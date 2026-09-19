@@ -1111,6 +1111,45 @@ def select_clean_sweep_ids(
     return list(dict.fromkeys(ids))
 
 
+def clean_identifiability_flags(
+    *,
+    bt_native_error: float,
+    bt_z3_error: float,
+    native_disk: bool,
+    z3_disk: bool,
+    z3_disk_re_over_psf: float,
+    z3_bulge_re_over_psf: float,
+    bt_identify_tol: float,
+) -> dict:
+    """Return explicit structural-interpretation states for a clean-sweep row.
+
+    The B/T tolerance is an operational recovery flag, not a universal component
+    resolution law. The extreme-resolution comparison references the validated
+    751217 regime only to request repeat-start robustness testing; it never
+    rejects an object by itself.
+    """
+    native_ok = bool(float(bt_native_error) <= float(bt_identify_tol))
+    z3_ok = bool(float(bt_z3_error) <= float(bt_identify_tol))
+    if not native_ok or not z3_ok:
+        classification_quality = "B/T_NONIDENTIFIABLE"
+    elif bool(native_disk) != bool(z3_disk):
+        classification_quality = "IDENTIFIABLE_RESOLUTION_FLIP"
+    else:
+        classification_quality = "IDENTIFIABLE_STABLE_CLASS"
+    extreme_reference = bool(
+        float(z3_disk_re_over_psf) <= 0.086564
+        and float(z3_bulge_re_over_psf) <= 0.016813
+    )
+    return {
+        "bt_native_identifiable": native_ok,
+        "bt_z3_identifiable": z3_ok,
+        "bt_z3_physical_interpretation_allowed": bool(native_ok and z3_ok),
+        "classification_quality": classification_quality,
+        "resolution_extreme_751217_reference": extreme_reference,
+        "needs_repeat_start_robustness": extreme_reference,
+    }
+
+
 def run_clean_identifiability_sweep(
     gold,
     *,
@@ -1182,6 +1221,15 @@ def run_clean_identifiability_sweep(
 
             native_disk = bool(native["native_clean_disk_classification"])
             z3_disk = bool(z3["clean_model_disk_classification"])
+            flags = clean_identifiability_flags(
+                bt_native_error=bt_native_error,
+                bt_z3_error=bt_z3_error,
+                native_disk=native_disk,
+                z3_disk=z3_disk,
+                z3_disk_re_over_psf=float(z3["disk_re_over_psf"]),
+                z3_bulge_re_over_psf=float(z3["bulge_re_over_psf"]),
+                bt_identify_tol=bt_identify_tol,
+            )
 
             record = {
                 "id": int(oid),
@@ -1212,12 +1260,7 @@ def run_clean_identifiability_sweep(
                 "z3_recovered_bt": float(z3["recovered_bt"]),
                 "bt_native_abs_error": float(bt_native_error),
                 "bt_z3_abs_error": float(bt_z3_error),
-                "bt_native_identifiable": bool(
-                    bt_native_error <= bt_identify_tol
-                ),
-                "bt_z3_identifiable": bool(
-                    bt_z3_error <= bt_identify_tol
-                ),
+                **flags,
                 "native_disk_re_pix": float(
                     native["native_disk_re_over_pixel"]
                 ),
@@ -1226,6 +1269,8 @@ def run_clean_identifiability_sweep(
                 ),
                 "z3_disk_re_pix": float(z3["disk_re_over_pixel"]),
                 "z3_bulge_re_pix": float(z3["bulge_re_over_pixel"]),
+                "z3_disk_re_over_psf": float(z3["disk_re_over_psf"]),
+                "z3_bulge_re_over_psf": float(z3["bulge_re_over_psf"]),
                 "native_clean_disk": native_disk,
                 "z3_clean_disk": z3_disk,
                 "resolution_classification_flip": bool(

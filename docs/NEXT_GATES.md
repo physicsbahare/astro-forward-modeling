@@ -16,17 +16,17 @@ Status: **PASS**
 
 ## Gate 1 - clean structural identifiability
 
-Status: **ACTIVE**
+Status: **PASS (representative-sweep scope)**
 
 - [x] Exact B+D truth -> B+D recovery on three diagnostic objects.
 - [x] Same B+D truth -> single-Sersic recovery.
 - [x] Native-clean -> z=3-clean baseline on three diagnostic objects.
 - [x] Demonstrate a real compact-component failure mode (ID 751217).
 - [x] Controlled fixed-input PSO repeats: 751217 is multimodal/non-identifiable; 322095 and 162363 are stable controls.
-- [ ] Run ~30-object clean sweep spanning redshift and predicted z=3 size.
-- [ ] Freeze diagnostic/final identifiability fields.
-- [ ] Decide whether a hard component-size warning threshold is justified by the sweep.
-- [ ] Decide how disk classification is reported when B/T is non-identifiable.
+- [x] Run restart-safe 31-object clean sweep spanning redshift and predicted z=3 size (31/31 OK).
+- [x] Freeze diagnostic identifiability fields and classification-quality states.
+- [x] Establish that a general hard component-size cut is **not** justified by this sample; retain continuous resolution warnings and a 751217-reference robustness regime.
+- [x] Define classification reporting: `B/T_NONIDENTIFIABLE`, `IDENTIFIABLE_RESOLUTION_FLIP`, or `IDENTIFIABLE_STABLE_CLASS`.
 
 Required output:
 
@@ -34,7 +34,7 @@ Required output:
 
 ## Gate 2 - corrected real-background pilot
 
-Status: **BLOCKED ON GATE 1**
+Status: **ACTIVE**
 
 Use the validated Lenstronomy renderer.
 
