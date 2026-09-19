@@ -143,7 +143,17 @@ print("GOLD403_SWEEP_ROW="+json.dumps(_out,allow_nan=False,sort_keys=True))
         output=execute(client, code, timeout=args.timeout_seconds, label=f"sweep ID {oid}")
         return extract_marker(output,"GOLD403_SWEEP_ROW=")
     try:
-        run_restartable_sweep(selection, out/"clean_native_to_z3_identifiability_sweep_31.csv", FIELDS, runner, out/"provenance.json", out/"run.log", config, {"kernel":"phd"}, force_ids=args.force_id)
+        run_restartable_sweep(
+            selection,
+            output_csv=out / "clean_native_to_z3_identifiability_sweep_31.csv",
+            fieldnames=FIELDS,
+            object_runner=runner,
+            provenance_path=out / "provenance.json",
+            log_path=out / "run.log",
+            config=config,
+            software_versions={"kernel": "phd"},
+            force_ids=set(args.force_id),
+        )
     finally:
         client.stop_channels(); km.shutdown_kernel(now=False)
     return 0
