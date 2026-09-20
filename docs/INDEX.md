@@ -11,6 +11,7 @@
 7. [Representative clean sweep](CLEAN_SWEEP_2026-09-19.md) - checkpointed 31-object identifiability/resolution result and policy.
 8. [Corrected real-background pilot](REAL_BACKGROUND_PILOT_2026-09-19.md) - restart-safe real SCI/ERR E0/E1J gate.
 9. [Repository cleanup record](REPOSITORY_CLEANUP_2026-09-19.md) - what was removed from the active tree and what remains preserved in history.
+10. [Production receipt recovery](PRODUCTION_RECEIPT_RECOVERY_2026-09-20.md) - structured handling of nonphysical real B+D decompositions.
 
 ## Active code
 
@@ -27,6 +28,7 @@
 - `../data/validation/GOLD403_controlled_z3_recovery_2026-09-19.csv`
 - `../data/validation/GOLD403_clean_sweep_31_2026-09-19.csv`
 - `../data/validation/GOLD403_real_background_pilot_2026-09-19.csv`
+- `../data/validation/GOLD403_production_nonphysical_bt_receipt_2026-09-20.csv`
 
 ## Historical scientific evidence
 
@@ -38,6 +40,6 @@ Historical benchmark material is retained because it supports the scientific con
 
 ## Current checkpoint
 
-The controlled recovery, representative clean-sweep, and corrected real-background pilot gates have passed. 751217 is structurally non-identifiable at z=3; 514739 is an identifiable n-boundary flip; the pilot retains real-context classification degradation as an outcome. The next required work is to freeze and launch the restart-safe four-stage GOLD403 production receipt.
+The controlled recovery, representative clean-sweep, and corrected real-background pilot gates have passed. 751217 is structurally non-identifiable at z=3; 514739 is an identifiable n-boundary flip; the pilot retains real-context classification degradation as an outcome. The restart-safe four-stage GOLD403 production receipt is active; undefined real B/T is retained as an ERROR/quality state rather than coerced into a morphology class.
 
 `published -> native clean -> z3 clean -> z3 real production receipt`

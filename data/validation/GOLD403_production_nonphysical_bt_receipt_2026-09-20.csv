@@ -1,0 +1,3 @@
+case_id,source_id,target_filter,evolution,status,error,real_n,real_single_chisq,real_bd_chisq,snr_empirical,n_neighbours_modelled,bt_interpretation
+78,144050,F444W,E0,ERROR,"NONFINITE_OUTPUT_FIELDS={""delta_real_minus_clean_bt"": ""nan"", ""real_bt"": ""nan""}",0.7693187675322508,0.7500061780942471,0.7411887963958605,21.720792745150906,3,BT_UNDEFINED_NONPHYSICAL_BD_TOTAL_FLUX
+113,244474,F444W,E0,ERROR,"NONFINITE_OUTPUT_FIELDS={""delta_real_minus_clean_bt"": ""nan"", ""real_bt"": ""nan""}",0.30732201013281735,1.9705629029232743,1.9779498860323679,1.0872662657134227,3,BT_UNDEFINED_NONPHYSICAL_BD_TOTAL_FLUX

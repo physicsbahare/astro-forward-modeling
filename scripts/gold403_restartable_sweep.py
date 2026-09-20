@@ -162,6 +162,7 @@ def run_restartable_sweep(
     config: Mapping[str, object],
     software_versions: Mapping[str, object],
     force_ids: set[int] | None = None,
+    stop_after_forced: bool = False,
 ) -> list[dict[str, str]]:
     """Run one object at a time, atomically saving a complete receipt each time.
 
@@ -179,6 +180,8 @@ def run_restartable_sweep(
 
     expected_ids = set(ordered_ids)
     forced = {int(object_id) for object_id in (force_ids or set())}
+    if stop_after_forced and not forced:
+        raise CheckpointValidationError("stop_after_forced requires at least one forced ID")
     unknown_forced = forced - expected_ids
     if unknown_forced:
         raise CheckpointValidationError(
@@ -219,6 +222,7 @@ def run_restartable_sweep(
 
     skipped = 0
     rerun = 0
+    completed_forced: set[int] = set()
     for object_id in ordered_ids:
         if object_id in records and object_id not in forced:
             skipped += 1
@@ -244,6 +248,15 @@ def run_restartable_sweep(
             f"{datetime.now(timezone.utc).isoformat()} id={object_id} "
             f"status={records[object_id]['status']} checkpointed={len(rows)}",
         )
+        if object_id in forced:
+            completed_forced.add(object_id)
+            if stop_after_forced and completed_forced == forced:
+                _append_log(
+                    log_path,
+                    f"{datetime.now(timezone.utc).isoformat()} "
+                    f"controlled_stop_after_forced={sorted(forced)}",
+                )
+                return rows
 
     complete = load_valid_checkpoint(output_csv, expected_ids, fieldnames)
     if len(complete) != len(ordered_ids):

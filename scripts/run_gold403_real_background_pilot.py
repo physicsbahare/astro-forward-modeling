@@ -52,6 +52,34 @@ FIELDS = [
 ]
 
 
+# Executed in the isolated ``phd`` kernel after its validated notebook setup.
+# Non-finite morphology fields are evidence of a nonphysical decomposition,
+# not values that may be coerced into a disk classification.
+KERNEL_JSON_SAFETY_BOOTSTRAP = r'''
+def _nonfinite_output_fields(values):
+    return {str(key): repr(float(value)) for key, value in values.items()
+            if isinstance(value, (float, np.floating)) and not np.isfinite(value)}
+
+def _normalize_receipt_record(values):
+    record = dict(values)
+    bad_fields = _nonfinite_output_fields(record)
+    if not bad_fields:
+        return record
+    record["status"] = "ERROR"
+    record["error"] = "NONFINITE_OUTPUT_FIELDS=" + json.dumps(
+        bad_fields, allow_nan=False, sort_keys=True
+    )
+    for field in bad_fields:
+        record[field] = None
+    if "real_bt" in bad_fields:
+        # The B+D decomposition has no physical total flux, so neither a B/T
+        # class nor a clean-to-real class change is scientifically defined.
+        record["real_disk"] = None
+        record["clean_to_real_flip"] = None
+    return record
+'''
+
+
 def case_seed(case_id: int) -> int:
     """Return the same valid 32-bit deterministic seed convention as the sweep."""
     return 2026091900 + int(case_id)
@@ -110,6 +138,7 @@ def _pilot_hits(comp, lower, upper):
         if abs(value-lo)<=1e-5*max(1.,abs(lo)): hits.append(key+":lower")
         if abs(value-hi)<=1e-5*max(1.,abs(hi)): hits.append(key+":upper")
     return hits
+{KERNEL_JSON_SAFETY_BOOTSTRAP}
 def run_galight_model(dp, source_params, n_components, savename, condition=None, pso_repeats=1):
     fit=_pilot_run_galight_model(dp, source_params, n_components, savename, condition, pso_repeats)
     comps=[]
@@ -129,6 +158,8 @@ def main() -> int:
     parser.add_argument("--notebook", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--force-case", action="append", type=int, default=[])
+    parser.add_argument("--stop-after-forced", action="store_true",
+                        help="checkpoint only explicitly forced diagnostic cases, then exit")
     parser.add_argument("--timeout-seconds", type=float, default=14400)
     parser.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
@@ -181,6 +212,7 @@ _cy,_cx=_err.shape[0]//2,_err.shape[1]//2
 _clean=run_exact_bd_validation(_row,_filter,_context)
 _real=run_model_injected_galight_case(_row,_injected,_err,_seg,_psf,_truth,_filter,_evolution,_context)
 _out={{"id":{case_id},"source_id":_oid,"z_source":float(_row["z"]),"target_filter":_filter,"evolution":_evolution,"context_tile":str(_context["tile"]),"context_id":int(_context["context_id"]),"status":"OK","error":"","morph_filter":str(_morph["morph_filter"]),"published_n":float(_truth["published_single_n"]),"input_bt":float(_truth["truth_bt"]),"input_disk":bool(_truth["catalog_disk_classification"]),"native_clean_n":float(_native["native_single_n_from_bd"]),"native_bt":float(_native["native_recovered_bt"]),"native_bt_abs_error":float(abs(_native["native_recovered_bt"]-_native["truth_bt"])),"native_bt_identifiable":bool(abs(_native["native_recovered_bt"]-_native["truth_bt"])<=.10),"native_clean_disk":bool(_native["native_clean_disk_classification"]),"native_disk_re_pix":float(_native["native_disk_re_over_pixel"]),"native_bulge_re_pix":float(_native["native_bulge_re_over_pixel"]),"clean_n":float(_clean["clean_single_n_from_bd"]),"clean_bt":float(_clean["recovered_bt"]),"clean_single_chisq":float(_clean["single_chisq"]),"clean_bd_chisq":float(_clean["bd_chisq"]),"clean_disk":bool(_clean["clean_model_disk_classification"]),"real_n":float(_real["recovered_n"]),"real_re_arcsec":float(_real["recovered_re_arcsec"]),"real_q":float(_real["recovered_q"]),"real_bt":float(_real["recovered_bt"]),"real_disk":bool(_real["recovered_disk"]),"real_single_chisq":float(_real["single_chisq"]),"real_bd_chisq":float(_real["bd_chisq"]),"delta_real_minus_clean_n":float(_real["recovered_n"]-_clean["clean_single_n_from_bd"]),"delta_real_minus_clean_bt":float(_real["recovered_bt"]-_clean["recovered_bt"]),"clean_to_real_flip":bool(_real["recovered_disk"]!=_clean["clean_model_disk_classification"]),"target_fnu_jy":_target_fnu,"measured_target_fnu_jy":_measured,"flux_conservation_frac":float(_measured/_target_fnu-1.0),"source_to_target_ratio":float(_ratio),"evolution_factor":float(_evo),"snr_empirical":float(_real["snr_empirical"]),"blank_ap_sigma":float(_real["blank_ap_sigma"]),"n_blank_ap":int(_real["n_blank_ap"]),"valid_err_fraction":float(np.mean(_valid)),"center_err_valid":bool(_valid[_cy,_cx]),"fit_radius_pix":int(_real["fit_radius_pix"]),"n_neighbours_modelled":int(_real["n_neighbours_modelled"]),"likelihood_fraction":float(_real["likelihood_fraction"]),"fit_records_json":json.dumps(PILOT_FIT_RECORDS,sort_keys=True),"seed":_seed,"render_method":"exact_lenstronomy_bd_truth_scaled_then_deterministic_SCI_addition"}}
+_out=_normalize_receipt_record(_out)
 print("GOLD403_PILOT_ROW="+json.dumps(_out,allow_nan=False,sort_keys=True))
 '''
         return marker(execute(client, code, timeout=args.timeout_seconds, label=f"pilot case {case_id}"), "GOLD403_PILOT_ROW=")
@@ -188,7 +220,8 @@ print("GOLD403_PILOT_ROW="+json.dumps(_out,allow_nan=False,sort_keys=True))
     try:
         run_restartable_sweep(case_ids, output_csv=output / "real_background_pilot.csv", fieldnames=FIELDS,
             object_runner=runner, provenance_path=output / "provenance.json", log_path=output / "run.log",
-            config=config, software_versions={"kernel": "phd"}, force_ids=set(args.force_case))
+            config=config, software_versions={"kernel": "phd"}, force_ids=set(args.force_case),
+            stop_after_forced=args.stop_after_forced)
     finally:
         client.stop_channels(); km.shutdown_kernel(now=False)
     return 0

@@ -72,6 +72,12 @@ Before 403 objects, freeze output columns for:
 
 Status: **ACTIVE (restart-safe batch launched 2026-09-19)**
 
+Production receipt recovery (2026-09-20): cases 78/ID144050 and
+113/ID244474 reproduce nonphysical real B+D total flux and therefore have
+undefined B/T. They are preserved as structured ERROR rows with no derived
+disk class or class-flip claim; this is not a renderer/serialization failure.
+See `PRODUCTION_RECEIPT_RECOVERY_2026-09-20.md`.
+
 - [ ] Run all 403 objects (F444W E0 primary + F444W E1J sensitivity; 806 checkpointed cases).
 - [ ] Preserve failures; do not silently drop them.
 - [ ] Produce completeness/recovery versus:

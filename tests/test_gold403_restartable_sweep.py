@@ -134,3 +134,29 @@ def test_restart_refuses_to_mix_a_checkpoint_with_different_configuration(tmp_pa
             config={"target_filter": "F277W"},
             software_versions={"python": "test"},
         )
+
+
+def test_restartable_runner_can_stop_after_only_forced_case(tmp_path):
+    """A diagnostic rerun must not advance later uncheckpointed production IDs."""
+    module = _load_module()
+    receipt = tmp_path / "checkpoint.csv"
+    log = tmp_path / "run.log"
+    provenance = tmp_path / "provenance.json"
+    fields = ("id", "status", "metric", "error")
+    module.write_checkpoint_rows(receipt, [{"id": 11, "status": "OK", "metric": 1.1, "error": ""}], fields)
+    provenance.write_text(json.dumps({"object_ids": [11, 12, 13], "config": {"target_filter": "F444W"}}))
+    calls = []
+
+    def runner(object_id):
+        calls.append(object_id)
+        return {"id": object_id, "status": "ERROR", "metric": "", "error": "diagnostic"}
+
+    rows = module.run_restartable_sweep(
+        [11, 12, 13], output_csv=receipt, fieldnames=fields, object_runner=runner,
+        provenance_path=provenance, log_path=log, config={"target_filter": "F444W"},
+        software_versions={"python": "test"}, force_ids={12}, stop_after_forced=True,
+    )
+
+    assert calls == [12]
+    assert [int(row["id"]) for row in rows] == [11, 12]
+    assert "controlled_stop_after_forced" in log.read_text()

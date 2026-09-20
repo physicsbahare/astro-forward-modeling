@@ -21,6 +21,10 @@ def main() -> int:
     parser.add_argument("--notebook", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--force-source-id", action="append", type=int, default=[])
+    parser.add_argument("--force-case", action="append", type=int, default=[],
+                        help="rerun exactly one invalid/incomplete case ID")
+    parser.add_argument("--stop-after-forced", action="store_true",
+                        help="checkpoint only forced diagnostic cases, then exit")
     parser.add_argument("--limit-sources", type=int, help="validated smoke subset; production omits this")
     parser.add_argument("--prepare-only", action="store_true")
     parser.add_argument("--timeout-seconds", type=float, default=14400)
@@ -34,11 +38,16 @@ def main() -> int:
     # F444W is the frozen primary structural target. E1J is F444W-only.
     production.CASES[:] = [(oid, "F444W", "E0") for oid in run_ids] + [(oid, "F444W", "E1J") for oid in run_ids]
     forced = set(args.force_source_id)
-    force_cases = [str(ix + 1) for ix, (oid, _, _) in enumerate(production.CASES) if oid in forced]
+    force_cases = set(args.force_case)
+    invalid_cases = force_cases - set(range(1, len(production.CASES) + 1))
+    if invalid_cases:
+        raise RuntimeError(f"--force-case outside selected production cases: {sorted(invalid_cases)}")
+    force_cases.update(ix + 1 for ix, (oid, _, _) in enumerate(production.CASES) if oid in forced)
     argv = [sys.argv[0], "--notebook", str(args.notebook), "--output-dir", str(args.output_dir),
             "--timeout-seconds", str(args.timeout_seconds)]
     if args.prepare_only: argv.append("--prepare-only")
-    for case_id in force_cases: argv.extend(["--force-case", case_id])
+    if args.stop_after_forced: argv.append("--stop-after-forced")
+    for case_id in sorted(force_cases): argv.extend(["--force-case", str(case_id)])
     old_argv = sys.argv
     try:
         sys.argv = argv
