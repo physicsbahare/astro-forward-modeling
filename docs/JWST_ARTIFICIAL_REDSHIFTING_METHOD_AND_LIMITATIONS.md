@@ -33,6 +33,13 @@ The blank-sky patch diagnostic quantifies empirical RMS / ERR mismatch caused
 by correlated noise or map semantics. It warns by default; users may explicitly
 request an ERR scaling only after documenting why a scalar adjustment is valid.
 
+For users without a real background, `SYNTHETIC_BACKGROUND` accepts only an
+explicit Gaussian model with shape, pixel scale, background mean/RMS, and RNG
+seed. It draws that background exactly once before source injection, gives it a
+matching ERR map, and labels it uncorrelated synthetic noise. It cannot model
+drizzle covariance, detector artifacts, or real crowding without a more
+specific user-supplied forward model.
+
 ## Structural interpretation
 
 Published/native, native-clean, target-clean, and target-real are distinct

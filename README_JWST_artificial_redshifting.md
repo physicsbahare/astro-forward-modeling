@@ -60,6 +60,11 @@ second sky/read/correlated-noise realization. It does not add injected-source
 Poisson noise. `REAL_BACKGROUND_SOURCE_POISSON` is deliberately refused unless
 the user provides a physically valid count-rate conversion and exposure.
 
+`SYNTHETIC_BACKGROUND` is available only with an explicit
+`SYNTHETIC_BACKGROUND_MODEL` (square shape, pixel scale, mean, RMS, and seed).
+It creates exactly one documented *uncorrelated Gaussian* background draw and
+is clearly not a replacement for a real drizzled mosaic or its covariance.
+
 See [the field-adaptation checklist](docs/JWST_FIELD_ADAPTATION_CHECKLIST.md)
 and [method/limitations](docs/JWST_ARTIFICIAL_REDSHIFTING_METHOD_AND_LIMITATIONS.md)
 before interpreting a new field.

@@ -29,6 +29,12 @@
       "callable_psf": "PASS",
       "position_dependent_psfex_callable": "PASS",
       "signed_normalization_checked": true
+    },
+    "synthetic_background": {
+      "missing_model": "TERMINAL_ERROR:MISSING_SYNTHETIC_BACKGROUND_MODEL",
+      "explicit_gaussian_model": "PASS",
+      "background_noise_draws": 1,
+      "second_background_draw_during_injection": false
     }
   }
 }
