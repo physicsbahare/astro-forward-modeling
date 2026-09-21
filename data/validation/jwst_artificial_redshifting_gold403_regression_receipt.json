@@ -1,0 +1,31 @@
+{
+  "date_utc": "2026-09-21",
+  "notebook": "JWST_artificial_redshifting_general.ipynb",
+  "scope": "Controlled clean Lenstronomy truth to Galight recovery; temporary kernel; read-only frozen GOLD403 inputs",
+  "status": "PASS",
+  "id": 751217,
+  "target_filter": "F444W",
+  "target_psf": {
+    "context_tile": "B6",
+    "position_convention": "validated PSFEx x/y plus one, GalSim no_pixel",
+    "shape": [137, 137],
+    "minimum_signed_value": -3.999085918709063e-05,
+    "negative_wings_preserved": true
+  },
+  "truth": {
+    "n": 2.2546071617294854,
+    "re_arcsec": 0.16758451100415545,
+    "q": 0.286579
+  },
+  "recovery": {
+    "n": 2.2546071617294854,
+    "re_arcsec": 0.16758451100415545,
+    "q": 0.28657899999999986,
+    "delta_n": 0.0,
+    "delta_re_fraction": 0.0,
+    "delta_q": -1.1102230246251565e-16,
+    "reduced_chisq": 1.2498061762553854e-30,
+    "bound_hits": []
+  },
+  "comparison": "Matches the existing GOLD403_lenstronomy_closed_loop_receipt.csv truth/recovery behavior. This is a renderer/recovery convention regression, not a re-interpretation of ID 751217's separately established B+D non-identifiability."
+}

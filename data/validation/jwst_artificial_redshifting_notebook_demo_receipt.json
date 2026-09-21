@@ -1,0 +1,42 @@
+{
+  "date_utc": "2026-09-21",
+  "notebook": "JWST_artificial_redshifting_general.ipynb",
+  "execution": "fresh Python 3.11 kernel; DEMO_MODE=True; no private input files",
+  "status": "PASS",
+  "software": {
+    "numpy": "2.4.6",
+    "lenstronomy": "1.12.0",
+    "galight": "0.2.1"
+  },
+  "exact_lenstronomy_to_galight_closure": {
+    "truth_n": 1.6,
+    "fit_n": 1.6,
+    "truth_re_arcsec": 0.18,
+    "fit_re_arcsec": 0.18,
+    "truth_q": 0.72,
+    "fit_q": 0.72,
+    "delta_n": 0.0,
+    "delta_re_fraction": 0.0,
+    "delta_q": 0.0,
+    "bound_hits": []
+  },
+  "real_background_deterministic": {
+    "background_noise_draws": 0,
+    "source_poisson_added": false,
+    "target_empirical_to_err": 1.039864569170296,
+    "flux_requested_jy": 3.1174270458855256e-08,
+    "flux_rendered_jy": 3.1174270458855256e-08
+  },
+  "preflight": {
+    "pass": [
+      "SCI image", "WCS", "Pixel scale", "Units", "PSF", "ERR map",
+      "Empirical noise", "Wavelength support", "Cosmology", "Clean render recovery",
+      "Native clean recovery", "Flux conservation", "Background treatment",
+      "Target clean recovery", "Target real recovery"
+    ],
+    "warnings": [
+      "No external segmentation in synthetic demo; protected-source robust-patch fallback used.",
+      "Target location is unsegmented synthetic context."
+    ]
+  }
+}

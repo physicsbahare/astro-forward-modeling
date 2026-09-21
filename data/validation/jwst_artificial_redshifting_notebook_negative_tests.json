@@ -1,0 +1,34 @@
+{
+  "date_utc": "2026-09-21",
+  "notebook": "JWST_artificial_redshifting_general.ipynb",
+  "execution": "temporary fresh Python kernel using only notebook helper cells",
+  "status": "PASS",
+  "tests": {
+    "missing_target_input": "TERMINAL_ERROR:MISSING_TARGET_INPUT",
+    "missing_err": "TERMINAL_ERROR:MISSING_ERR",
+    "invalid_psf": "TERMINAL_ERROR:INVALID_PSF",
+    "insufficient_wavelength_support": "TERMINAL_ERROR:UNSUPPORTED_WAVELENGTH",
+    "deterministic_real_background": {
+      "background_noise_draws": 0,
+      "source_poisson_added": false,
+      "target_err_unchanged": true
+    },
+    "resume_statuses": {
+      "OK_skipped": true,
+      "WARNING_skipped": true,
+      "TERMINAL_ERROR_skipped": true,
+      "RETRYABLE_ERROR_retried": true,
+      "force_rerun_overrides_OK": true
+    },
+    "checkpoint_history": {
+      "prior_retryable_receipt_archived": true,
+      "one_active_receipt_per_case": true,
+      "active_receipt_records_superseded_status": true
+    },
+    "advanced_psf_interface": {
+      "callable_psf": "PASS",
+      "position_dependent_psfex_callable": "PASS",
+      "signed_normalization_checked": true
+    }
+  }
+}

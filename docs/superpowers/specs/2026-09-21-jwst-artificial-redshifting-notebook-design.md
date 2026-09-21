@@ -21,8 +21,9 @@ The notebook begins with a Quick Start:
 
 1. Set `DEMO_MODE = True`, then Run All to validate the installation.
 2. Set `DEMO_MODE = False`.
-3. Edit only SCI/ERR/segmentation/PSF paths, filter, source and target
-   redshifts, RA/Dec, morphology mode, and output directory.
+3. Edit only the separated native/source and target/background paths, filters,
+   redshifts, RA/Dec, morphology mode, photometry/SED support, and output
+   directory in the one user-settings cell.
 4. Run All.
 5. Read the preflight panel before interpreting structural results.
 6. Find machine-readable results, plots, provenance, and logs in `OUTPUT_DIR`.
@@ -58,23 +59,52 @@ repository, `passive_disk_forward_model`, or any custom `.py` file.
 
 ## Configuration contract
 
-Required normal single-object fields are:
+Required normal single-object fields are deliberately split so the source
+observation used to establish morphology can never be confused with the
+target mosaic used for injection:
 
 ```python
-SCI_PATH = "..."
-ERR_PATH = "..."
-SEG_PATH = None
-PSF_PATH = "..."
-FILTER = "F444W"
-SOURCE_REDSHIFT = 1.0
-TARGET_REDSHIFT = 3.0
-RA = ...
-DEC = ...
-MORPHOLOGY_MODE = "FIT_NATIVE_FIRST"
-OUTPUT_DIR = "./JWST_redshifting_output"
 DEMO_MODE = False
 RUN_MODE = "SINGLE"
+
+# OBJECT
+RA = ...
+DEC = ...
+SOURCE_REDSHIFT = 1.0
+TARGET_REDSHIFT = 3.0
+
+# NATIVE SOURCE DATA
+SOURCE_SCI_PATH = "..."
+SOURCE_ERR_PATH = "..."
+SOURCE_SEG_PATH = None
+SOURCE_PSF_PATH = "..."
+SOURCE_FILTER = "F200W"
+
+# TARGET BACKGROUND DATA
+SAME_DATASET_BACKGROUND = False
+TARGET_SCI_PATH = "..."
+TARGET_ERR_PATH = "..."
+TARGET_SEG_PATH = None
+TARGET_PSF_PATH = "..."
+TARGET_FILTER = "F444W"
+
+# PHOTOMETRY / SED SUPPORT FOR TARGET-FLUX PREDICTION
+PHOTOMETRY = {}  # e.g. {"F150W": (fnu, fnu_err), "F200W": (...)}
+SED_PATH = None
+
+# OUTPUT
+MORPHOLOGY_MODE = "FIT_NATIVE_FIRST"
+OUTPUT_DIR = "./JWST_redshifting_output"
 ```
+
+`SAME_DATASET_BACKGROUND = True` is an explicit convenience action which
+copies declared source paths into separate target fields before input
+validation. It does not merge the two concepts: native fitting always uses
+the source dataset and real-background injection always uses the target
+dataset. For `PARAMETRIC` morphology the source image, ERR, segmentation, and
+PSF may be omitted only if supplied structural and flux inputs are
+independently validated; target inputs remain required for real-background
+mode.
 
 The notebook infers WCS, pixel scale, image extent, SCI units, source pixel
 location, FITS extension layout, and basic uncertainty-map semantics only when
@@ -99,17 +129,22 @@ using an explicit pixel solid angle from WCS/header or an explicit user
 override. It stores source/injected flux and conversion provenance. Unknown
 units are a critical preflight failure.
 
-The target rest/source wavelength is derived from selected target filter and
-redshift. Fnu redshift/distance scaling, SED interpolation/K-correction, and
-optional luminosity evolution are independent receipt factors. Interpolation
-beyond supplied photometric support fails unless the user explicitly provides
-an SED/extrapolation callback and labels the method.
+`SOURCE_FILTER` and `TARGET_FILTER` are independent. A source morphology
+image alone is not claimed to predict target-filter flux. Target rest/source
+wavelength is derived from the selected target filter and redshift. Fnu
+redshift/distance scaling, SED interpolation/K-correction, and optional
+luminosity evolution are independent receipt factors. The user supplies
+bracketing `PHOTOMETRY`, a validated `SED_PATH`, or explicitly declares a
+same-rest-wavelength case. Interpolation beyond supplied wavelength support is
+a terminal preflight failure unless the user provides an explicit, labeled
+extrapolation method.
 
 ## PSF contract
 
-The basic path reads `PSF_PATH` as a FITS image. The notebook checks finite
-pixels, shape, centroid, signed-total normalization, science/PSF pixel scale,
-and negative wings. It displays a diagnostic and never clips negative wings.
+The basic paths read `SOURCE_PSF_PATH` and `TARGET_PSF_PATH` as independent
+FITS images. The notebook checks finite pixels, shape, centroid,
+signed-total normalization, science/PSF pixel scale, and negative wings for
+each. It displays a diagnostic and never clips negative wings.
 
 Advanced optional adapters support PSFEx, a callable, or WebbPSF. PSFEx has no
 default coordinate convention; users must explicitly supply the evaluator and
@@ -141,7 +176,10 @@ never pretends to be a real-mosaic injection.
 
 Real-mosaic preflight samples blank unsegmented apertures/patches, reports
 empirical RMS / supplied-ERR scatter, saves a plot and JSON receipt, warns for
-material disagreement, and rescales ERR only when explicitly enabled.
+material disagreement, and rescales ERR only when explicitly enabled. If no
+segmentation map is supplied it masks the protected source region and uses
+sigma-clipped robust patches; it reports a WARNING that external segmentation
+was unavailable and does not label all remaining pixels blank sky.
 
 ## Preflight and quality states
 
@@ -151,7 +189,8 @@ wavelength support, finite cosmology, flux conservation, clean
 render/recovery, real-background accounting, empirical noise, and absence of
 a second background realization. Critical FAIL stops expensive fitting.
 
-Results retain `OK`, `WARNING`, or `ERROR`; failure codes; optimizer
+Results retain `OK`, `WARNING`, `TERMINAL_ERROR`, or `RETRYABLE_ERROR`;
+failure codes; optimizer
 convergence; bound hits; residual/chi-square metrics; finite-parameter checks;
 native and target-clean B/T recovery; B/T physical-validity/identifiability;
 and classification states. A nonphysical B+D total flux yields undefined B/T,
@@ -161,18 +200,24 @@ never an imputed disk class.
 
 Batch mode uses catalog columns specified in user settings. It writes an
 immutable normalized configuration, manifest, package versions, append-only
-log, atomic per-case CSV receipt, and optional diagnostics. Resume validates
-schema/unique IDs and skips all existing valid and ERROR rows unless a user
-explicitly force-selects a case. It never rewrites valid rows or duplicates
-IDs.
+log, atomic per-case JSON receipt, and optional diagnostics. Resume validates
+schema/unique IDs and skips `OK`, `WARNING`, and `TERMINAL_ERROR` rows by
+default; it retries `RETRYABLE_ERROR` rows and incomplete checkpoints.
+`FORCE_RERUN_IDS` permits selected cases of any status. Examples of terminal
+errors are unsupported wavelength support, missing required input, and
+scientifically unusable source support. Optimizer crashes, interruptions, and
+temporary numerical failures are retryable. The runner never rewrites valid
+rows or creates duplicate case IDs.
 
 ## Validation and release gates
 
-The notebook must run from a fresh kernel without private local files in demo
+The notebook starts with a non-mutating environment check that names missing
+packages and prints an exact install command; any install cell is visibly
+optional. It must run from a fresh kernel without private local files in demo
 mode. Tests cover Sersic truth recovery, flux conservation, invalid path,
-missing ERR, invalid PSF, insufficient wavelength support, double-background
-noise prevention, output receipt creation, restart-safe batch behavior, and
-re-execution after a kernel restart.
+missing ERR, invalid PSF, insufficient wavelength support, segmentation-free
+noise fallback, double-background noise prevention, output receipt creation,
+restart-safe batch behavior, and re-execution after a kernel restart.
 
 One GOLD403 validation object is a secondary regression exercise only when
 production is paused or complete. It uses documented tolerances and is never a
