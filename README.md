@@ -155,7 +155,8 @@ The Lenstronomy negative-PSF warning is expected for these empirical/effective P
 ## Repository layout
 
 - `docs/PASSIVE_DISK_Z3_METHOD.md` - detailed methodology and lessons learned.
-- `docs/VALIDATION_RESULTS_2026-09-19.md` - numerical validation record.\n- `docs/BAGPIPES_SFH_ROBUSTNESS_2026-09-26.md` - backward-luminosity/SFH robustness test and E1J interpretation.
+- `docs/VALIDATION_RESULTS_2026-09-19.md` - numerical validation record.
+- `docs/BAGPIPES_SFH_ROBUSTNESS_2026-09-26.md` - backward-luminosity/SFH robustness test and E1J interpretation.
 - `docs/RUNBOOK.md` - operational order for the remaining analysis.
 - `docs/NEXT_GATES.md` - short current gate/status list.
 - `scripts/gold403_validation_notebook_cells.py` - consolidated reusable validation code for the active notebook environment.
