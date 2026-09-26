@@ -4,13 +4,9 @@
 
 This experiment asked whether the GOLD91 passive-disk subsample can support a physically motivated, object-specific luminosity-evolution factor for moving each observed galaxy backward to z=3.
 
-The intended factor was
+The intended factor was:
 
-[
-g_{\rm BAG} =
-\frac{L_{\rm rest}(z=3)}
-     {L_{\rm rest}(z_{\rm source})},
-]
+`g_BAG = L_rest(z=3) / L_rest(z_source)`.
 
 measured in the same intrinsic rest-frame band sampled by F444W at z=3. If this factor were robust, it could in principle define an object-specific EBAG artificial-redshifting branch.
 
@@ -143,15 +139,7 @@ Therefore a single per-galaxy backwards luminosity correction is not identifiabl
 
 The frozen E1J branch is a separate controlled sensitivity prescription:
 
-[
-g_{\rm E1J}
-=
-\left(\frac{1+z_{\rm target}}{1+z_{\rm source}}\right)^{\eta},
-\qquad
-\eta = 1.02,
-]
-
-with z_target = 3.
+`g_E1J = [(1 + z_target) / (1 + z_source)]^eta`, with `eta = 1.02` and `z_target = 3`.
 
 For the two BAGPIPES robustness objects:
 
@@ -194,11 +182,15 @@ The failed robustness of object-specific BAGPIPES backwards evolution makes this
 
 ## Files preserved with this receipt
 
-- `SFH_model_fit_quality.csv`
-- `SFH_model_gbag_summary.csv`
-- `SFH_model_robustness_summary.csv`
+The repository preserves both the compact decision-driving summaries and the detailed reproducibility products:
 
-The large per-draw posterior table was intentionally not added to the compact repository receipt. The summary tables preserve the quantitative decision-driving results. The analysis notebook used locally was `GOLD91_BAGPIPES_SFH_model_robustness_2gal.ipynb`.
+- `data/validation/bagpipes_sfh_robustness_2026-09-26/SFH_model_fit_quality.csv`
+- `data/validation/bagpipes_sfh_robustness_2026-09-26/SFH_model_gbag_draws.csv`
+- `data/validation/bagpipes_sfh_robustness_2026-09-26/SFH_model_gbag_summary.csv`
+- `data/validation/bagpipes_sfh_robustness_2026-09-26/SFH_model_robustness_summary.csv`
+- `tutorials/GOLD91_BAGPIPES_SFH_model_robustness_2gal.ipynb`
+
+The per-draw table is retained so the conditional delayed-tau results and no-progenitor states can be re-audited rather than reconstructed from summary statistics alone.
 
 ## Relationship to the production experiment
 
