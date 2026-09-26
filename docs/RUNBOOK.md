@@ -23,9 +23,21 @@ Typical current roots:
 ```python
 DATA_ROOT = Path("/home/bahareh/Desktop/Projects/Passive_Spiral/Data")
 COSMOS_ROOT = Path("/home/bahareh/Desktop/Projects/Data_General/Cosmos_Web")
-EXTERNAL_ROOT = Path("/run/media/bahareh/Seagate Hub")
+EXTERNAL_ROOT = Path("/run/media/bahareh/My Passport")
 MOSAIC_ROOT = EXTERNAL_ROOT / "NIRCam_mosaics"
 ```
+
+
+
+### External-drive rename and frozen production
+
+The active external drive is currently mounted at:
+
+```
+/run/media/bahareh/My Passport
+```
+
+The already-launched frozen production notebook may still contain the earlier mount name. Do not edit that frozen notebook merely to change the mount path, because its SHA256 is part of the production provenance and the restart-safe runner verifies configuration identity before resuming. For an in-progress frozen run, preserve the notebook bytes and provide a filesystem alias/symlink from the old mount path to the new drive if needed. New notebooks/configuration should use the current `My Passport` path.
 
 Important products:
 
