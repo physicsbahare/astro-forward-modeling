@@ -174,7 +174,7 @@ Current local project roots used in the analysis include:
 ```
 /home/bahareh/Desktop/Projects/Passive_Spiral/Data
 /home/bahareh/Desktop/Projects/Data_General/Cosmos_Web
-/run/media/bahareh/Seagate Hub/NIRCam_mosaics
+/run/media/bahareh/My Passport/NIRCam_mosaics
 ```
 
 Important current local products include:
