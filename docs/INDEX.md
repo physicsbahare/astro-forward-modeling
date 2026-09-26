@@ -11,7 +11,7 @@
 7. [Representative clean sweep](CLEAN_SWEEP_2026-09-19.md) - checkpointed 31-object identifiability/resolution result and policy.
 8. [Corrected real-background pilot](REAL_BACKGROUND_PILOT_2026-09-19.md) - restart-safe real SCI/ERR E0/E1J gate.
 9. [Repository cleanup record](REPOSITORY_CLEANUP_2026-09-19.md) - what was removed from the active tree and what remains preserved in history.
-10. [Production receipt recovery](PRODUCTION_RECEIPT_RECOVERY_2026-09-20.md) - structured handling of nonphysical real B+D decompositions.
+10. [Production receipt recovery](PRODUCTION_RECEIPT_RECOVERY_2026-09-20.md) - structured handling of nonphysical real B+D decompositions.\n11. [BAGPIPES SFH robustness experiment](BAGPIPES_SFH_ROBUSTNESS_2026-09-26.md) - why object-specific backward luminosity evolution is not adopted, and why E1J remains a controlled sensitivity branch.
 
 ## Active code
 
@@ -28,7 +28,7 @@
 - `../data/validation/GOLD403_controlled_z3_recovery_2026-09-19.csv`
 - `../data/validation/GOLD403_clean_sweep_31_2026-09-19.csv`
 - `../data/validation/GOLD403_real_background_pilot_2026-09-19.csv`
-- `../data/validation/GOLD403_production_nonphysical_bt_receipt_2026-09-20.csv`
+- `../data/validation/GOLD403_production_nonphysical_bt_receipt_2026-09-20.csv`\n- `../data/validation/bagpipes_sfh_robustness_2026-09-26/SFH_model_fit_quality.csv`\n- `../data/validation/bagpipes_sfh_robustness_2026-09-26/SFH_model_gbag_summary.csv`\n- `../data/validation/bagpipes_sfh_robustness_2026-09-26/SFH_model_robustness_summary.csv`
 
 ## Historical scientific evidence
 
@@ -43,3 +43,4 @@ Historical benchmark material is retained because it supports the scientific con
 The controlled recovery, representative clean-sweep, and corrected real-background pilot gates have passed. 751217 is structurally non-identifiable at z=3; 514739 is an identifiable n-boundary flip; the pilot retains real-context classification degradation as an outcome. The restart-safe four-stage GOLD403 production receipt is active; undefined real B/T is retained as an ERROR/quality state rather than coerced into a morphology class.
 
 `published -> native clean -> z3 clean -> z3 real production receipt`
+\n\n## Luminosity-evolution decision - 2026-09-26\n\nA two-object BAGPIPES robustness experiment compared double-power-law, delayed-tau, and non-parametric continuity SFHs under the same accepted photometric setup. The observed SEDs could be fit at comparable raw chi-square, but the inferred z=3 stellar populations and intrinsic luminosity factors changed strongly with SFH family, including posterior solutions with no stellar population yet formed at z=3. The project therefore does not adopt an object-specific EBAG correction from the current broadband data. E0 remains primary; E1J is retained only as a controlled F444W brightening sensitivity test. See `BAGPIPES_SFH_ROBUSTNESS_2026-09-26.md`.\n

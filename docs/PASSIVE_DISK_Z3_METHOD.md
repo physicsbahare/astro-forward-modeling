@@ -1,6 +1,6 @@
 # Passive Disk z=3 Method and Validation Notes
 
-Last updated: 2026-09-19
+Last updated: 2026-09-26
 
 This document records the active methodology for the GOLD403 passive-disk artificial-redshifting experiment and the validation lessons that must be preserved in future notebooks/scripts.
 
@@ -113,9 +113,62 @@ Use this as the clean observational-degradation baseline.
 
 ### E1J
 
-F444W-only luminosity-evolution sensitivity experiment using eta = 1.02 +/- 0.128.
+F444W-only luminosity-evolution sensitivity experiment using the frozen central exponent eta = 1.02.
 
-This is not a per-galaxy evolutionary history and not a complete wavelength-dependent stellar-population model. It is a sensitivity branch.
+The production multiplicative factor is
+
+```
+g_E1J = [(1 + z_target) / (1 + z_source)]^eta
+```
+
+with z_target = 3. The earlier methodology note records eta = 1.02 +/- 0.128; production uses the frozen central value.
+
+For a typical GOLD91 source at z about 0.87, this gives g_E1J about 2.17, corresponding to about 0.84 mag brightening relative to E0 after the same cosmological F_nu projection.
+
+E1J changes only the target F444W luminosity amplitude. It does not change the intrinsic structural model, angular-size scaling, PSF, context, masks, or recovery setup.
+
+E1J is not a per-galaxy evolutionary history and not a complete wavelength-dependent stellar-population model. It is a controlled sensitivity branch. Its role is to test whether the real-background morphology result is sensitive to an uncertain intrinsic-brightness assumption.
+
+E0 remains the primary branch. E1J is not required to make E0 valid; it is retained so the final science result can distinguish structural/resolution loss from additional detectability/SNR sensitivity.
+
+### BAGPIPES backward-luminosity robustness test - 2026-09-26
+
+A dedicated BAGPIPES experiment tested whether an object-specific intrinsic luminosity factor could replace the simple E1J sensitivity prescription.
+
+The final robustness test used two clean GOLD91 objects, IDs 487469 and 756229, with a fixed photometric setup:
+
+- COSMOS2025 SE++ model fluxes and calibrated model-flux errors
+- fixed catalog redshift
+- HSC, UltraVISTA, and NIRCam broad bands
+- IRAC excluded
+- maximum S/N = 20, implemented as a minimum 5% fractional uncertainty
+- Calzetti dust
+- no nebular component
+
+Three SFH families were compared while holding the photometric setup fixed:
+
+- double-power-law
+- delayed-tau
+- non-parametric continuity
+
+The intrinsic BAGPIPES factor was defined in one common rest-frame F444W-at-z=3 band after explicitly truncating stars that had not yet formed by z=3. Cosmological distance/K terms were excluded from this factor because the artificial-redshifting production already applies the observer-frame projection.
+
+Key result:
+
+- for 487469, DPL and continuity give median g_BAG about 0.83 and 0.92, while delayed-tau has no z=3 stellar progenitor in 92.5% of posterior draws; its conditional median among the 12/160 valid draws is about 3.17
+- for 756229, DPL and continuity give median g_BAG about 0.087 and 0.455, a factor 5.25 difference, while delayed-tau has no z=3 stellar progenitor in 100% of posterior draws
+
+Thus comparably acceptable observed-epoch SED fits do not imply a unique backward luminosity evolution. The inferred z=3 stellar population is strongly dependent on SFH family/prior.
+
+Frozen interpretation:
+
+1. do not launch a 91-object BAGPIPES/EBAG imaging branch from the current broadband data;
+2. do not assign one BAGPIPES median g value to each galaxy and call it a physical correction;
+3. preserve no-z3-progenitor solutions as model outcomes, not zero-flux measurements;
+4. keep E0 primary;
+5. keep E1J only as a transparent controlled brightening sensitivity experiment.
+
+See `BAGPIPES_SFH_ROBUSTNESS_2026-09-26.md` and the machine-readable receipts in `data/validation/bagpipes_sfh_robustness_2026-09-26/`.
 
 ## Real-mosaic injection policy
 

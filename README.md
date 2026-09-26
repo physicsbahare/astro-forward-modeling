@@ -119,10 +119,14 @@ This classification should be reported together with measurement/identifiability
 
 ### Luminosity evolution
 
-- **E0**: no intrinsic luminosity evolution.
-- **E1J**: F444W-only sensitivity experiment using eta = 1.02 +/- 0.128.
+- **E0**: no intrinsic luminosity evolution. This is the primary observational-transfer baseline.
+- **E1J**: F444W-only controlled brightening sensitivity branch. Production uses
+  `g_E1J = [(1 + z_target) / (1 + z_source)]^1.02`.
+  For a typical source at z about 0.87 moved to z=3, this is g about 2.17, or about 0.84 mag brighter than E0 after the same cosmological projection.
 
-E1J is a population-level sensitivity test, not a per-galaxy progenitor model and not a full wavelength-dependent stellar-population evolution prescription.
+E1J does not change morphology, angular-size scaling, PSF, context, or recovery settings. It tests whether the real-background structural result is sensitive to intrinsic brightness/SNR.
+
+A 2026-09-26 BAGPIPES robustness test showed that object-specific backward luminosity factors are strongly SFH-model dependent. Double-power-law, delayed-tau, and continuity models can fit the observed SED at similar raw chi-square while implying very different z=3 stellar populations, including no-progenitor solutions. Therefore the project does **not** adopt a per-galaxy EBAG correction from the current broadband data. E1J remains a sensitivity test, not a physical progenitor reconstruction. See [the BAGPIPES receipt](docs/BAGPIPES_SFH_ROBUSTNESS_2026-09-26.md).
 
 ### Injection noise policy
 
@@ -151,7 +155,7 @@ The Lenstronomy negative-PSF warning is expected for these empirical/effective P
 ## Repository layout
 
 - `docs/PASSIVE_DISK_Z3_METHOD.md` - detailed methodology and lessons learned.
-- `docs/VALIDATION_RESULTS_2026-09-19.md` - numerical validation record.
+- `docs/VALIDATION_RESULTS_2026-09-19.md` - numerical validation record.\n- `docs/BAGPIPES_SFH_ROBUSTNESS_2026-09-26.md` - backward-luminosity/SFH robustness test and E1J interpretation.
 - `docs/RUNBOOK.md` - operational order for the remaining analysis.
 - `docs/NEXT_GATES.md` - short current gate/status list.
 - `scripts/gold403_validation_notebook_cells.py` - consolidated reusable validation code for the active notebook environment.
