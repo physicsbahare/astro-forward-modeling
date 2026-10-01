@@ -2,7 +2,8 @@
 Consolidated GOLD403 Galight/Lenstronomy validation helpers.
 
 This file records the validated notebook code used during the passive-disk
-artificial-redshifting project as of 2026-09-19.
+artificial-redshifting project, including the corrected two-branch structural
+recovery validated on 2026-10-01.
 
 USAGE
 -----
@@ -29,13 +30,15 @@ with Galight/Lenstronomy. The validated production direction is therefore:
 
 The functions below preserve the exact clean-validation logic that isolated
 that issue and established the need for a native-clean baseline and explicit
-B/T identifiability flags.
+B/T identifiability flags.  The active structural-transfer path now keeps the
+single-Sersic n branch and the B+D B/T branch separate.
 """
 
 from __future__ import annotations
 
 import copy
 import inspect
+import random
 import traceback
 from pathlib import Path
 
@@ -1404,3 +1407,585 @@ KNOWN_DIAGNOSTICS = {
         "z3_bt": 0.005877,
     },
 }
+
+# ============================================================================
+# CORRECTED TWO-BRANCH STRUCTURAL RECOVERY — 2026-10-01
+# ============================================================================
+#
+# IMPORTANT SCIENCE RULE
+# ----------------------
+# The catalog single-Sersic n and the B+D decomposition are different
+# parameterizations. Do not render a B+D truth image, fit one Sersic component
+# to it, and compare that n to the catalog single-Sersic n.
+#
+# Corrected branches:
+#
+#   n branch:   single-Sersic truth -> single-Sersic recovery
+#   B/T branch: B+D truth           -> B+D recovery
+#
+# Combine them into a disk/non-disk state only after both branch-specific
+# measurements are valid.
+
+
+def make_native_clean_single_truth(
+    row,
+    *,
+    target_filter_for_mapping: str = "F444W",
+    total_flux: float = 1.0e4,
+):
+    """Render the chosen catalog single-Sersic model at native angular size."""
+    oid = int(row["id"])
+    zs = float(row["z"])
+
+    mapped_lambda = mapped_source_wavelength_um(
+        target_filter_for_mapping, zs
+    )
+    morph = choose_model_morphology(row, mapped_lambda)
+    morph_filter = str(morph["morph_filter"])
+
+    re_native = float(morph["single_re_arcsec"])
+    n_truth = float(morph["single_n"])
+    q_truth = float(morph["single_q"])
+    theta = float(source_theta_for_model(oid))
+
+    npix = int(MODEL_NPIX)
+    if npix % 2 == 0:
+        npix -= 1
+    center = npix // 2
+
+    psf = native_psf_for_object(row, morph_filter)
+
+    blank = np.zeros((npix, npix), dtype=float)
+    err = np.ones_like(blank)
+    seg = np.zeros_like(blank, dtype=int)
+
+    target_meta = {
+        "label": -999999,
+        "x": float(center),
+        "y": float(center),
+        "q": q_truth,
+        "theta": theta,
+        "re_pix": max(1.0, re_native / PIX),
+        "npix": 1,
+    }
+
+    component = one_component_params(
+        target_meta,
+        npix,
+        re_native,
+        n_truth,
+        q_truth,
+        fixed_n=None,
+    )
+    source_params = pack_source_params([component])
+
+    dp_blank, _ = build_galight_data_process(
+        blank,
+        err,
+        seg,
+        psf,
+        target_meta,
+        neighbour_metas=[],
+        model_labels=[],
+    )
+
+    fit_spec = FittingSpecify(dp_blank, sersic_major_axis=True)
+    fit_spec.prepare_fitting_seq(
+        supersampling_factor=2,
+        psf_data=dp_blank.PSF_list[0],
+        extend_source_model=["SERSIC_ELLIPSE"],
+        point_source_num=0,
+        source_params=source_params,
+        condition=None,
+        mpi=False,
+    )
+
+    kwargs_truth = copy.deepcopy(source_params[0])
+    kwargs_truth[0]["amp"] = 1.0
+
+    image_model = _safe_image_model(fit_spec)
+    truth_image = _normalize_truth(
+        _safe_image_call(image_model, kwargs_truth),
+        total_flux,
+    )
+
+    truth = {
+        "morph_filter": morph_filter,
+        "mapped_source_wavelength_um": float(mapped_lambda),
+        "truth_n": n_truth,
+        "truth_re": re_native,
+        "truth_q": q_truth,
+        "theta": theta,
+        "npix": int(npix),
+        "re_over_pixel": float(re_native / PIX),
+    }
+    return truth_image, psf, target_meta, source_params, truth
+
+
+def _fit_two_branch_single_truth(
+    image,
+    psf,
+    target_meta,
+    source_params,
+    *,
+    pso_repeats: int = 2,
+    savename=None,
+    seed: int | None = None,
+):
+    """Recover one single-Sersic truth image with one single-Sersic model."""
+    if seed is not None:
+        random.seed(int(seed))
+        np.random.seed(int(seed))
+
+    dp, _ = build_galight_data_process(
+        image,
+        np.ones_like(image),
+        np.zeros_like(image, dtype=int),
+        psf,
+        target_meta,
+        neighbour_metas=[],
+        model_labels=[],
+    )
+
+    start = make_perturbed_single_source_params(source_params)
+
+    fit = run_galight_model(
+        dp,
+        start,
+        n_components=1,
+        savename=savename,
+        condition=None,
+        pso_repeats=int(pso_repeats),
+    )
+
+    result = fit.final_result_galaxy[0]
+    return {
+        "n": float(result["n_sersic"]),
+        "re": float(result["R_sersic"]),
+        "q": float(result["q"]),
+        "chisq": float(fit.reduced_Chisq),
+    }
+
+
+def _fit_two_branch_bd_truth(
+    image,
+    psf,
+    target_meta,
+    source_params,
+    *,
+    pso_repeats: int = 2,
+    savename=None,
+    seed: int | None = None,
+):
+    """Recover one exact B+D truth image with the frozen n=1+n=4 B+D model."""
+    if seed is not None:
+        random.seed(int(seed))
+        np.random.seed(int(seed))
+
+    dp, _ = build_galight_data_process(
+        image,
+        np.ones_like(image),
+        np.zeros_like(image, dtype=int),
+        psf,
+        target_meta,
+        neighbour_metas=[],
+        model_labels=[],
+    )
+
+    fit = run_galight_model(
+        dp,
+        perturb_bd_source_params(source_params),
+        n_components=2,
+        savename=savename,
+        condition=bd_condition,
+        pso_repeats=int(pso_repeats),
+    )
+
+    disk = fit.final_result_galaxy[0]
+    bulge = fit.final_result_galaxy[1]
+
+    fd = float(disk["flux_sersic_model"])
+    fb = float(bulge["flux_sersic_model"])
+    denom = fd + fb
+    recovered_bt = (
+        fb / denom
+        if np.isfinite(denom) and denom > 0
+        else np.nan
+    )
+
+    return {
+        "bt": float(recovered_bt),
+        "disk_re": float(disk["R_sersic"]),
+        "bulge_re": float(bulge["R_sersic"]),
+        "chisq": float(fit.reduced_Chisq),
+    }
+
+
+def _two_branch_disk_state(
+    n_value: float,
+    bt_value: float,
+    *,
+    n_valid: bool,
+    bt_valid: bool,
+):
+    """Return disk state only when both branch measurements are valid."""
+    if not (bool(n_valid) and bool(bt_valid)):
+        return None
+    return bool(
+        float(n_value) < float(NSERSIC_MAX)
+        and float(bt_value) < float(BT_MAX)
+    )
+
+
+def run_corrected_two_branch_clean_case(
+    row,
+    target_filter,
+    context_row,
+    *,
+    pso_repeats: int = 2,
+    total_flux: float = 1.0e4,
+    n_identify_tol: float = 0.50,
+    bt_identify_tol: float = 0.10,
+    diag_root: str | Path | None = None,
+    seed: int | None = None,
+):
+    """Run the corrected native-clean -> z=target clean structural transfer."""
+    oid = int(row["id"])
+    diag_root = Path(diag_root) if diag_root is not None else None
+    if diag_root is not None:
+        diag_root.mkdir(parents=True, exist_ok=True)
+
+    base_seed = int(seed) if seed is not None else (2026100100 + oid)
+    max_seed = 2**32 - 1
+    base_seed %= max_seed
+
+    native_single = make_native_clean_single_truth(
+        row,
+        target_filter_for_mapping=target_filter,
+        total_flux=total_flux,
+    )
+    native_single_fit = _fit_two_branch_single_truth(
+        *native_single[:4],
+        pso_repeats=pso_repeats,
+        savename=(
+            diag_root / f"ID{oid}_native_SINGLE"
+            if diag_root is not None
+            else None
+        ),
+        seed=(base_seed + 1) % max_seed,
+    )
+    native_single_truth = native_single[4]
+
+    native_bd = make_native_clean_bd_truth(
+        row,
+        target_filter_for_mapping=target_filter,
+        total_flux=total_flux,
+    )
+    native_bd_fit = _fit_two_branch_bd_truth(
+        *native_bd[:4],
+        pso_repeats=pso_repeats,
+        savename=(
+            diag_root / f"ID{oid}_native_BD"
+            if diag_root is not None
+            else None
+        ),
+        seed=(base_seed + 2) % max_seed,
+    )
+    native_bd_truth = native_bd[4]
+
+    z3_single = make_exact_lenstronomy_single_truth(
+        row,
+        target_filter,
+        context_row,
+        total_flux=total_flux,
+    )
+    z3_single_fit = _fit_two_branch_single_truth(
+        *z3_single[:4],
+        pso_repeats=pso_repeats,
+        savename=(
+            diag_root / f"ID{oid}_z3clean_SINGLE"
+            if diag_root is not None
+            else None
+        ),
+        seed=(base_seed + 3) % max_seed,
+    )
+    z3_single_truth = z3_single[4]
+
+    z3_bd = make_exact_lenstronomy_bd_truth(
+        row,
+        target_filter,
+        context_row,
+        total_flux=total_flux,
+    )
+    z3_bd_fit = _fit_two_branch_bd_truth(
+        *z3_bd[:4],
+        pso_repeats=pso_repeats,
+        savename=(
+            diag_root / f"ID{oid}_z3clean_BD"
+            if diag_root is not None
+            else None
+        ),
+        seed=(base_seed + 4) % max_seed,
+    )
+    z3_bd_truth = z3_bd[4]
+
+    input_n = float(native_single_truth["truth_n"])
+    input_bt = float(native_bd_truth["truth_bt"])
+    native_n = float(native_single_fit["n"])
+    native_bt = float(native_bd_fit["bt"])
+    z3_n = float(z3_single_fit["n"])
+    z3_bt = float(z3_bd_fit["bt"])
+
+    native_n_abs_error = abs(native_n - input_n)
+    native_bt_abs_error = abs(native_bt - input_bt)
+    z3_n_abs_error = abs(z3_n - float(z3_single_truth["truth_n"]))
+    z3_bt_abs_error = abs(z3_bt - float(z3_bd_truth["truth_bt"]))
+
+    native_n_valid = bool(
+        np.isfinite(native_n)
+        and native_n_abs_error <= float(n_identify_tol)
+    )
+    native_bt_valid = bool(
+        np.isfinite(native_bt)
+        and 0.0 <= native_bt <= 1.0
+        and native_bt_abs_error <= float(bt_identify_tol)
+    )
+    z3_n_valid = bool(
+        np.isfinite(z3_n)
+        and z3_n_abs_error <= float(n_identify_tol)
+    )
+    z3_bt_valid = bool(
+        np.isfinite(z3_bt)
+        and 0.0 <= z3_bt <= 1.0
+        and z3_bt_abs_error <= float(bt_identify_tol)
+    )
+
+    input_disk = bool(
+        input_n < float(NSERSIC_MAX)
+        and input_bt < float(BT_MAX)
+    )
+    native_disk = _two_branch_disk_state(
+        native_n,
+        native_bt,
+        n_valid=native_n_valid,
+        bt_valid=native_bt_valid,
+    )
+    z3_disk = _two_branch_disk_state(
+        z3_n,
+        z3_bt,
+        n_valid=z3_n_valid,
+        bt_valid=z3_bt_valid,
+    )
+
+    return {
+        "source_id": oid,
+        "z_source": float(row["z"]),
+        "target_filter": str(target_filter),
+        "context_tile": str(context_row.get("tile", "")),
+        "context_id": (
+            int(context_row["context_id"])
+            if "context_id" in context_row
+            and pd.notna(context_row["context_id"])
+            else None
+        ),
+        "morph_filter": str(native_single_truth["morph_filter"]),
+        "mapped_source_wavelength_um": float(
+            native_single_truth["mapped_source_wavelength_um"]
+        ),
+        "input_single_n": input_n,
+        "input_bt": input_bt,
+        "input_disk": input_disk,
+        "native_single_n": native_n,
+        "native_bt": native_bt,
+        "native_n_abs_error": float(native_n_abs_error),
+        "native_bt_abs_error": float(native_bt_abs_error),
+        "native_n_valid": native_n_valid,
+        "native_bt_valid": native_bt_valid,
+        "native_both_valid": bool(native_n_valid and native_bt_valid),
+        "native_disk": native_disk,
+        "z3_single_n": z3_n,
+        "z3_bt": z3_bt,
+        "z3_n_abs_error_vs_truth": float(z3_n_abs_error),
+        "z3_bt_abs_error_vs_truth": float(z3_bt_abs_error),
+        "z3_n_valid": z3_n_valid,
+        "z3_bt_valid": z3_bt_valid,
+        "z3_both_valid": bool(z3_n_valid and z3_bt_valid),
+        "z3_disk": z3_disk,
+        "native_to_z3_disk_flip": (
+            bool(native_disk != z3_disk)
+            if native_disk is not None and z3_disk is not None
+            else None
+        ),
+        "native_single_chisq": float(native_single_fit["chisq"]),
+        "native_bd_chisq": float(native_bd_fit["chisq"]),
+        "z3_single_chisq": float(z3_single_fit["chisq"]),
+        "z3_bd_chisq": float(z3_bd_fit["chisq"]),
+        "native_single_re_over_pixel": float(
+            native_single_truth["re_over_pixel"]
+        ),
+        "native_disk_re_over_pixel": float(
+            native_bd_truth["native_disk_re_over_pixel"]
+        ),
+        "native_bulge_re_over_pixel": float(
+            native_bd_truth["native_bulge_re_over_pixel"]
+        ),
+        "z3_single_re_over_pixel": float(z3_single_truth["re_over_pixel"]),
+        "z3_disk_re_over_pixel": float(z3_bd_truth["disk_re_over_pixel"]),
+        "z3_bulge_re_over_pixel": float(z3_bd_truth["bulge_re_over_pixel"]),
+        "status": "OK",
+        "error": "",
+        "seed": int(base_seed),
+    }
+
+
+def select_gold91_redshift_bin(
+    gold,
+    *,
+    z_min: float = 0.75,
+    z_max: float = 1.00,
+    expected_count: int | None = 91,
+):
+    """Return the frozen most-populated narrow GOLD403 redshift bin."""
+    z = pd.to_numeric(gold["z"], errors="coerce")
+    subset = gold.loc[
+        (z >= float(z_min)) & (z < float(z_max))
+    ].copy()
+    subset = subset.sort_values("id").reset_index(drop=True)
+
+    if expected_count is not None and len(subset) != int(expected_count):
+        raise RuntimeError(
+            f"Expected {expected_count} objects in "
+            f"{z_min:.2f} <= z < {z_max:.2f}; found {len(subset)}."
+        )
+    return subset
+
+
+def run_corrected_two_branch_clean_subset(
+    gold_subset,
+    *,
+    output_csv,
+    target_filter: str = "F444W",
+    pso_repeats: int = 2,
+    total_flux: float = 1.0e4,
+    n_identify_tol: float = 0.50,
+    bt_identify_tol: float = 0.10,
+    diag_root: str | Path | None = None,
+    seed_base: int = 2026100100,
+    rerun_errors: bool = True,
+):
+    """Restart-safe corrected two-branch clean runner for any selected subset."""
+    output_csv = Path(output_csv)
+    output_csv.parent.mkdir(parents=True, exist_ok=True)
+    diag_root = Path(diag_root) if diag_root is not None else None
+
+    if output_csv.exists():
+        old = pd.read_csv(output_csv)
+        records = old.to_dict(orient="records")
+    else:
+        old = pd.DataFrame()
+        records = []
+
+    done = set()
+    if len(old):
+        keep = old.loc[old["status"].eq("OK")] if rerun_errors else old
+        done = set(
+            pd.to_numeric(keep["source_id"], errors="coerce")
+            .dropna()
+            .astype(int)
+            .tolist()
+        )
+
+    for number, (_, row) in enumerate(gold_subset.iterrows(), start=1):
+        oid = int(row["id"])
+        if oid in done:
+            print(f"[{number}/{len(gold_subset)}] ID {oid}: already complete")
+            continue
+
+        print(
+            f"\n{'=' * 72}\n"
+            f"TWO-BRANCH CLEAN {number}/{len(gold_subset)} ID {oid}\n"
+            f"{'=' * 72}"
+        )
+
+        try:
+            context = choose_contexts_for_object(oid, 1).iloc[0]
+            record = run_corrected_two_branch_clean_case(
+                row,
+                target_filter,
+                context,
+                pso_repeats=pso_repeats,
+                total_flux=total_flux,
+                n_identify_tol=n_identify_tol,
+                bt_identify_tol=bt_identify_tol,
+                diag_root=(
+                    diag_root / f"ID{oid}"
+                    if diag_root is not None
+                    else None
+                ),
+                seed=(int(seed_base) + oid) % (2**32 - 1),
+            )
+            print(
+                "native:",
+                record["native_disk"],
+                "| z3-clean:",
+                record["z3_disk"],
+                "| flip:",
+                record["native_to_z3_disk_flip"],
+            )
+        except Exception as exc:
+            traceback.print_exc()
+            record = {
+                "source_id": oid,
+                "z_source": float(row["z"]),
+                "target_filter": str(target_filter),
+                "status": "ERROR",
+                "error": f"{type(exc).__name__}: {exc}",
+            }
+
+        records = [
+            r for r in records
+            if int(r.get("source_id", -1)) != oid
+        ]
+        records.append(record)
+
+        frame = pd.DataFrame(records).sort_values("source_id")
+        frame.to_csv(output_csv, index=False)
+        print("checkpoint:", output_csv)
+
+    return pd.DataFrame(records).sort_values("source_id").reset_index(drop=True)
+
+
+def summarize_corrected_two_branch_clean(frame: pd.DataFrame) -> dict:
+    """Return and print the main corrected clean-stage transfer counts."""
+    good = frame.loc[frame["status"].eq("OK")].copy()
+    native_valid = good["native_both_valid"].eq(True)
+    z3_valid = good["z3_both_valid"].eq(True)
+    pair_valid = native_valid & z3_valid
+
+    native_disk = good["native_disk"].eq(True)
+    z3_disk = good["z3_disk"].eq(True)
+
+    n_native_disk_pairs = int((pair_valid & native_disk).sum())
+    n_survive = int((pair_valid & native_disk & z3_disk).sum())
+    n_loss = int((pair_valid & native_disk & ~z3_disk).sum())
+    n_gain = int((pair_valid & ~native_disk & z3_disk).sum())
+
+    out = {
+        "N_total": int(len(frame)),
+        "N_OK": int(len(good)),
+        "N_native_valid": int(native_valid.sum()),
+        "N_z3_valid": int(z3_valid.sum()),
+        "N_pair_valid": int(pair_valid.sum()),
+        "N_native_disk_pair_valid": n_native_disk_pairs,
+        "N_native_disk_to_z3_disk": n_survive,
+        "N_native_disk_to_z3_nondisk": n_loss,
+        "N_native_nondisk_to_z3_disk": n_gain,
+        "conditional_native_disk_survival": (
+            float(n_survive / n_native_disk_pairs)
+            if n_native_disk_pairs
+            else np.nan
+        ),
+    }
+
+    print(pd.Series(out))
+    return out
