@@ -1,0 +1,11 @@
+{
+  "N_total_rows": 30,
+  "N_OK": 30,
+  "native_n_pass_fraction": 1.0,
+  "native_bt_pass_fraction": 1.0,
+  "native_both_pass_fraction": 1.0,
+  "median_native_n_abs_error": 0.00086505351275165,
+  "median_native_bt_abs_error": 0.0087649230658032,
+  "pilot_gate_pass": true,
+  "gate_definition": "PASS if >=90% of successful pilot objects pass native n, native B/T, and joint native representation gates."
+}
