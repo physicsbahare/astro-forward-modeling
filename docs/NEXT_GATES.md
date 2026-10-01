@@ -1,6 +1,6 @@
 # GOLD403 Passive-Disk Next Gates
 
-Last updated: 2026-09-19
+Last updated: 2026-10-01
 
 This file is intentionally short. Detailed methodology is in `PASSIVE_DISK_Z3_METHOD.md` and numerical receipts are in `VALIDATION_RESULTS_2026-09-19.md`.
 
@@ -31,6 +31,30 @@ Status: **PASS (representative-sweep scope)**
 Required output:
 
 `clean_native_to_z3_identifiability_sweep_30.csv`
+
+
+## Gate 1b - corrected structural representation
+
+Status: **PASS**
+
+The 2026-10-01 audit showed that fitting a single-Sersic model to a B+D truth image is not a valid closed-loop test of the catalog single-Sersic n.
+
+The corrected method therefore uses:
+
+- single-Sersic truth -> single-Sersic recovery for n;
+- B+D truth -> B+D recovery for B/T.
+
+Corrective pilot:
+
+- [x] 15 previously representation-unstable objects.
+- [x] 15 matched stable controls.
+- [x] 30/30 successful.
+- [x] native n pass fraction = 1.000.
+- [x] native B/T pass fraction = 1.000.
+- [x] joint native pass fraction = 1.000.
+- [x] 0/30 corrected native -> z=3-clean class flips.
+
+Receipt: `CORRECTED_TWO_BRANCH_PILOT_2026-10-01.md`.
 
 ## Gate 2 - corrected real-background pilot
 
@@ -68,32 +92,27 @@ Before 403 objects, freeze output columns for:
 - failure/bound-hit codes
 - provenance and software versions
 
-## Gate 4 - GOLD403 production
+## Gate 4 - corrected population production
 
-Status: **ACTIVE (restart-safe batch launched 2026-09-19)**
+Status: **ACTIVE: GOLD91 first**
 
-Production receipt recovery (2026-09-20): cases 78/ID144050 and
-113/ID244474 reproduce nonphysical real B+D total flux and therefore have
-undefined B/T. They are preserved as structured ERROR rows with no derived
-disk class or class-flip claim; this is not a renderer/serialization failure.
-See `PRODUCTION_RECEIPT_RECOVERY_2026-09-20.md`.
+The historical 403 x 2 E0/E1J run is complete project history, but it used one exact B+D truth image for both the B/T fit and the single-Sersic fit. Therefore:
 
-- [ ] Run all 403 objects (F444W E0 primary + F444W E1J sensitivity; 806 checkpointed cases).
-- [ ] Preserve failures; do not silently drop them.
-- [ ] Produce completeness/recovery versus:
-  - stellar mass
-  - source redshift
-  - intrinsic/native size
-  - predicted z3 size
-  - B/T
-  - Sersic n
-  - S/N
-  - background
-  - crowding
-  - morphology source band
-- [ ] Compare E0 and E1J sensitivity.
-- [ ] Quantify classification survival.
-- [ ] Separate non-identifiability from non-detection.
+- historical B/T products may be reusable after a strict provenance/configuration match;
+- historical single-Sersic n values are not the final n-transfer measurement;
+- combined disk classifications that used those n values must be recomputed.
+
+Current next run:
+
+- [ ] Run corrected two-branch native-clean -> z=3-clean on GOLD91, 0.75 <= z < 1.00, N=91.
+- [ ] Keep original-selection -> mapped-band changes separate from redshift-induced changes.
+- [ ] Review branch validity, n/B/T boundary cases, and native -> z=3 clean flips.
+- [ ] Run corrected GOLD91 real-background **E0** primary branch.
+- [ ] Reuse historical B/T real-background products only if provenance/configuration identity is demonstrated.
+- [ ] Add E1J only if an explicit brightness/S/N sensitivity comparison is needed.
+- [ ] Scale the validated corrected chain to GOLD403.
+
+For the clean GOLD91 gate, no per-galaxy luminosity evolution is required.
 
 ## Gate 5 - robustness / paper products
 
@@ -110,9 +129,10 @@ Status: **PENDING**
 
 ## Stop conditions
 
-Do not proceed to the full 403 real-background run if:
+Do not proceed to the corrected full 403 real-background run if:
 
-- the 30-object sweep reveals an unresolved renderer/fitter inconsistency,
+- the GOLD91 two-branch clean run reveals a new unresolved representation/fitter inconsistency,
+- single-Sersic n is again measured from B+D truth and treated as the catalog-n transfer,
 - clean-model classification failures cannot be separated from fit failure,
 - real-context flux conservation is broken,
 - context ERR validity is not enforced,
