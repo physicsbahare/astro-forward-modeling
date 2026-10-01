@@ -1,6 +1,6 @@
 # Passive Disk z=3 Method and Validation Notes
 
-Last updated: 2026-09-26
+Last updated: 2026-10-01
 
 This document records the active methodology for the GOLD403 passive-disk artificial-redshifting experiment and the validation lessons that must be preserved in future notebooks/scripts.
 
@@ -30,6 +30,53 @@ The current disk-like structural criterion is:
 
 These are classification cuts, not guarantees that every fitted component is individually resolved.
 
+
+## Corrected two-branch structural definition - 2026-10-01
+
+The active structural-transfer method now keeps the catalog single-Sersic and B+D measurements in separate forward-model branches.
+
+### n branch
+
+```
+catalog single-Sersic
+-> exact Lenstronomy single-Sersic truth
+-> native single-Sersic recovery
+-> z=3-clean single-Sersic recovery
+-> later z=3-real single-Sersic recovery
+```
+
+### B/T branch
+
+```
+catalog B+D
+-> exact Lenstronomy B+D truth
+-> native B+D recovery
+-> z=3-clean B+D recovery
+-> later z=3-real B+D recovery
+```
+
+The disk state is formed only after both branch-specific measurements are valid:
+
+```
+disk = (n < 2.5) and (B/T < 0.5)
+```
+
+Do **not** fit a single Sersic model to a B+D truth image and then compare that fitted n directly with the catalog single-Sersic n. Those are different parameterizations.
+
+### Corrective pilot result
+
+A 30-object pilot, containing 15 previously representation-unstable objects and 15 matched stable controls, passed completely:
+
+- 30/30 successful;
+- native n pass fraction = 1.000;
+- native B/T pass fraction = 1.000;
+- joint native pass fraction = 1.000;
+- median native |delta n| = 8.65e-4;
+- median native |delta B/T| = 8.76e-3;
+- corrected native -> z=3-clean class flips = 0/30.
+
+See `CORRECTED_TWO_BRANCH_PILOT_2026-10-01.md`.
+
 ## Four-stage baseline
 
 Every production result should retain four stages:
@@ -41,11 +88,18 @@ Every production result should retain four stages:
 
 This distinction was added after validation showed that catalog single-Sersic and B+D solutions are not always mutually reproducible.
 
-### Published -> native clean
+### Original selection -> mapped morphology band
 
-Measures mismatch introduced by representing the catalog object with the chosen synthetic structural model.
+The source morphology band can differ from the band used to define the original GOLD403 sample. This is a morphological K-correction / sample-definition stage and is not redshift degradation.
 
-This is not redshift degradation.
+### Published/truth -> native clean
+
+Interpret this separately for each corrected branch.
+
+- single-Sersic truth -> native single-Sersic recovery tests the n representation/recovery loop;
+- B+D truth -> native B+D recovery tests decomposition recovery and B/T identifiability.
+
+A native failure is not a z=3 loss.
 
 ### Native clean -> z=3 clean
 
@@ -398,25 +452,40 @@ Treat spiral-feature survival and parametric structural recoverability as separa
 ## Production interpretation rules
 
 1. Never call a parameter "recovered" solely because the optimizer converged.
-2. Do not interpret B/T changes if the native clean decomposition already fails identifiability.
-3. Measure redshift-induced bias relative to the native clean synthetic baseline.
-4. Keep E0 and E1J separate.
-5. Record component sizes in pixels and relative to PSF scale.
-6. Preserve failures, bound hits, and non-identifiable cases as results.
-7. Do not silently drop catastrophic objects.
-8. Do not clip signed empirical PSFs merely to satisfy a warning.
-9. Do not reintroduce the custom homemade Sersic renderer into the production morphology path.
-10. Do not launch the full 403 real-background run until the clean sweep and new pilot pass.
+2. Keep the single-Sersic n and B+D B/T forward-model branches separate.
+3. Do not interpret B/T changes if the native clean decomposition already fails identifiability.
+4. Measure redshift-induced bias relative to the corrected native-clean branch baseline.
+5. Report original-selection -> mapped-band changes separately from native -> z=3 changes.
+6. Keep E0 primary; treat E1J only as an optional S/N sensitivity branch.
+7. Record component sizes in pixels and relative to PSF scale.
+8. Preserve failures, bound hits, and non-identifiable cases as results.
+9. Do not silently drop catastrophic objects.
+10. Do not clip signed empirical PSFs merely to satisfy a warning.
+11. Do not reintroduce the custom homemade Sersic renderer into the production morphology path.
+12. Historical single-Sersic n measured from B+D truth is not a final single-Sersic transfer measurement.
 
 ## Immediate next experiment
 
-Run a representative clean sweep of about 30 objects spanning source redshift and predicted z=3 component size.
+Run the corrected two-branch clean transfer on the predeclared GOLD91 bin:
 
-Use the validated Lenstronomy renderer and the native-clean -> z=3-clean chain.
+```
+0.75 <= z < 1.00
+N = 91
+```
 
-After reviewing the sweep:
+This bin is the most-populated fixed Delta-z=0.25 interval and was selected before inspecting the corrected morphology outcomes.
 
-- freeze identifiability/failure flags,
-- rebuild the real-background pilot,
-- run the E0/E1J pilot,
-- then scale to GOLD403.
+For this clean gate:
+
+- keep the original GOLD403/GOLD91 membership fixed;
+- record original F115W selection versus the mapped forward morphology band as a separate stage;
+- use the corrected single-Sersic branch for n;
+- use the corrected B+D branch for B/T;
+- use fixed high-S/N normalization;
+- do not add BAGPIPES or another per-galaxy luminosity-evolution correction;
+- checkpoint every object.
+
+After GOLD91 clean review, run the corrected real-background **E0** branch. E1J can be added later only as an optional brightness/S/N sensitivity test.
+
+The historical 806-case B+D-based production is retained. Its B/T products may be reusable after a strict provenance/configuration match, but its single-Sersic n and combined morphology classifications require the corrected single-Sersic branch.
+
