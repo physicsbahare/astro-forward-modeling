@@ -6,9 +6,11 @@ This repository contains the validation and forward-modeling work for the **COSM
 
 The repository also keeps the older general forward-modeling verification material that established the numerical and survey-transfer conventions used here. The active science work is now the **GOLD403 passive-disk experiment**.
 
-## Current status - 2026-09-19
+## Current status - 2026-10-01
 
-The project is **not yet ready for the final 403-object real-background production run**. The renderer/fitter convention problem that affected earlier pilots has now been isolated and fixed, and the next active gate is a 30-object clean identifiability/resolution sweep.
+The earlier 30-object corrective gate has now **passed**. The key methodological correction is to keep the catalog single-Sersic n and B+D B/T measurements in separate forward-model branches rather than fitting a single Sersic model to a B+D truth image and comparing that n directly with the catalog single-Sersic n.
+
+The next active science run is the predeclared **GOLD91** bin, 0.75 <= z < 1.00 (N=91), using the corrected two-branch native-clean -> z=3-clean chain. The historical 403 x 2 E0/E1J production remains valuable pipeline/provenance evidence, but its single-Sersic n and combined disk classifications are not final science products.
 
 ### What is complete
 
@@ -25,6 +27,25 @@ The project is **not yet ready for the final 403-object real-background producti
 - A deliberately perturbed-start test also converges for all three representative galaxies.
 - Exact B+D tests showed that B/T can become non-identifiable even in noiseless data when components are too compact.
 - A native-clean -> z=3-clean comparison separated catalog/model mismatch from genuine redshift/resolution degradation.
+
+
+### Corrected two-branch validation - 2026-10-01
+
+The corrective pilot used 15 previously representation-unstable objects and 15 matched stable controls. All 30/30 completed successfully.
+
+- native single-Sersic n pass fraction: **1.000**
+- native B/T pass fraction: **1.000**
+- joint native pass fraction: **1.000**
+- median native |delta n|: **8.65e-4**
+- median native |delta B/T|: **8.76e-3**
+- corrected native -> z=3-clean class flips in the pilot: **0/30**
+
+This validates the branch separation:
+
+- **n branch:** single-Sersic truth -> single-Sersic recovery
+- **B/T branch:** B+D truth -> B+D recovery
+
+See [the corrected two-branch pilot receipt](docs/CORRECTED_TWO_BRANCH_PILOT_2026-10-01.md).
 
 ### Decisive validation result
 
@@ -59,23 +80,18 @@ For the other two representative objects, native-clean and z=3-clean morphology 
 
 ## Active next step
 
-The restart-safe **31-object clean identifiability / resolution sweep** completed 31/31 successful fits. It confirms 751217 as a compact, structurally non-identifiable case and distinguishes an identifiable n-boundary flip (514739) from fit failure. See [the clean-sweep receipt](docs/CLEAN_SWEEP_2026-09-19.md).
+Run the corrected two-branch clean transfer on the predeclared most-populated narrow bin:
 
-The corrected real-background E0/E1J pilot has passed 9/9 restart-safe cases using exact Lenstronomy truth, real SCI/ERR/segmentation, and signed position-dependent PSFEx. See [the pilot receipt](docs/REAL_BACKGROUND_PILOT_2026-09-19.md). The active next step is the frozen, restart-safe four-stage GOLD403 production run.
+- **0.75 <= z < 1.00**
+- **N = 91**
 
-The sweep should span source redshift and predicted z=3 component size and should record:
+The run should keep GOLD403/GOLD91 sample membership fixed, record the original-selection -> mapped-morphology-band stage separately, and then measure native-clean -> z=3-clean only from branch-valid measurements.
 
-- published catalog n and B/T
-- native-clean B+D -> single-Sersic n
-- z=3-clean B+D -> single-Sersic n
-- native and z=3 recovered B/T
-- native and z=3 disk/bulge Re in pixels
-- native B/T identifiability
-- z=3 B/T identifiability
-- disk-classification flips
-- failures/bound hits/convergence information
+For this clean structural gate, use a fixed high-S/N normalization. No per-galaxy luminosity-evolution correction is needed.
 
-Only after this sweep is understood should the real-background E0/E1J pilot be rerun using the validated Lenstronomy renderer.
+The primary later real-background branch remains **E0**. E1J is optional as a brightness/S/N sensitivity test and is not required for the GOLD91 clean gate.
+
+The corrected restart-safe helpers are in `scripts/gold403_validation_notebook_cells.py`; see `docs/RUNBOOK.md` and `docs/KAGGLE_GOLD91_RUN.md`.
 
 ## Final science chain
 
@@ -88,9 +104,11 @@ The current analysis should preserve four distinct stages:
 
 This separation is essential.
 
-- Published -> native clean measures **catalog/model representation mismatch**.
+- Original selection -> mapped morphology band measures **morphological K-correction / sample-definition change**.
+- Within the corrected n branch, single-Sersic truth -> native clean tests **single-Sersic representation/recovery**.
+- Within the corrected B/T branch, B+D truth -> native clean tests **decomposition recovery/identifiability**.
 - Native clean -> z=3 clean measures **pure redshift/resolution/PSF degradation**.
-- z=3 clean -> z=3 real-background measures **background, crowding, segmentation, and fitting degradation**.
+- z=3 clean -> z=3 real-background measures **background, crowding, segmentation, S/N, and fitting degradation**.
 
 Do not compare the published catalog directly to the noisy z=3 result and attribute the entire difference to redshift.
 
@@ -216,7 +234,9 @@ Run these in order:
 
 ## Important warning about old results
 
-Earlier model-only and real-background pilot products generated with the custom analytic Sersic renderer are useful as debugging history, but they must **not** be treated as final production morphology results. The exact Lenstronomy closed-loop experiment demonstrated that the renderer/fitter convention mismatch can create large artificial n and Re biases.
+Earlier custom-renderer products remain debugging history and are not final morphology results.
+
+In addition, the completed historical B+D-based production used exact Lenstronomy B+D truth but recovered both B/T and a single-Sersic n from that B+D image. The **B/T branch may be reusable after a provenance/configuration match**, but the historical single-Sersic n and any combined disk classification built from it are not final science products. The corrected 2026-10-01 method renders the single-Sersic and B+D branches separately.
 
 ## Branches
 
