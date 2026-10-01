@@ -126,54 +126,74 @@ Record:
 
 Do not interpret a good chi-square as proof that B/T is identifiable.
 
-### 5.4 Native-clean baseline
+### 5.4 Corrected native-clean two-branch baseline
 
-For the same structural model, generate/fix at its native state and fit it before redshifting.
+Use two independent native-clean loops:
 
-This is required because published single-Sersic and B+D fits can be mutually inconsistent.
+- single-Sersic truth -> single-Sersic recovery for n;
+- B+D truth -> B+D recovery for B/T.
 
-### 5.5 z=3-clean baseline
+Do not fit a single-Sersic model to a B+D truth image and call the recovered n the catalog-n transfer.
 
-Move the same clean model to z=3 and fit before adding any real background.
+### 5.5 Corrected z=3-clean two-branch baseline
 
-The difference native-clean -> z3-clean is the pure resolution/redshift term.
+Move each branch independently to z=3 and recover it with the matching model family.
 
-## 6. Current next run: clean 30-object sweep
+Only after both branches pass their validity checks should the disk state be formed from n<2.5 and B/T<0.5.
 
-Run the consolidated sweep code from:
+Native-clean -> z3-clean is the pure resolution/redshift/PSF term.
 
-`scripts/gold403_validation_notebook_cells.py`
+## 6. Current next run: corrected GOLD91 clean gate
 
-Recommended workflow in Jupyter:
+The active subset is the predeclared most-populated narrow redshift bin:
+
+```
+0.75 <= z < 1.00
+N = 91
+```
+
+After the normal notebook setup/helper cells have been executed:
 
 ```python
 %run -i scripts/gold403_validation_notebook_cells.py
+
+gold91 = select_gold91_redshift_bin(gold)
+
+gold91_result = run_corrected_two_branch_clean_subset(
+    gold91,
+    output_csv=(
+        PROJECT
+        / "Results/GOLD91_corrected_two_branch_clean.csv"
+    ),
+    target_filter="F444W",
+    pso_repeats=2,
+    total_flux=1.0e4,
+    n_identify_tol=0.50,
+    bt_identify_tol=0.10,
+    diag_root=(
+        PROJECT
+        / "Results/GOLD91_corrected_two_branch_diagnostics"
+    ),
+)
+
+summary = summarize_corrected_two_branch_clean(gold91_result)
 ```
 
-Then call the clean-sweep function after the normal project setup/helper cells have been executed.
+The runner checkpoints after every object and preserves completed OK rows on restart.
 
-The sweep should include the known diagnostics:
+For the clean gate, do not add BAGPIPES or E1J. The fixed high-S/N truth normalization is intentional because this stage isolates structural representation, resolution, and PSF effects rather than detectability.
 
-- 751217
-- 322095
-- 162363
+Before interpreting native -> z=3 changes, also report the original-selection -> mapped-morphology-band stage separately.
 
-and span source redshift and predicted z3 disk size.
+For off-laptop execution, see `KAGGLE_GOLD91_RUN.md`.
 
-Review before proceeding:
+## 7. Corrected real-background pilot
 
-- number of successful fits
-- native B/T identifiable fraction
-- z3 B/T identifiable fraction
-- classification-flip fraction
-- worst delta n cases
-- dependence on component size in pixels
+Only after GOLD91 corrected clean review.
 
-## 7. Real-background pilot
+Run **E0 first**. A per-galaxy BAGPIPES luminosity-evolution correction is not part of the active method. E1J is optional later as a brightness/S/N sensitivity branch.
 
-Only after clean-sweep review.
-
-For each injection:
+For each branch-specific injection:
 
 1. select a valid context,
 2. generate target source with Lenstronomy-compatible renderer,
@@ -187,16 +207,16 @@ For each injection:
 
 ## 8. Production run
 
-Do not go directly from three diagnostics to 403.
+Do not jump directly from the 30-object pilot to corrected GOLD403.
 
-After the corrected pilot passes:
+Order:
 
-- freeze configuration,
-- freeze output schema,
-- run all 403,
-- checkpoint CSV frequently,
-- make the run restartable,
-- preserve ERROR rows.
+1. corrected GOLD91 clean;
+2. corrected GOLD91 real-background E0;
+3. provenance check for whether historical B/T products can be reused;
+4. only then scale the corrected branch logic to GOLD403.
+
+Keep every long run restart-safe and checkpoint after each object. Preserve ERROR rows.
 
 ## 9. Suggested output table
 
