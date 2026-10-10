@@ -185,6 +185,50 @@ In the original local data audit the F200W download was still incomplete.
 The starter configuration's `expected_min_hdus=6` check prevents silently
 using a partial DR5 mosaic.
 
+## Scientific audit: modeled effects are not automatically bias corrections
+
+The notebook provides a **mosaic-level forward model and single-Sérsic
+recovery experiment**, not a fully calibrated morphology-bias/completeness
+correction. Before claiming any scientific bias correction, the group must
+measure and validate the corresponding effects on actual JADES data.
+
+| Effect | Current implementation | What is not yet validated or implemented |
+| --- | --- | --- |
+| Rest-frame bandpass / morphological K-correction | Throughput-weighted pixel SED interpolation, strict no-extrapolation | Color-gradient / emission-line substructure errors; interpolation truth comparison |
+| Cosmological dimming and angular geometry | One `I_nu` redshift factor and `D_A` scaling | Real-data flux/aperture residuals across redshift and profile shapes |
+| Spatial resampling | Bilinear intensity sampling plus a flux-audit tolerance | Exact pixel-area integration / aliasing-bias calibration, especially for compact sources |
+| PSF | Common-source PSF and degradation-only target matching | Local effective PSF variability, model mPSF mismatch, recovered-profile bias versus resolvedness |
+| Real noise | Observed target SCI background, source ERR transfer and combined per-pixel RMS | Full correlated-drizzle covariance, independent realizations, reliable source shot-noise exposure replay |
+| Crowding / blending | Source segmentation isolation and injection into nominally blank real backgrounds | Multiple preselected crowding contexts and full neighbour deblending under the science pipeline |
+| Fitting | Native and target PySersic single-Sérsic parameters | Robust posterior/convergence/bound-hit quality flags, and parity with a GALFIT/statmorph/nonparametric science pipeline |
+| Morphology metrics | Recovered single-Sérsic `n`, `Re`, `q`, PA | CAS, Gini-M20, concentration, asymmetry, bars, multi-component B/T, or visual labels |
+| Completeness / recovery selection | Keeps supported and failed cases, runs an input sample | Rerunning actual detection+deblending, false negatives, matched-population recovery surfaces or calibrated bias-correction functions |
+| Source redshift uncertainty | Uses individual catalog `z_a` or another configured redshift estimate | Marginalization over photo-z PDFs or propagation of redshift uncertainty |
+
+**Scientifically important:** a pipeline that reproduces a degraded image is
+not equivalent to the Yu et al. (2023) bias-correction experiment, which
+measures parameter-dependent systematic trends and uncertainty functions
+across a galaxy sample. If the group's science uses CAS, Gini-M20 or another
+nonparametric morphology estimator, they must **run the exact same science
+measurement pipeline on the simulated and comparison images**. PySersic
+alone is not a drop-in substitute for that analysis.
+
+Before publication-quality results:
+1. Run the preflight on the exact files and inspect its report.
+2. Perform real-data tests on multiple sources spanning size, magnitude,
+   profile shape, source redshift and crowding, with flux/PSF/fit diagnostics.
+3. Validate the selected detection/segmentation and morphology pipeline in
+   the target field, retaining failures and nondetections.
+4. Quantify `delta`-parameter distributions and recovery/completeness
+   versus target redshift, resolution (size/FWHM), S/N and crowding;
+   distinguish physical changes from measurement effects.
+5. Disclose missing drizzle covariance and exposure-level Poisson modeling
+   rather than labeling these as fully corrected.
+
+**Delivery decision:** suitable to share as a **research handoff / testing
+version with known limitations**, not as a validated end-to-end
+survey-wide bias correction.
+
 ## Validation status and scientific limits
 
 **Passed:** automated synthetic FITS/WCS, segmentation, pixel processing,
