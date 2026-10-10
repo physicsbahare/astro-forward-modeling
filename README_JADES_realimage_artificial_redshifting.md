@@ -133,7 +133,22 @@ The preferred order is:
 
 The code maps the target response into the source observed frame and refuses spectral extrapolation. It uses two or three source bands and solves for throughput-integrated linear/quadratic pixel-SED weights. Unsupported cases remain in the summary with an explicit failure code.
 
-### 7. Noise
+### 7. Optional reference morphology
+
+If the input list already contains native/reference structural measurements, set:
+
+```python
+REFERENCE_MORPHOLOGY_COLUMNS = {
+    "n": "your_n_column",
+    "re_arcsec": "your_re_arcsec_column",
+    "q": "your_axis_ratio_column",
+    "pa_rad": "your_pa_radian_column",
+}
+```
+
+Any unavailable quantity can remain `None`. The batch summary then includes reference values and recovered-minus-reference deltas. This is optional and does not affect the image transfer.
+
+### 8. Noise
 
 The target sky/read/drizzle noise is already present in the real target SCI mosaic, so the notebook does **not** draw it again.
 
@@ -143,12 +158,12 @@ It does not manufacture target source-Poisson noise from MJy/sr. Exact source-sh
 
 ### 8. Refit
 
-The default refit is deliberately matched to the published JADES DR5 single-Sérsic workflow:
+The default refit is deliberately matched to the published JADES DR5 single-Sérsic morphology-fitting stage:
 - PySersic
 - single Sérsic
 - Gaussian loss
 - no fitted sky
-- segmentation/source-support mask
+- source-associated-pixel mask
 - NUTS
 - 1 chain
 - 1000 warm-ups
@@ -156,7 +171,15 @@ The default refit is deliberately matched to the published JADES DR5 single-Sér
 - n prior 0.65–8
 - ellipticity prior 0–0.9
 
+By default the fitting mask for an injected source is the **known transferred source support**. This avoids fitting unrelated target-sky pixels and reproduces the morphology-fit stage, but it is not the same as rerunning the full JADES DR5 catalog detection/deblending procedure. JADES DR5 detection is a custom multi-band S/N-stack and deblending pipeline. If the science question is *detection completeness* rather than morphology recovery conditional on a known source, the full detection/deblending experiment must be run separately on an appropriate multi-band injection set.
+
+JADES mosaics are already background corrected, so `SUBTRACT_LOCAL_TARGET_BACKGROUND=False` is the default. Change it only when the exact product has a documented residual scalar background.
+
 For a quick software test you may set `REFIT_MODE = "MAP"`, but use `"NUTS"` for the science run.
+
+## Coverage behavior
+
+JADES coverage is heterogeneous. Before selecting the pixel-SED source bands for each object, the notebook checks whether each configured source mosaic actually covers that object's coordinate. It then chooses a supported 2- or 3-band throughput interpolation from the bands available for that object. It does not assume that every galaxy has the same band coverage.
 
 ## Scientific safeguards
 
