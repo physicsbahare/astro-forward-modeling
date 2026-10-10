@@ -27,6 +27,32 @@ Useful official links:
 1. Create an environment with `requirements-jades-realimage-redshifting.txt`.
 2. Open the notebook.
 3. Edit **only** the cell titled `USER SETTINGS - EDIT ONLY THIS CELL`.
+   The included starter settings are **specifically for the real GOODS-S DR5
+   `jw011800-deep23` test pack**. On the user's Linux drive, the one required
+   root path is:
+
+   ```python
+   JADES_DATA_ROOT = Path("/run/media/bahareh/My Passport/JADES_DR5_test")
+   ```
+
+   For a different machine, change that path, and (if different) the filter/
+   subregion filenames in the **same settings cell**. For the first test,
+   the notebook uses the real F115W, F150W and F200W source images, the
+   F444W-A target SCI/ERR image, four matched mPSFs, and one full-field
+   GOODS-S segmentation map. The pilot chooses up to 5 galaxies in the
+   F444W-A footprint from a configurable source-redshift interval and
+   transforms each galaxy independently to z=5. Set `MAX_CASES=None`,
+   adjust `SOURCE_Z_RANGE` and `TARGET_PLAN` to process a larger sample.
+   `expected_min_hdus=6` refuses incomplete DR5 DRZ downloads.
+
+   **Actual audit details:** see `docs/JADES_DR5_LOCAL_AUDIT_2026-10-10.md`.
+
+   The `SCI` extension selector intentionally skips the empty DR5 primary
+   HDU that also carries `EXTNAME=SCI`. Source/target segmentation masks
+   are sampled from their own WCS onto the science-cutout grid, one small
+   cutout at a time, with nearest-neighbour label sampling. Neither a
+   primary-HDU alias nor different full-field versus submosaic WCS can
+   silently change galaxy identity.
    For the full DR5 photometric catalog, set:
    ```python
    CATALOG_FORMAT = "JADES_DR5"
@@ -45,9 +71,10 @@ Useful official links:
 4. Start with a small list of objects and one target redshift.
    `OBJECT_IDS` (specific IDs), `SOURCE_Z_RANGE`, and
    `AUTO_SELECT_TARGET_FOOTPRINT` are optional **explicit** sample controls.
-   They default to no exclusions. For a one-subregion trial only, it is
-   convenient to set `AUTO_SELECT_TARGET_FOOTPRINT=True` and a physically
-   supported `SOURCE_Z_RANGE` before choosing `MAX_CASES=5`.
+   The shipped **pilot settings** use `MAX_CASES=5`, `SOURCE_Z_RANGE=[0.65, 1.25]`
+   and `AUTO_SELECT_TARGET_FOOTPRINT=True`, to avoid accidentally running
+   a long calculation on the entire catalog. These controls are not
+   astrophysical sample-selection criteria. Change them for science runs.
    The available source-band pivots must bracket the mapped **full target
    passband**; for example, F115W/F150W/F200W to F444W at z_target=5
    is not valid for every source redshift. The code refuses extrapolation.
@@ -70,9 +97,16 @@ The official DR5 GOODS-S photometric FITS catalog is here:
 | SIZE | ID, RA, DEC, A, B, FWHM | Positions and object geometry |
 | PHOTOZ_KRON | ID, z_a, z500, z_peak, z_ml | Primary configurable source redshift |
 | PHOTOZ | ID, z_a, z500, z_peak, z_ml | Aperture-based alternative photo-z |
-| FLAG | ID, FLAG_BN, F115W_FLAG, ... | Optional coverage/crowding auditing |
+| FLAG | ID, FLAG_BN, F115W_FLAG, F115W_WHT, F115W_TEXP, ... | Coverage and weighted-image diagnostics |
 
 The notebook joins by ID. It does not assume row order or a nonexistent flat `z` column.
+From the actual 10 Oct 2026 FITS audit, the per-band `*_FLAG` fields
+have floating-point **pixel** units, and `*_WHT` fields have
+inverse-variance units `(MJy/sr)^-2`. These are **not** boolean flags.
+The optional legacy `JADES_REQUIRE_GOOD_FLAGS=True` setting therefore
+requires positive `*_WHT` values, never `*_FLAG == 0`; leave it
+False for heterogeneous-coverage samples. `z_spec`, `z500`,
+`z_a`, `z_ml`, and `z_peak` exist in the actual PHOTOZ HDUs.
 For scientific interpretation, remember that these are photometric redshift
 estimates and may be uncertain; a vetted spectroscopic redshift input list
 is preferable when available.
@@ -106,8 +140,9 @@ SOURCE_BANDS = {
         "psf_path": "/data/jades/{region}/psf_f150w.fits",
         "sci_ext": "SCI",
         "err_ext": "ERR",
-        "seg_ext": 0,
-        "psf_ext": 0,
+        "seg_ext": "AUTO",
+        "psf_ext": "AUTO",
+        "expected_min_hdus": 6,  # for DR5 DRZ mosaics
         "svo_id": "JWST/NIRCam.F150W",
         "throughput_file": None,
     },
