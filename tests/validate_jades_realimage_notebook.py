@@ -147,11 +147,12 @@ def run():
 
         write_mosaic(root/"F444W.fits", np.full((101, 101), 0.02), 0.04)
         write_psf(root/"psf_F444W.fits", 4.5)
-        make_throughput(root/"F444W.dat", 4.44, 0.26)
+        write_mosaic(root/"target_seg.fits", np.zeros((101, 101), np.int32), 1, segmentation=True)
+        make_throughput(root/"F444W.dat", 4.44, 0.18)
         ns["TARGET_PRODUCTS"] = {
             "F444W": {
                 "sci_path": str(root/"F444W.fits"),
-                "err_path": "SAME_AS_SCI", "seg_path": str(root/"seg.fits"),
+                "err_path": "SAME_AS_SCI", "seg_path": str(root/"target_seg.fits"),
                 "psf_path": str(root/"psf_F444W.fits"),
                 "sci_ext": "SCI", "err_ext": "ERR", "seg_ext": 0, "psf_ext": 0,
                 "err_kind": "STDDEV", "psf_pixel_scale_arcsec": 0.03,
