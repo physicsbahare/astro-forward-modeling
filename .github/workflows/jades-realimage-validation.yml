@@ -1,0 +1,99 @@
+name: JADES real-image notebook validation
+
+on:
+  push:
+    branches: [jades-realimage-batch]
+    paths:
+      - 'JADES_realimage_artificial_redshifting_batch.ipynb'
+      - 'README_JADES_realimage_artificial_redshifting.md'
+      - 'requirements-jades-realimage-redshifting.txt'
+      - '.github/workflows/jades-realimage-validation.yml'
+  workflow_dispatch:
+
+jobs:
+  static-notebook-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate notebook JSON, settings boundary, and Python syntax
+        run: |
+          python - <<'PY'
+          import ast, json, pathlib, sys
+
+          p = pathlib.Path("JADES_realimage_artificial_redshifting_batch.ipynb")
+          nb = json.loads(p.read_text())
+          assert nb["nbformat"] == 4
+          assert len(nb["cells"]) >= 10
+
+          code_cells = []
+          settings_cells = []
+          for i, cell in enumerate(nb["cells"]):
+              src = "".join(cell.get("source", []))
+              if cell.get("cell_type") == "code":
+                  code_cells.append((i, src))
+                  if "USER SETTINGS - EDIT ONLY THIS CELL" in src:
+                      settings_cells.append(i)
+                  try:
+                      ast.parse(src, filename=f"cell_{i}.py")
+                  except SyntaxError as exc:
+                      print(f"Syntax error in cell {i}: {exc}")
+                      raise
+
+          assert len(settings_cells) == 1, settings_cells
+
+          full = "\n".join(src for _, src in code_cells)
+
+          required_phrases = [
+              "source_real_pixels",
+              "analytic_source_model_used",
+              "inu_redshift_factor",
+              "angular_scale_factor",
+              "find_auto_blank",
+              "run_pysersic_fit",
+              "SOURCE_NOISE_MC_DRAWS",
+              "memmap=True",
+              "batch_summary.csv",
+          ]
+          for phrase in required_phrases:
+              assert phrase in full, phrase
+
+          forbidden = [
+              "render_sersic(",
+              "LUMINOSITY_EVOLUTION_FACTOR",
+              "SIZE_EVOLUTION",
+          ]
+          for phrase in forbidden:
+              assert phrase not in full, phrase
+
+          # Large mosaics must be sliced before conversion to ndarray.
+          suspicious = [
+              "np.asarray(hdu.data)",
+              "np.array(hdu.data,",
+              "np.asarray(h.data)",
+          ]
+          # A full PSF is intentionally copied; image mosaics are not.
+          for phrase in suspicious:
+              if phrase in full:
+                  print("Review full-array pattern:", phrase)
+
+          print("Notebook static validation PASS")
+          print("cells:", len(nb["cells"]), "code:", len(code_cells),
+                "settings cell:", settings_cells[0])
+          PY
+
+      - name: README consistency checks
+        run: |
+          python - <<'PY'
+          import pathlib
+          t = pathlib.Path("README_JADES_realimage_artificial_redshifting.md").read_text()
+          for phrase in [
+              "real multi-band source pixels",
+              "PySersic",
+              "one settings cell",
+              "does **not** draw it again",
+              "does not reconstruct full drizzle covariance",
+          ]:
+              assert phrase in t, phrase
+          print("README static validation PASS")
+          PY
