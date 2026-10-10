@@ -1,0 +1,31 @@
+name: Download JADES handoff package
+on:
+  push:
+    branches: [jades-realimage-batch]
+    paths:
+      - '.github/workflows/package-jades-handoff.yml'
+  workflow_dispatch:
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare three-file ZIP
+        run: |
+          mkdir -p handoff
+          cp JADES_realimage_artificial_redshifting_batch.ipynb handoff/
+          cp JADES_realimage_artificial_redshifting_batch.py handoff/
+          cp README_JADES_realimage_artificial_redshifting.md handoff/
+          cd handoff && zip -9 ../JADES_realimage_handoff.zip *.ipynb *.py *.md
+          unzip -t ../JADES_realimage_handoff.zip
+      - name: Upload downloadable files
+        uses: actions/upload-artifact@v4
+        with:
+          name: JADES-realimage-handoff
+          path: |
+            JADES_realimage_handoff.zip
+            JADES_realimage_artificial_redshifting_batch.ipynb
+            JADES_realimage_artificial_redshifting_batch.py
+            README_JADES_realimage_artificial_redshifting.md
+          if-no-files-found: error
+          retention-days: 30
