@@ -40,12 +40,19 @@ def write_mosaic(path, data, sigma, segmentation=False):
     header = w.to_header()
     header["BUNIT"] = "MJy/sr"
     if segmentation:
+        # Simulate a segmentation pixel grid that is shifted relative to SCI,
+        # as when a full-field mosaic is paired with a JADES submosaic.
+        header["CRPIX1"] = float(header["CRPIX1"]) + 0.3
+        header["CRPIX2"] = float(header["CRPIX2"]) - 0.6
         fits.PrimaryHDU(np.asarray(data, np.int32), header=header).writeto(path)
     else:
         err_h = header.copy()
         err_h["BUNIT"] = "MJy/sr"
+        # Actual JADES DR5 products repeat EXTNAME SCI on the no-data
+        # primary HDU and on the 2-D SCI image extension.
+        primary = fits.PrimaryHDU(header=fits.Header({"EXTNAME": "SCI", "BUNIT": "MJy/sr"}))
         fits.HDUList([
-            fits.PrimaryHDU(),
+            primary,
             fits.ImageHDU(np.asarray(data, np.float32), header=header, name="SCI"),
             fits.ImageHDU(np.full(data.shape, sigma, np.float32), header=err_h, name="ERR"),
         ]).writeto(path)
