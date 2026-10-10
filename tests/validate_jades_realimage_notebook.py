@@ -152,6 +152,16 @@ def run():
             }
         ns["SOURCE_BANDS"] = bands
 
+        # The real audit observed only five HDUs in the still-downloading
+        # F200W mosaic. The runner must refuse to use partial DR5 products.
+        try:
+            ns["validate_mosaic_file_integrity"](
+                str(root/"F115W.fits"), expected_min_hdus=6)
+        except ns["PipelineFailure"] as exc:
+            assert exc.code == "INCOMPLETE_FITS_DOWNLOAD"
+        else:
+            raise AssertionError("Incomplete DR5-FITS guard did not fire")
+
         write_mosaic(root/"F444W.fits", np.full((101, 101), 0.02), 0.04)
         write_psf(root/"psf_F444W.fits", 4.5)
         write_mosaic(root/"target_seg.fits", np.zeros((101, 101), np.int32), 1, segmentation=True)
