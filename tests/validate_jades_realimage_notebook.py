@@ -196,6 +196,18 @@ def run():
         assert 42 in sg
         assert sci.data.shape == err.shape == sg.shape
 
+        # Confirm the handoff metadata preflight on synthetic DR5-like
+        # source/target/segmentation products, without whole-mosaic reads.
+        ns["PREFLIGHT_SAMPLE_ROWS"] = 1
+        ns["PREFLIGHT_CHECK_SPECTRAL_SUPPORT"] = True
+        ns["INPUT_CATALOG_PATH"] = str(root/"jades_catalog.fits")
+        preflight = ns["run_preflight"]()
+        assert "FAIL" not in preflight.status.values, (
+            preflight[preflight.status=="FAIL"].to_string(index=False)
+        )
+        assert (root/"out"/"data_preflight.md").exists()
+        print("SYNTHETIC JADES HANDOFF PREFLIGHT: PASS")
+
         # Test full real-image redshifting, noise, and PySersic MAP recovery.
         result = ns["run_case"](row, 4.0, "F444W", "42__z4__F444W", root/"out"/"cases"/"42__z4__F444W")
         assert result["status"] == "OK", result
