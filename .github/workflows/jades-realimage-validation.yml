@@ -5,6 +5,7 @@ on:
     branches: [jades-realimage-batch]
     paths:
       - 'JADES_realimage_artificial_redshifting_batch.ipynb'
+      - 'JADES_realimage_artificial_redshifting_batch.py'
       - 'README_JADES_realimage_artificial_redshifting.md'
       - 'requirements-jades-realimage-redshifting.txt'
       - '.github/workflows/jades-realimage-validation.yml'
@@ -85,6 +86,17 @@ jobs:
           ]:
               assert phrase in full, phrase
 
+          # Notebook and Python handoff must remain the SAME processing code.
+          py_path = pathlib.Path("JADES_realimage_artificial_redshifting_batch.py")
+          py_source = py_path.read_text()
+          ast.parse(py_source, filename=str(py_path))
+          assert py_source.count("USER SETTINGS - EDIT ONLY THIS CELL") == 1
+          for index in (4, 6, 8, 10, 12, 14, 16):
+              cell_src = "".join(nb["cells"][index].get("source", []))
+              assert cell_src.strip() in py_source, f"Notebook/Python engine differs at cell {index}"
+          assert "def run_preflight" in py_source
+          assert "python JADES" not in py_source or "def main" in py_source
+          print("Python export parity: PASS")
           print("Notebook static validation PASS")
           print("cells:", len(nb["cells"]), "code:", len(code_cells),
                 "settings cell:", settings_cells[0])
@@ -96,11 +108,11 @@ jobs:
           import pathlib
           t = pathlib.Path("README_JADES_realimage_artificial_redshifting.md").read_text()
           for phrase in [
-              "real multi-band source pixels",
+              "real observed multi-band source pixels",
               "PySersic",
-              "one settings cell",
-              "does **not** draw it again",
-              "does not reconstruct full drizzle covariance",
+              "single USER SETTINGS",
+              "data_preflight.md",
+              "does not claim",
           ]:
               assert phrase in t, phrase
           print("README static validation PASS")
@@ -172,5 +184,6 @@ jobs:
           XLA_PYTHON_CLIENT_PREALLOCATE: "false"
           MPLBACKEND: Agg
         run: |
+          python JADES_realimage_artificial_redshifting_batch.py --help
           python tests/validate_jades_realimage_notebook.py
 
