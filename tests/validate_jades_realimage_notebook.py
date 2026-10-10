@@ -189,6 +189,25 @@ def run():
         assert (root/"out"/"cases"/"42__z4__F444W"/"04_target_injected_mjy_sr.fits").exists()
         print("SYNTHETIC JADES FITS + REAL-PIXEL + PySersic MAP TEST: PASS")
 
+        # Separate science-mode smoke test. Small sample counts are used only
+        # to exercise both NUTS output serialization and the native reference
+        # fit; they are NOT suitable science posterior settings.
+        ns["REFIT_MODE"] = "NUTS"
+        ns["RUN_NATIVE_REFIT"] = True
+        ns["PYSERSIC_WARMUP"] = 30
+        ns["PYSERSIC_SAMPLES"] = 30
+        result_nuts = ns["run_case"](
+            row, 4.0, "F444W", "42__z4__F444W_NUTS",
+            root/"out"/"cases"/"42__z4__F444W_NUTS",
+        )
+        assert result_nuts["status"] == "OK"
+        assert result_nuts["native_wavelength_matched_reference_fit"] is not None
+        assert "recovered_n" in result_nuts["refit"]
+        assert "recovered_re_arcsec" in result_nuts["refit"]
+        assert "recovered_q" in result_nuts["refit"]
+        assert result_nuts["refit"].get("difference_from_native_reference") is not None
+        print("SYNTHETIC JADES NUTS + NATIVE REFERENCE FIT TEST: PASS")
+
 
 if __name__ == "__main__":
     run()
