@@ -8,6 +8,7 @@ on:
       - 'README_JADES_realimage_artificial_redshifting.md'
       - 'requirements-jades-realimage-redshifting.txt'
       - '.github/workflows/jades-realimage-validation.yml'
+      - 'tests/validate_jades_realimage_notebook.py'
   workflow_dispatch:
 
 jobs:
@@ -146,3 +147,30 @@ jobs:
           assert fitter.prior is not None
           print("PySersic construction/API smoke PASS")
           PY
+
+  synthetic-runtime-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: requirements-jades-realimage-redshifting.txt
+
+      - name: Install notebook dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-jades-realimage-redshifting.txt
+
+      - name: Run synthetic real-pixel forward and PySersic MAP recovery
+        env:
+          JAX_PLATFORMS: cpu
+          XLA_PYTHON_CLIENT_PREALLOCATE: "false"
+          MPLBACKEND: Agg
+        run: |
+          python tests/validate_jades_realimage_notebook.py
+
