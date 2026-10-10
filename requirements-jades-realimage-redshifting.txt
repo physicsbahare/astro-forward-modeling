@@ -1,0 +1,12 @@
+# JADES real-image artificial-redshifting notebook
+numpy>=1.26,<3
+scipy>=1.11
+pandas>=2.0
+astropy>=6.0
+matplotlib>=3.8
+photutils>=2.0
+astroquery>=0.4.7
+pysersic>=0.1.3
+jax>=0.4
+numpyro>=0.15
+arviz>=0.18
