@@ -27,7 +27,30 @@ Useful official links:
 1. Create an environment with `requirements-jades-realimage-redshifting.txt`.
 2. Open the notebook.
 3. Edit **only** the cell titled `USER SETTINGS - EDIT ONLY THIS CELL`.
+   For the full DR5 photometric catalog, set:
+   ```python
+   CATALOG_FORMAT = "JADES_DR5"
+   INPUT_CATALOG_PATH = "/path/to/hlsp_jades_jwst_nircam_goods-s_photometry_v5.0_catalog.fits"
+   JADES_REDSHIFT_HDU = "PHOTOZ_KRON"  # or "PHOTOZ"
+   JADES_REDSHIFT_COL = "z_a"         # or "z500", "z_peak", "z_ml"
+   ID_COL, RA_COL, DEC_COL, Z_COL = "ID", "RA", "DEC", "z_source"
+   ```
+   JADES DR5 is a **multi-HDU FITS catalog**. The notebook joins `SIZE`
+   (`ID`, `RA`, `DEC`) to `PHOTOZ_KRON` or `PHOTOZ`
+   (`ID`, selected redshift) using `ID`, not table row alignment.
+   It copies only these small fields rather than converting the entire
+   several-GB FITS catalog into a DataFrame.
+   For a custom/previously prepared CSV list, choose `CATALOG_FORMAT="TABLE"`
+   and map its actual `ID_COL`, `RA_COL`, `DEC_COL`, and `Z_COL`.
 4. Start with a small list of objects and one target redshift.
+   `OBJECT_IDS` (specific IDs), `SOURCE_Z_RANGE`, and
+   `AUTO_SELECT_TARGET_FOOTPRINT` are optional **explicit** sample controls.
+   They default to no exclusions. For a one-subregion trial only, it is
+   convenient to set `AUTO_SELECT_TARGET_FOOTPRINT=True` and a physically
+   supported `SOURCE_Z_RANGE` before choosing `MAX_CASES=5`.
+   The available source-band pivots must bracket the mapped **full target
+   passband**; for example, F115W/F150W/F200W to F444W at z_target=5
+   is not valid for every source redshift. The code refuses extrapolation.
 5. Run All.
 6. Check `batch_summary.csv` and the per-case JSON receipts before scaling up.
 
@@ -36,6 +59,26 @@ The notebook reads large FITS mosaics with memory mapping and copies only small 
 ## The one settings cell
 
 ### 1. Input catalog
+
+The official DR5 GOODS-S photometric FITS catalog is here:
+`https://slate.ucsc.edu/~brant/jades-dr5/GOODS-S/hlsp/catalogs/hlsp_jades_jwst_nircam_goods-s_photometry_v5.0_catalog.fits`.
+
+**Column sources documented in Robertson et al. (2026, Appendix A):**
+
+| DR5 HDU | Relevant columns | Use |
+| --- | --- | --- |
+| SIZE | ID, RA, DEC, A, B, FWHM | Positions and object geometry |
+| PHOTOZ_KRON | ID, z_a, z500, z_peak, z_ml | Primary configurable source redshift |
+| PHOTOZ | ID, z_a, z500, z_peak, z_ml | Aperture-based alternative photo-z |
+| FLAG | ID, FLAG_BN, F115W_FLAG, ... | Optional coverage/crowding auditing |
+
+The notebook joins by ID. It does not assume row order or a nonexistent flat `z` column.
+For scientific interpretation, remember that these are photometric redshift
+estimates and may be uncertain; a vetted spectroscopic redshift input list
+is preferable when available.
+
+Reference: https://arxiv.org/html/2601.15956#A11
+
 
 Set:
 - `INPUT_CATALOG_PATH`
@@ -175,7 +218,13 @@ By default the fitting mask for an injected source is the **known transferred so
 
 JADES mosaics are already background corrected, so `SUBTRACT_LOCAL_TARGET_BACKGROUND=False` is the default. Change it only when the exact product has a documented residual scalar background.
 
-For a quick software test you may set `REFIT_MODE = "MAP"`, but use `"NUTS"` for the science run.
+For a quick software test you may set `REFIT_MODE = "MAP"`, but use `"NUTS"` for the science run. When `RUN_NATIVE_REFIT=True`, the same fitter measures the native
+wavelength-matched image as a reference, so recovered `n`, `Re`, and `q`
+differences are available alongside the target fit. Those reference
+measurements are not an independent intrinsic ground truth.
+
+The notebook fits a bounded central stamp (`MAX_FIT_IMAGE_PIX`) to avoid
+compiling unnecessarily huge JAX models.
 
 ## Coverage behavior
 
@@ -220,3 +269,25 @@ The runner is restart-safe. Existing successful/terminal receipts are skipped on
 This is a mosaic-level artificial-redshifting experiment. It does not reconstruct the exact exposure-level JWST drizzle covariance or a new detector realization. Source-noise propagation uses the released ERR information and therefore cannot reproduce covariance absent from those products. A final paper should state this explicitly.
 
 The PSF files must correspond to the actual JADES products/subregions being analyzed. Do not use one unrelated PSF for a large field simply because the filter name matches.
+
+
+## Validation and status
+
+The GitHub validation workflow runs:
+- notebook JSON/Python syntax and one-settings-cell checks;
+- a pinned API smoke test for PySersic;
+- a synthetic FITS multi-HDU catalog reader / multi-band real-pixel forward model / PySersic MAP test under `tests/validate_jades_realimage_notebook.py`.
+
+**A successful synthetic test does not mean the exact JADES DR5 mosaic/PSF
+combination has been validated.** After downloading the selected source,
+target, segmentation, and PSF files, inspect each extension, BUNIT, WCS,
+PSF scale and sample footprint. In particular, JADES DR5 morphological
+fitting chooses contributing-program mPSFs using the actual exposure
+contribution, so a configured single program mPSF is a scientifically
+explicit approximation when the local combined mosaic has multiple
+substantial contributors (Carreira et al. 2026).
+
+Official methodology references:
+- JADES imaging: https://arxiv.org/html/2601.15954
+- JADES photometric FITS schema: https://arxiv.org/html/2601.15956
+- JADES morphology and mPSF choice: https://arxiv.org/abs/2601.15957
