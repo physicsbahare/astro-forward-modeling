@@ -1,0 +1,16 @@
+{
+  "notebook_cells": 30,
+  "notebook_error_outputs": 0,
+  "original_cells_preserved": true,
+  "source_catalog_rows": 403,
+  "unsupported_morphology": 8,
+  "truth_radius_clipped": 3,
+  "targeted_fits_OK": 24,
+  "original_renderer_targeted_match": true,
+  "corrected_clean_cases": 3,
+  "normalization_regression_tests": 2,
+  "existing_helper_static_tests": 2,
+  "observed_fraction_rows": 36,
+  "raw_fits_unchanged": "input hash guard passed twice",
+  "notebook_execution": "fresh phd kernel; all 30 cells executed twice"
+}

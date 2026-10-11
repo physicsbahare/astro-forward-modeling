@@ -1,0 +1,17 @@
+{
+  "N": 90,
+  "all_eight_targeted_images_match": true,
+  "maximum_targeted_relative_error": 2.804772170938286e-16,
+  "radius_clipped_ids": [
+    164952,
+    283184,
+    666469
+  ],
+  "coordinate_convention": "Galight inverse=True and phi=-theta; diagnostic inverse=False and phi=theta produce equivalent centered Sersic images",
+  "original_normalization_median": 0.004868038174047594,
+  "original_normalization_min": -0.0077124981159144915,
+  "original_normalization_max": 0.04671598304626956,
+  "diagnostic_flux_conversion_difference_ppm": 1.878682,
+  "conclusion": "Eight diagnostic images match original structural rendering. Three other objects have requested radii clipped by the original parameter builder; flag them, do not interpret requested sizes as rendered truth.",
+  "code_sha256": "ed8d17dd2cd0040a28d900e907eb3982f29ec8103239ee7752a9e1e34066a1e9"
+}

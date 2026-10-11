@@ -1,5 +1,19 @@
 # Documentation Index
 
+## Research recovery checkpoint — 2026-10-11
+
+- [Recovered results and methods](RECOVERY_RESULTS_2026-10-11.md): corrected
+  GOLD91 diagnostics, 24 targeted fits, rendered-truth flags, spectral audit,
+  exact GOLD403 parent reconstruction and qualified observed science products.
+- [Remaining science gates](RECOVERY_GATES_2026-10-11.md): final corrected
+  production/population calibration is conditional; historical 806-case
+  production is complete and must not be resumed from an old pause receipt.
+- Compact validated receipts: `data/validation/recovery_2026-10-11/`.
+
+The permanent local science entry point remains `Codes/Passive_Spiral_MASTER.ipynb`
+in the Passive_Spiral project. Its new sections execute with raw-input/method hash
+guards. Large datasets, fitting pickles and notebook science outputs remain local.
+
 ## Start here
 
 1. [Project README](../README.md) - science goal, current status, validated assumptions, and remaining work.

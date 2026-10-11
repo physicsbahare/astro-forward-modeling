@@ -1,0 +1,44 @@
+[
+  {
+    "bt": 0.5427693006021375,
+    "disk_re": 0.24648182434933144,
+    "bulge_re": 0.2337396261551626,
+    "chisq": 1.4222055694292613e-05,
+    "disk_bound_hits": [],
+    "bulge_bound_hits": [],
+    "source_id": 629834,
+    "input_bt": 0.5294584208619253,
+    "absolute_error": 0.013310879740212167,
+    "fingerprint": "1bcb93bf104b240069892d21f4a0e2a979cc529ce37831fdb07b98636910b49c",
+    "criterion": "inherited pilot abs(delta B/T)<=0.10",
+    "pass_gate": true
+  },
+  {
+    "bt": 0.6607221798761993,
+    "disk_re": 0.18065327312449952,
+    "bulge_re": 0.28670136617839775,
+    "chisq": 3.841570474154257e-05,
+    "disk_bound_hits": [],
+    "bulge_bound_hits": [],
+    "source_id": 215914,
+    "input_bt": 0.6613248840695398,
+    "absolute_error": 0.0006027041933405197,
+    "fingerprint": "1bcb93bf104b240069892d21f4a0e2a979cc529ce37831fdb07b98636910b49c",
+    "criterion": "inherited pilot abs(delta B/T)<=0.10",
+    "pass_gate": true
+  },
+  {
+    "bt": 0.5150079404951439,
+    "disk_re": 0.23467483236965697,
+    "bulge_re": 0.21105457562643165,
+    "chisq": 1.7319962239393208e-05,
+    "disk_bound_hits": [],
+    "bulge_bound_hits": [],
+    "source_id": 10109,
+    "input_bt": 0.5111517831393689,
+    "absolute_error": 0.0038561573557749362,
+    "fingerprint": "1bcb93bf104b240069892d21f4a0e2a979cc529ce37831fdb07b98636910b49c",
+    "criterion": "inherited pilot abs(delta B/T)<=0.10",
+    "pass_gate": true
+  }
+]

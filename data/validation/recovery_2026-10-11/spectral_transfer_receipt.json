@@ -1,0 +1,11 @@
+{
+  "N": 90,
+  "status_counts": {
+    "OK": 90
+  },
+  "ratio_median": 1.0492937895196897,
+  "ratio_p16": 1.0263154440677966,
+  "ratio_p84": 1.0830920358541776,
+  "interpretation": "Integrated source-flux sensitivity; both choices share the same validated cosmological factor. Not a corrected pixel-SED morphology run or new luminosity evolution.",
+  "production_gate": "Flux difference and negative spectral coefficients need propagation to measurability before the effective-wavelength GOLD91 runs become a final selection calibration."
+}

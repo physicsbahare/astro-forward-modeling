@@ -1,5 +1,22 @@
 # GOLD403 Passive-Disk Next Gates
 
+## Superseding research checkpoint — 2026-10-11
+
+The historical 806-case production is complete (786 OK, 20 preserved ERROR
+rows); do not resume it from the earlier 418-row pause receipt. Corrected
+GOLD91 saved-table recovery, 24 targeted real B/T fits, bounded integrated-B/T
+normalization repair, rendered-truth audit and spectral sensitivity are verified.
+The full morphology-support audit has 395 supported and eight unsupported
+GOLD403 objects. The full parent criteria reconstruct all 403 source IDs exactly.
+
+Final corrected production is conditional on resolving hidden radius clipping,
+establishing an interpolated native-clean baseline, propagating full-throughput
+brightness sensitivity and calibrating real B/T identifiability. Observed native
+fractions are available with explicit measurable denominators and counting
+intervals; intrinsic population claims still require depth/mass/native recovery
+calibration. See [results](RECOVERY_RESULTS_2026-10-11.md) and
+[gates](RECOVERY_GATES_2026-10-11.md). Older status below is historical.
+
 Last updated: 2026-10-01
 
 This file is intentionally short. Detailed methodology is in `PASSIVE_DISK_Z3_METHOD.md` and numerical receipts are in `VALIDATION_RESULTS_2026-09-19.md`.

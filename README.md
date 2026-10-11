@@ -1,5 +1,14 @@
 # Passive Disk Artificial-Redshifting / Forward-Modeling Project
 
+Research recovery on **2026-10-11** verified the completed historical 806-case
+run, diagnosed the corrected GOLD91 B/T recovery, and reconstructed GOLD403's
+native parent denominators. The permanent master notebook now contains executed
+sample/recovery sections and qualified observed fraction/SFR products. Final
+corrected GOLD403 production and intrinsic population calibration remain gated.
+See [the recovery results](docs/RECOVERY_RESULTS_2026-10-11.md) and
+[remaining gates](docs/RECOVERY_GATES_2026-10-11.md) before acting on older status
+notes or production pause receipts.
+
 This repository contains the validation and forward-modeling work for the **COSMOS-Web passive-disk / passive-spiral project**, with the current science target being:
 
 > If the observed passive-disk population were placed at **z = 3**, how often would its structural morphology still be measurable and still be classified as disk-like after realistic JWST/COSMOS-Web observational degradation?

@@ -1,0 +1,16 @@
+{
+  "N_targeted": 24,
+  "N_OK": 24,
+  "N_class_sensitive": 2,
+  "class_sensitive_ids": [
+    119834,
+    215914
+  ],
+  "normalization_median": 0.004868038174047587,
+  "normalization_min": -0.007712498115914505,
+  "normalization_max": 0.046715983046269505,
+  "corrected_fixed_shape_max_error": 6.661338147750939e-16,
+  "conclusion": "Finite-stamp/infinite B/T mismatch is real but does not explain the large real-context shifts. Free structural fits introduce context/optimizer sensitivity. These injections measure recovery bias, not intrinsic morphology change.",
+  "identifiability": "Neither no bound hit nor high aperture SNR is a calibrated posterior identifiability test; all eight retain explicit uncertainty.",
+  "selection_correction": "Not estimated: three trials per disputed case cannot calibrate a population recovery matrix."
+}
