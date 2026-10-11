@@ -110,3 +110,12 @@ The bounded legacy chain has completed6,300stored steps (6,000postburn),
 with tau_max348.69 and failed convergence. Its diagnostic quantiles and
 class probability are not promoted. The original HDF5 chain and all errors
 remain preserved. This is not a calibrated B/T-identifiability measurement.
+
+## Final targeted checkpoint
+
+Both domain-controlled starts converge (B/T0.1671 and0.1927), and both
+pass actual-grid/factor128 comparison plus factor256/region checks. The
+local numerical defect is repaired for this test. These point estimates remain
+far below injected B/T0.5152; calibrated recovery and identifiability remain open.
+This is not physical transformation. No full corrected403 run is launched
+through this unresolved gate. Native population completeness remains uncalibrated.

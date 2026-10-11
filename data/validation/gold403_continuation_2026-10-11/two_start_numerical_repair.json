@@ -1,0 +1,58 @@
+{
+  "N_starts": 2,
+  "all_optimizers_converged": true,
+  "point_BT": [
+    0.16711134062397723,
+    0.19265299703654135
+  ],
+  "absolute_BT_difference": 0.025541656412564118,
+  "delta_chi2_start1_minus_start0": 1.6840791226827605,
+  "class_probabilities_validated": false,
+  "truth_BT": 0.515194,
+  "scope": "Exploratory numerical-domain repair; two converged point solutions on one analytic-total context. This is not a posterior probability, a noise/context calibration, or physical evolution.",
+  "both_reference_controls_passed": true,
+  "numerical_defect_repaired_locally": true,
+  "recovery_calibration_passed": false,
+  "reference_controls": [
+    {
+      "input_fit_sha256": "853fe697f738cb3fb5502d50ced8d30fcf9ef680c5cf24ac7fb40f09f61176fd",
+      "script_sha256": "43813144e6dbc595f3e57a3d2e0304758c56c75c198845f5b89e1d3d14f966c0",
+      "tolerance": 0.001,
+      "rows": [
+        {
+          "component": 0,
+          "factor_error": 3.061969990005506e-07,
+          "radius_error": 0.00010420508525002984,
+          "pass_gate": true
+        },
+        {
+          "component": 1,
+          "factor_error": 1.657772887709283e-05,
+          "radius_error": 8.228682130936486e-06,
+          "pass_gate": true
+        }
+      ],
+      "all_passed": true
+    },
+    {
+      "input_fit_sha256": "6990f05e2d0f77f874ca951544fc8aca2f9daaca3a4a837cb458262509d43369",
+      "script_sha256": "b36bab16f78c5dc7a0c1e7089ffbf8ebdaca422786769d6696ad92f8d37a49d9",
+      "tolerance": 0.001,
+      "rows": [
+        {
+          "component": 0,
+          "factor_error": 2.7751819470765746e-07,
+          "radius_error": 0.00010418926169284425,
+          "pass_gate": true
+        },
+        {
+          "component": 1,
+          "factor_error": 3.839509950018152e-06,
+          "radius_error": 9.722335778835976e-06,
+          "pass_gate": true
+        }
+      ],
+      "all_passed": true
+    }
+  ]
+}
