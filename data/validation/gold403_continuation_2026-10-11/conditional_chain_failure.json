@@ -1,0 +1,10 @@
+{
+  "status": "MCMC_UNCONVERGED",
+  "converged": false,
+  "postburn_steps": 6000,
+  "tau_max": 348.6937319610219,
+  "translation_errors": 0,
+  "N_bt_draws": 3000,
+  "limitations": "Structural profile-likelihood chain, physical ellipticity domain, conditional amplitude covariance; resampled noise covariance and between-context variation not calibrated. No intrinsic morphology claim.",
+  "scope": "Legacy finite-aperture broad-prior diagnostic, unconverged; no class probability or interval promoted"
+}

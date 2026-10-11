@@ -105,3 +105,8 @@ with bulge q=0.503 and radius0.0361arcsec. It agrees with factor128 to7.1e-5;
 the target reference additionally passes factor256 and region-size checks.
 A second initialization and neighbor checks remain pending, so no class is promoted.
 The conditional legacy chain remains unconverged after6,000steps.
+
+The bounded legacy chain has completed6,300stored steps (6,000postburn),
+with tau_max348.69 and failed convergence. Its diagnostic quantiles and
+class probability are not promoted. The original HDF5 chain and all errors
+remain preserved. This is not a calibrated B/T-identifiability measurement.
