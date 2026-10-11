@@ -1,0 +1,16 @@
+{
+  "input_bundle": "Results/Project_Completion_20261011/corrected_GOLD403_reviewed_v1",
+  "input_models_sha256": "1fc5da66a1532a72937a4057aae20df6edace4662bfff3c400d8507a2c0aab9c",
+  "N_supported": 395,
+  "N_unsupported": 8,
+  "N_controls": 1580,
+  "settings_counts": {
+    "32/core6": 1487,
+    "64/core24": 93
+  },
+  "truth_numerical_gate": true,
+  "fit_numerical_gate": false,
+  "BT_identifiability_gate": false,
+  "production_authorized_by_science": false,
+  "scope": "Numerical input policy only; no automatic fit or classification promotion"
+}

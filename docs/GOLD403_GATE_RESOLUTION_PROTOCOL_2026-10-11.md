@@ -91,3 +91,17 @@ Intrinsic fractions still require footprint/depth-aligned detection, native
 morphology recovery for passive and star-forming parents, quiescence purity,
 redshift/mass migrations and appropriate SFR censoring. Existing redshift/mass
 fractions and SFR–mass summaries remain observed, conditional products.
+
+## Completed input numerical milestone
+
+All 1,580 controls now have passing settings: 1,487 use adaptive32/core6;
+93 require adaptive64/core24. All 395 supported input models pass, with eight
+unsupported morphology rows preserved. `validated_input_policy/` freezes
+native/clean settings and copies clean settings exactly into real injection.
+This closes input-rendering precision, not fitted-model identifiability.
+
+The first exploratory domain-controlled732291 fit converges to B/T=0.1671
+with bulge q=0.503 and radius0.0361arcsec. It agrees with factor128 to7.1e-5;
+the target reference additionally passes factor256 and region-size checks.
+A second initialization and neighbor checks remain pending, so no class is promoted.
+The conditional legacy chain remains unconverged after6,000steps.
