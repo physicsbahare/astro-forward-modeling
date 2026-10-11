@@ -1,0 +1,73 @@
+{
+  "rows": [
+    {
+      "source_id": 10109,
+      "sky_constant": false,
+      "truth_bt": 0.5111517831393687,
+      "bt_fixed_truth": 0.553533831968003,
+      "sky_offset": 0.0,
+      "chi2": 5245.231182009382,
+      "positive_target_flux": true,
+      "weighted_design_condition": 9.448930364876531,
+      "fit_sha256": "412324b95c3a402cd594f152cba6386e4f24c200a94186dd7d25673121162874"
+    },
+    {
+      "source_id": 10109,
+      "sky_constant": true,
+      "truth_bt": 0.5111517831393687,
+      "bt_fixed_truth": 0.5342658868857469,
+      "sky_offset": -0.0008420156843001042,
+      "chi2": 5196.544809438505,
+      "positive_target_flux": true,
+      "weighted_design_condition": 25058.152628846343,
+      "fit_sha256": "412324b95c3a402cd594f152cba6386e4f24c200a94186dd7d25673121162874"
+    },
+    {
+      "source_id": 215914,
+      "sky_constant": false,
+      "truth_bt": 0.66132488406954,
+      "bt_fixed_truth": 0.6525943170858062,
+      "sky_offset": 0.0,
+      "chi2": 6927.293956378404,
+      "positive_target_flux": true,
+      "weighted_design_condition": 14.247757840659107,
+      "fit_sha256": "6b099617beec830f76a962469db08eadc2f76c31989deb028d428cd6fd9925c4"
+    },
+    {
+      "source_id": 215914,
+      "sky_constant": true,
+      "truth_bt": 0.66132488406954,
+      "bt_fixed_truth": 0.67394181870058,
+      "sky_offset": -0.0013739322659574885,
+      "chi2": 6727.4121634773455,
+      "positive_target_flux": true,
+      "weighted_design_condition": 28146.26004779814,
+      "fit_sha256": "6b099617beec830f76a962469db08eadc2f76c31989deb028d428cd6fd9925c4"
+    },
+    {
+      "source_id": 732291,
+      "sky_constant": false,
+      "truth_bt": 0.5151944133159453,
+      "bt_fixed_truth": 0.4900083841550221,
+      "sky_offset": 0.0,
+      "chi2": 3291.476276629719,
+      "positive_target_flux": true,
+      "weighted_design_condition": 4.565372837652573,
+      "fit_sha256": "abb8bd80ad442238f7bfdb91205f2268b66f663f80bad7d8344d7154ccaeec0e"
+    },
+    {
+      "source_id": 732291,
+      "sky_constant": true,
+      "truth_bt": 0.5151944133159453,
+      "bt_fixed_truth": 0.45868721619262537,
+      "sky_offset": -0.0009701279560933542,
+      "chi2": 3264.3418105974188,
+      "positive_target_flux": true,
+      "weighted_design_condition": 14107.49656924641,
+      "fit_sha256": "abb8bd80ad442238f7bfdb91205f2268b66f663f80bad7d8344d7154ccaeec0e"
+    }
+  ],
+  "models_sha256": "1fc5da66a1532a72937a4057aae20df6edace4662bfff3c400d8507a2c0aab9c",
+  "code_sha256": "e274bff6cdb01362152fa34177a149b89807ab31be39ce08595d5c88ad430542",
+  "scope": "Known injected target geometry fixed; recovered neighbor shapes fixed; native linear amplitudes and optional sky constant only. Diagonal ERR likelihood; not a free morphology recovery or calibrated uncertainty."
+}

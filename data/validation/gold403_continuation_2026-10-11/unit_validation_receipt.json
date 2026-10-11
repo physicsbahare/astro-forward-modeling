@@ -1,0 +1,18 @@
+{
+  "N_tests": 18,
+  "passed": true,
+  "errors": 0,
+  "failures": 0,
+  "seconds": 0.38923144340515137,
+  "tests": {
+    "test_corrected_truth_contract.py": "c19ca69a48377698b020928e995214d50bea37176bad3b8d38a2c59b2e9c2d1e",
+    "test_supported_bandpass_transfer.py": "0f71e7b859ead16d9ed39aff8582f1fc9646e7765e60a2709131102e146e25d8",
+    "test_context_admission.py": "5697756f3bf5ea15fbec15e971afaeef6aeb5c28964d52a2bfac5b63afb29850",
+    "test_optimizer_quality.py": "34206ceaea7bd99fb8258e6b69bb4f96e58b51be1e5ad477bcd096ca2fc76618",
+    "test_saved_prior.py": "e102a224d4acda9de1e83c1ee1e43eb28a505f70d7e9811c1deba9918d5c6d95",
+    "test_context_failure_resume.py": "5b86a5dec9b6ac940bc5acc803a25623c5f96f63ced1db449ec4a884679fba4e",
+    "test_catalog_unknown_flags.py": "e136d1aaed5b034e689c972ec2be2a51d49885aaf1bb3aabb75f9dfe9756923f",
+    "test_numerical_fit_domain.py": "97cdda09d73281bcbcc21a7fe0923ace628b39817a3c0199d3e6400a8ffe1f52",
+    "test_integrated_bt_normalization.py": "20e825ff05bfd7c532699fb36a6856934258d7c106df435a3b1ebd6f4662ec49"
+  }
+}

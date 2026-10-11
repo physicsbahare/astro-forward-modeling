@@ -1,0 +1,9 @@
+{
+  "fingerprint": "83598e6940785c6573adf0d89c73949734759f6a9c7fe61bd3e18b8b8329160b",
+  "N": 1580,
+  "max_relative_l2_32core6_vs_64core12": 0.004502217006961322,
+  "max_relative_l2_64_vs_128": 0.0005679672082325528,
+  "numerical_tolerance": 0.001,
+  "pass_numerical_gate": false,
+  "interpretation": "Matched adaptive Lenstronomy shape convergence, not an astrophysical morphology change; 1e-3 numerical tolerance frozen before evaluating this test."
+}

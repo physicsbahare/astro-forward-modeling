@@ -1,5 +1,12 @@
 # Documentation Index
 
+## GOLD403 continuation — 2026-10-11
+
+See [gate resolution and continuation](GOLD403_GATE_RESOLUTION_PROTOCOL_2026-10-11.md).
+Analytic-total photometry, exact truth, strict checkpoint identities and saved-prior
+restoration are implemented. Global numerical and B/T identifiability gates remain
+open; full corrected403 production and intrinsic population fractions are not promoted.
+
 ## Research recovery checkpoint — 2026-10-11
 
 - [Recovered results and methods](RECOVERY_RESULTS_2026-10-11.md): corrected

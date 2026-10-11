@@ -1,0 +1,44 @@
+{
+  "N": 6,
+  "all_passed": true,
+  "original_pickles_unchanged": true,
+  "code_sha256": "4bf69417b48ce0a9657d549c8ee5b73d6df2a257607de823b77f7b0da6d89f09",
+  "rows": [
+    {
+      "path": "/home/bahareh/Desktop/Projects/Passive_Spiral/Results/Project_Completion_20261011/corrected_GOLD403_analytic_v1/targeted_scalar/fit_products/ID10109_real_bd.pkl",
+      "sha256": "72493b954544dd5507d0ff5cd12cebda994c2ed4462180089996795bd0ed1c52",
+      "prior_missing_on_disk": true,
+      "known_prior_restored": "bd_physical_condition"
+    },
+    {
+      "path": "/home/bahareh/Desktop/Projects/Passive_Spiral/Results/Project_Completion_20261011/corrected_GOLD403_analytic_v1/targeted_scalar/fit_products/ID10109_real_single.pkl",
+      "sha256": "4a50472d01a6dd3f6b54e3e2ffce834de2e82ca4f939ba392c020e53043d1f7c",
+      "prior_missing_on_disk": true,
+      "known_prior_restored": "single_physical_condition"
+    },
+    {
+      "path": "/home/bahareh/Desktop/Projects/Passive_Spiral/Results/Project_Completion_20261011/corrected_GOLD403_analytic_v1/targeted_scalar/fit_products/ID215914_real_bd.pkl",
+      "sha256": "9bea4381c581cd378d1743521c1912930fb7ceb10fb0cacee4360595e1b4431c",
+      "prior_missing_on_disk": true,
+      "known_prior_restored": "bd_physical_condition"
+    },
+    {
+      "path": "/home/bahareh/Desktop/Projects/Passive_Spiral/Results/Project_Completion_20261011/corrected_GOLD403_analytic_v1/targeted_scalar/fit_products/ID215914_real_single.pkl",
+      "sha256": "4d1eac4858ce4d7a2b969e45903174acfe324da154e68ca7aae25ccc77e1c10d",
+      "prior_missing_on_disk": true,
+      "known_prior_restored": "single_physical_condition"
+    },
+    {
+      "path": "/home/bahareh/Desktop/Projects/Passive_Spiral/Results/Project_Completion_20261011/corrected_GOLD403_analytic_v1/targeted_scalar/fit_products/ID732291_real_bd.pkl",
+      "sha256": "7cad096c7100bdeae10d2f6a1ac8b855f79296eee0dd8cefe9e4c382bfd900b1",
+      "prior_missing_on_disk": true,
+      "known_prior_restored": "bd_physical_condition"
+    },
+    {
+      "path": "/home/bahareh/Desktop/Projects/Passive_Spiral/Results/Project_Completion_20261011/corrected_GOLD403_analytic_v1/targeted_scalar/fit_products/ID732291_real_single.pkl",
+      "sha256": "acd652878890eb915049687c250b2fabe8c8137dd069caecda1a5f2353842760",
+      "prior_missing_on_disk": true,
+      "known_prior_restored": "single_physical_condition"
+    }
+  ]
+}
