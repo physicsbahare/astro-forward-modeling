@@ -1,0 +1,34 @@
+{
+  "status": "PASS_OBSERVED_CONDITIONAL_REVIEW",
+  "primary_manifest_sha256": "217dbc1a956e80ed49fd2bf4362ac5c4e59be4a7a0b0df6f544be22983d2f54d",
+  "validator_sha256": "11b219f2396e1fe82cfa16a20bca996e31dddaf5b83df9afa9d227963a2f185c",
+  "checks": [
+    "36cells independent raw boolean counts",
+    "nested decomposition",
+    "fixed reference weights",
+    "exact403unique matching and calipers",
+    "Wilson bounds",
+    "Shapley sum",
+    "36published marginal count reconciliation"
+  ],
+  "broader_support_mass": [
+    9.5,
+    11
+  ],
+  "broader_first": 0.04504143272403244,
+  "broader_last": 0.00666140697669746,
+  "broader_difference_ci95": [
+    -0.04930326911092603,
+    -0.027592675454758426
+  ],
+  "outputs": {
+    "decomposition_support_sensitivity.csv": "337951b9fc6208e4f0c832750674b3bc02d243bdb22063a1ad1bf87d8d3c4779",
+    "matched_distribution_sensitivity.csv": "2bb7043a4f80efe0e696cdcd1c39a3779a030ea6ac00694be9d82060e55f7c3e",
+    "PD_all_broader_common_support_standardized.csv": "429d344d3b95fa937e14f01db01dadc4341c00c105edc13f75f6848b06467ad2",
+    "PD_all_broader_reference_weights.csv": "3468e8d6b7ebd8e40f8a2e991727faaf07789f2753dffc8c160f98f432cf4778",
+    "same_support_marginal_comparisons.csv": "14fb5d2699fe0074cfc61275bd107ce1baccc038fc72a2c0c6ab452e78ce2db9",
+    "figure5b_same_support_mass_mix_sensitivity.pdf": "06fea1126c55d310d6b073f2ce475b3f5b35a639454185afad9844ec3665d18b",
+    "figure5b_same_support_mass_mix_sensitivity.png": "d5f7bd7c97f5e333bc687eebe71a8fb911f859c9e19a815e7759fe47746cff81",
+    "REVIEW_AND_INTERPRETATION.md": "8214a7a934d27dd991818051671af2bc835e31414792c81eb9f4504de9625c44"
+  }
+}

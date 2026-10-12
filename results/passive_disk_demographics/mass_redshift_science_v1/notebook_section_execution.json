@@ -1,0 +1,14 @@
+{
+  "status": "APPENDED_SECTION_EXECUTED_IN_FRESH_PHD_KERNEL",
+  "original_cells": 39,
+  "original_cells_preserved": true,
+  "previous_notebook_cells": 53,
+  "appended_cells": 14,
+  "executed_code_cells": 7,
+  "original_notebook_sha256": "954acce630018096b3ed57b2023dc2ad58e561b013e4bb883892849ce3ec55bb",
+  "final_notebook_sha256": "206c3e9e27ccd49a68cfb3348dd43af7de0f11dc086a2117a86f9017303e37b7",
+  "analysis_manifest_sha256": "217dbc1a956e80ed49fd2bf4362ac5c4e59be4a7a0b0df6f544be22983d2f54d",
+  "validation_receipt_sha256": "6296ed4518e02582b18d857149d60441a2920c488628dbcf3b18b63c061adc0e",
+  "prior_science_rerun": false,
+  "expensive_fits_run": false
+}

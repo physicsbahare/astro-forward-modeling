@@ -1,5 +1,11 @@
 # Passive Disk Artificial-Redshifting / Forward-Modeling Project
 
+The **2026-10-12 native observed mass–redshift analysis** is available in
+[passive-disk demographics](results/passive_disk_demographics/mass_redshift_science_v1/README.md).
+This science step measures fixed-mass/redshift fractions and matched SED-model
+SFR contrasts. It keeps artificial redshifting as a separate bias-validation
+experiment and does not claim intrinsic population fractions.
+
 Research recovery on **2026-10-11** verified the completed historical 806-case
 run, diagnosed the corrected GOLD91 B/T recovery, and reconstructed GOLD403's
 native parent denominators. The permanent master notebook now contains executed

@@ -1,0 +1,7 @@
+z_low,median,p025,p975,scope
+0.0,0.025584135708432685,0.022497587497135926,0.029159210257730887,independent interval Gaussian bin migration; fixed labels/reference weights; not calibrated posterior
+0.5,0.015366918804728428,0.014289850533362573,0.016700810155067736,independent interval Gaussian bin migration; fixed labels/reference weights; not calibrated posterior
+1.0,0.01494124295466236,0.013669596167138117,0.016020592882385446,independent interval Gaussian bin migration; fixed labels/reference weights; not calibrated posterior
+1.5,0.015235301786445742,0.013778897503410794,0.016588789568650526,independent interval Gaussian bin migration; fixed labels/reference weights; not calibrated posterior
+2.0,0.01037714923875734,0.008136926288023908,0.012409675856722811,independent interval Gaussian bin migration; fixed labels/reference weights; not calibrated posterior
+2.5,0.01066055898010625,0.007988552037160384,0.013817940002642934,independent interval Gaussian bin migration; fixed labels/reference weights; not calibrated posterior

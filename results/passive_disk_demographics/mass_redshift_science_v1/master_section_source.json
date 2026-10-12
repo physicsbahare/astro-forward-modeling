@@ -1,0 +1,58 @@
+[
+  {
+    "cell_type": "markdown",
+    "source": "## Step 17 \u2014 Observed mass\u2013redshift demographics of passive disks\n\nThis science section uses the frozen COSMOS2025 quantities, dual-passive definition\nand native paired-band disk criteria. Artificial redshifting and morphology fitting\nare separate validation work and are not run here. Original 39 cells/results remain\nunchanged. The analysis is conditional on detected, eligible, morphology-measurable\ngalaxies; unknown morphology is retained in the denominator audit.\n\nOriginal bin edges, a denominator-defined common-support rule, fixed reference\nweights and uncertainty methods are documented in `mass_redshift_science_v1/ANALYSIS_PROTOCOL.md`.\nRestart checks reject changed code, inputs or cached outputs. This section can run\nin a fresh `phd` kernel independently of expensive preceding experiments."
+  },
+  {
+    "cell_type": "code",
+    "source": "from pathlib import Path\nimport os, sys, json\nimport pandas as pd\nfrom IPython.display import display, Image, Markdown\nPROJECT = Path('/home/bahareh/Desktop/Projects/Passive_Spiral')\nMASS_REDSHIFT = PROJECT/'Results/Project_Completion_20261011/mass_redshift_science_v1'\nos.environ.setdefault('MPLCONFIGDIR', '/tmp/passive_disk_mpl')\nos.environ.setdefault('XDG_CACHE_HOME', '/tmp/passive_disk_cache')\nsys.path.insert(0, str(PROJECT/'astro-forward-modeling/scripts'))\nfrom passive_disk_mass_redshift import run as run_mass_redshift\nfrom validate_passive_disk_mass_redshift import validate as validate_mass_redshift\nos.chdir(PROJECT)\n# Preserve the original receipt path spelling; the data/code hashes are checked.\nsummary = run_mass_redshift(PROJECT, MASS_REDSHIFT.relative_to(PROJECT))\nprint(json.dumps(summary, indent=2))\nreview = validate_mass_redshift(PROJECT, MASS_REDSHIFT)\nprint(review['status'])"
+  },
+  {
+    "cell_type": "markdown",
+    "source": "### Step 17.1 \u2014 Joint counts, fractions and common support\n\nEach cell reports eligible and measurable galaxies, passive/disk/passive-disk counts,\nWilson95% intervals, sparse-event flags and morphology-unknown bounds. The36\npublished marginal rows reconcile exactly. The primary joint decomposition has\nmass10\u201311 support; PD/all alone also supports9.5\u201311 under an all-galaxy denominator\nrule. The latter does not make low-mass/high-redshift disk/passive cells reliable."
+  },
+  {
+    "cell_type": "code",
+    "source": "joint = pd.read_csv(MASS_REDSHIFT/'mass_redshift_fractions.csv')\ndisplay(joint[['z_low','mass_low','N_eligible','N_measurable','N_passive','N_disk','N_passive_disk','pd_all','disk_passive','unknown']])\ndisplay(pd.read_csv(MASS_REDSHIFT/'reference_mass_weights.csv'))\ndisplay(pd.read_csv(MASS_REDSHIFT/'mass_standardized_trends.csv'))"
+  },
+  {
+    "cell_type": "markdown",
+    "source": "### Step 17.2 \u2014 Fraction maps\nCounts and Wilson95% intervals reveal actual support. Hatched cells have small denominators/events. These maps show observed conditional distributions, not intrinsic abundances."
+  },
+  {
+    "cell_type": "code",
+    "source": "display(Image(filename=str(MASS_REDSHIFT/'figure1_passive_disk_mass_redshift.png')))\ndisplay(Image(filename=str(MASS_REDSHIFT/'figure2_disk_among_passive_mass_redshift.png')))"
+  },
+  {
+    "cell_type": "markdown",
+    "source": "### Step 17.3 \u2014 Fixed-mass and fixed-redshift comparisons\nLow-mass PD/all declines strongly; the10.5\u201311interval does not show a uniform decline. Disk/passive fractions show strong mass dependence where passive counts support comparison. Curves are visual guides, not evolutionary tracks."
+  },
+  {
+    "cell_type": "code",
+    "source": "display(Image(filename=str(MASS_REDSHIFT/'figure3_redshift_at_fixed_mass.png')))\ndisplay(Image(filename=str(MASS_REDSHIFT/'figure4_mass_at_fixed_redshift.png')))"
+  },
+  {
+    "cell_type": "markdown",
+    "source": "### Step 17.4 \u2014 Mass standardization and decomposition\nFigure5 uses primary joint support10\u201311; the supplementary same-support comparison isolates mass-mix adjustment. A changing mass distribution alone does not explain the broader observed decline. Effective D/P is standardized PD/all divided by standardized P/all, preserving the product identity."
+  },
+  {
+    "cell_type": "code",
+    "source": "display(Image(filename=str(MASS_REDSHIFT/'figure5_mass_standardized_redshift.png')))\ndisplay(Image(filename=str(MASS_REDSHIFT/'figure5b_same_support_mass_mix_sensitivity.png')))"
+  },
+  {
+    "cell_type": "markdown",
+    "source": "### Step 17.5 \u2014 Matched SFR\u2013mass comparison\nAll403 disks have unique controls within0.1dex and0.1redshift. No significant matched \u0394MS location or omnibus distribution contrast is established. Very low SED-model SFRs and floor flags are not direct upper limits or quenching timescales."
+  },
+  {
+    "cell_type": "code",
+    "source": "display(Image(filename=str(MASS_REDSHIFT/'figure6_matched_SFR_mass_offsets.png')))"
+  },
+  {
+    "cell_type": "markdown",
+    "source": "### Step 17.6 \u2014 Completeness, statistical validation and interpretation\n\nThe inherited mass floor lies above the conditional M/L diagnostic. This does\nnot validate detection completeness, morphology accuracy or intrinsic fractions.\nMorphology eligibility, correlated mass/photoz errors, SED priors and cosmic\nvariance remain limitations. Deterministic coarse bins, quality/depth subsets,\nfixed-label migration and SFR-floor sensitivities are recorded separately."
+  },
+  {
+    "cell_type": "code",
+    "source": "display(pd.read_csv(MASS_REDSHIFT/'mass_completeness_assessment.csv'))\ndisplay(pd.read_csv(MASS_REDSHIFT/'matched_SFR_comparison.csv'))\ndisplay(pd.read_csv(MASS_REDSHIFT/'matched_distribution_sensitivity.csv'))\ndisplay(Markdown((MASS_REDSHIFT/'REVIEW_AND_INTERPRETATION.md').read_text()))"
+  }
+]

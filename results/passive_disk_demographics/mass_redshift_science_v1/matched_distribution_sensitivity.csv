@@ -1,0 +1,2 @@
+test,N_pairs,statistic,permutation_p,draws,seed,scope
+matched_pair_label_swap_KS,403,0.0794044665012407,0.14821294676330918,4000,20261014,secondary omnibus distribution comparison; paired exchangeability; no separate discovery claim

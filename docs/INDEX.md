@@ -1,5 +1,14 @@
 # Documentation Index
 
+## Observed mass–redshift demographics — 2026-10-12
+
+[Results, figures and methods](../results/passive_disk_demographics/mass_redshift_science_v1/README.md)
+use the frozen native observed parent and403candidates. Fixed-mass comparisons,
+standardization, count decomposition and matched SFR tests are complete within
+their stated observational support. These are conditional observed results; no
+intrinsic fractions or quenching mechanisms are established. Artificial-redshifting
+production remains a separate gated validation task.
+
 ## GOLD403 continuation — 2026-10-11
 
 See [gate resolution and continuation](GOLD403_GATE_RESOLUTION_PROTOCOL_2026-10-11.md).
