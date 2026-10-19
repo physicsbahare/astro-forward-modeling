@@ -1,5 +1,8 @@
 # Passive Disk Artificial-Redshifting / Forward-Modeling Project
 
+> **ACTIVE PROJECT ROADMAP (updated 2026-10-19):** [Start here — end-to-end passive-disk plan, Priyanka meeting actions, science gates, recovery/completeness, and manuscript](docs/PASSIVE_DISK_END_TO_END_ROADMAP_2026-10-19.md).
+> This roadmap supersedes the **2026-10-01 next-step paragraph** below when it conflicts with the newer **2026-10-11** scientific gate receipts. Historical science results are preserved; unresolved fitted B/T and completeness gates are not marked as passed.
+
 This repository contains the validation and forward-modeling work for the **COSMOS-Web passive-disk / passive-spiral project**, with the current science target being:
 
 > If the observed passive-disk population were placed at **z = 3**, how often would its structural morphology still be measurable and still be classified as disk-like after realistic JWST/COSMOS-Web observational degradation?
