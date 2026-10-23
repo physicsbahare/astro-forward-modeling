@@ -1,6 +1,6 @@
 # Literature backlog — passive disks and forward modeling (2026-10-23)
 
-**Audit (2026-10-23):** Core references were rechecked against arXiv titles and abstracts where available; three missing/placeholder links and the 2022 foundational link were replaced with canonical arXiv IDs. Six peripheral entries were moved below the active list. **Full-paper replication/code validation is not claimed.** The earlier version remains available in Git history.
+**Audit (2026-10-23):** Core references were rechecked against arXiv titles and abstracts where available; three missing/placeholder links and the 2022 foundational link were replaced with canonical arXiv IDs. Six peripheral entries were moved below the active list. **Full-paper replication/code validation is not claimed.** The earlier version remains available in Git history. The deterministic stand-alone toy script and numerical report were committed on [the separate experiment branch](https://github.com/physicsbahare/astro-forward-modeling/tree/experiment/toy-bt-identifiability-20261023/isolated_experiments/2026-10-23_toy_bt_identifiability).
 
 **Purpose:** Curated, actionable reading list from the October 2026 arXiv discussions. This is a *research backlog*, not a claim that every paper has been fully audited. Every entry has a link, a plain-language takeaway, a project-specific application, and a proposed follow-up. **Check the actual full text, tables, code/data releases and sample definitions before citing quantitative results.** Prior chat summaries are provisional except where independently verified below.
 
@@ -82,49 +82,7 @@
 - [D'Onofrio et al., *SQuIGGLE: Radio AGN Found Predominantly in Young, Gas-rich Post-starburst Galaxies at z ~ 0.7*](https://arxiv.org/abs/2610.19146)
 - **Use:** AGN timing and quenching literature; avoid equating AGN presence with disk preservation.
 
-### C1. ALMA2040 cold gas in quiescent galaxies
-- [Zanella et al., *Probing Cold Gas and Dust in Quiescent Galaxies Across Cosmic Time*](https://arxiv.org/abs/2610.21513)
-- **Use:** Future CO/[CI]/[CII] observations to separate gas removal from inefficient star formation. White paper; not a new measurement.
-
-### C2. ALMA2040 disk assembly
-- [Kaasinen et al., *Resolving the Assembly of Disk Galaxies from the Epoch of Reionisation to Cosmic Noon*](https://arxiv.org/abs/2610.21441)
-- **Use:** Future resolved kinematic checks of photometrically identified disks. White paper, not a direct test of passive disks.
-
-## Additional directly relevant foundational literature (not from the October alerts)
-- [Euclid Q1, *Quenching precedes bulge formation in dense environments but follows it in the field*](https://arxiv.org/abs/2511.02964): **Very high introduction priority**: explicitly compares quiescent disky and star-forming bulge-dominated populations, and the sequence of quenching versus morphological transformation across environment. Abstract independently checked 2026-10-23.
-- [Bluck et al., *The quenching of galaxies, bulges, and disks since cosmic noon*](https://arxiv.org/abs/2201.07814): bulge mass, B/T and quenching context; distinguish predictive correlations from causation. Abstract checked 2026-10-23.
-- [Margalef-Bentabol et al. (2022), *Observations of the Initial Formation and Evolution of Spiral Galaxies at 1<z<3 in CANDELS*](https://arxiv.org/abs/2201.06334): existing supervisor-requested artificial-redshifting reference; follow roadmap's exact paper identification and Figs 8–11. **Do not adopt its population spiral-fraction power law as the COSMOS-Web recovery law.**
-
-## Concrete execution queue (the standalone toy only is now running on a separate branch)
-
-1. **Literature audit:** Title/abstract bibliographic audit performed 2026-10-23; full-method verification, data/code release details, and precise figure/equation checks still pending. No arXiv claim is presented as a replicated result.
-2. **Finish existing recovery gates first:** B/T identifiability and fit-quality, real-z matched controls, n/B/T two-branch validity; do not treat historical 806 outputs as final.
-3. **Bias calibration inspired by Xu + IMFIT-MW:** Frozen test grid in magnitude, input n/B/T, size/PSF, S/N, neighbor context and band; compare recovered bias, scatter, coverage, failure, and both directions of classification confusion. Include negative controls and avoid tuning on evaluation set.
-4. **Secondary feature visibility inspired by Puskás + Virgo:** Optional real-image spiral/bar residual survival with visual truth labels. Never use spiral-arm recovery as a surrogate for passive-disk recovery.
-5. **Science comparisons inspired by Euclid + Zhang:** Build mass/redshift-matched controls; test passive-disk fractions versus environment and Σ1 only after observational calibration and parent denominator are valid.
-6. **Physical interpretation:** Use DAWN/ALMA/radio references to motivate quenching mechanisms; only attempt cross-matches after checking coverage and selection functions.
-7. **Manuscript plan:** Introduction = passive disks as quenching/morphology timing probes → observational morphology biases → why COSMOS-Web forward modeling is needed. Methods = frozen two-branch transfer and validated recovery/confusion. Results = conditional recovery and calibrated demographics if gates pass. Discussion = quenching/environment/Σ1/AGN/gas and future surveys, with causal limitations.
-
-## Relevance-audit decision log (2026-10-23)
-
-- **Core analysis:** A1 Mao/Euclid, A2 Xu, A3 Zhang, A4 Chugunov/IMFIT-MW, A5 Puskás/JADES, A6 Cavalcante-Coelho/S4G bars. These concern quenching/morphology, quantitative fitting, or completeness directly.
-- **Core introduction/foundation:** Euclid Gentile (2511.02964), Bluck (2201.07814), Margalef-Bentabol (2201.06334), plus B3 Taamoli for environment and B1 Gracia for hidden arms. Important distinctions: disc-like vs visible spiral; light B/T vs mass B/T; selection versus measurement completeness.
-- **Secondary context:** B2 DAWN, B4 COSMOS-Web radio groups, B6 dormant gas, B7 post-starburst AGN and C1/C2 ALMA2040. Useful only where a paper paragraph specifically calls for that context, not automatic citations.
-- **Parked/peripheral:** B5 LOFAR source catalog (radio catalog selection), B8 NGC6946 (one active barred galaxy), B9 HI eXtreme (not quenched), B10 simulated SFHs (no morphologies), B11 FIREboxHR (low-mass z>6 not our sample), B12 RPCA (CSST PSF, not JWST PSFEx); do not include in immediate science/method plan.
-- **Accuracy:** The Xu abstract supports environmental trends; B/T simulation quantitative scatter requires full-text inspection. Zhang's Σ1 predictive association cannot be treated as causal. IMFIT-MW reports a working code release but we have not executed it. No manuscript citation is promoted solely from this log.
-
-## Review tracker
-
-| ID | First reading | Full text verified | Data/code checked | Pilot designed | Implemented |
-|---|---|---|---|---|---|
-| A1 Euclid RQG | pending | no | no | no | no |
-| A2 Xu B/T | pending | no | no | no | no |
-| A3 Zhang Σ1 | pending | no | no | no | no |
-| A4 IMFIT-MW | pending | no | no | no | no |
-| A5 JADES clumps | pending | no | no | no | no |
-| A6 Bars | pending | no | no | no | no |
-
-**Scope note:** Brown-dwarf papers from the same chat (COSMOS-3D, astrometry, UCD atmosphere and completeness) are intentionally excluded from this repository-specific backlog because `astro-forward-modeling` is the passive-disk project. They belong in the brown-dwarf repository.## Peripheral references — kept for traceability, NOT active GOLD403 tests
+## Peripheral references — kept for traceability, NOT active GOLD403 tests
 
 These items are real papers but **too indirect** for the present passive-disk recovery experiments. Keep for optional discussion, future cross-matches, or narrow technical comparison only. They must not drive the core Methods or be represented as evidence for passive-disk survival or the current JWST pipeline.
 
@@ -154,4 +112,47 @@ These items are real papers but **too indirect** for the present passive-disk re
 
 ## Priority C — future surveys / introduction only
 
+### C1. ALMA2040 cold gas in quiescent galaxies
+- [Zanella et al., *Probing Cold Gas and Dust in Quiescent Galaxies Across Cosmic Time*](https://arxiv.org/abs/2610.21513)
+- **Use:** Future CO/[CI]/[CII] observations to separate gas removal from inefficient star formation. White paper; not a new measurement.
+
+### C2. ALMA2040 disk assembly
+- [Kaasinen et al., *Resolving the Assembly of Disk Galaxies from the Epoch of Reionisation to Cosmic Noon*](https://arxiv.org/abs/2610.21441)
+- **Use:** Future resolved kinematic checks of photometrically identified disks. White paper, not a direct test of passive disks.
+
+## Additional directly relevant foundational literature (not from the October alerts)
+- [Euclid Q1, *Quenching precedes bulge formation in dense environments but follows it in the field*](https://arxiv.org/abs/2511.02964): **Very high introduction priority**: explicitly compares quiescent disky and star-forming bulge-dominated populations, and the sequence of quenching versus morphological transformation across environment. Abstract independently checked 2026-10-23.
+- [Bluck et al., *The quenching of galaxies, bulges, and disks since cosmic noon*](https://arxiv.org/abs/2201.07814): bulge mass, B/T and quenching context; distinguish predictive correlations from causation. Abstract checked 2026-10-23.
+- [Margalef-Bentabol et al. (2022), *Observations of the Initial Formation and Evolution of Spiral Galaxies at 1<z<3 in CANDELS*](https://arxiv.org/abs/2201.06334): existing supervisor-requested artificial-redshifting reference; follow roadmap's exact paper identification and Figs 8–11. **Do not adopt its population spiral-fraction power law as the COSMOS-Web recovery law.**
+
+## Concrete execution queue (isolated toy completed; real science gates remain open)
+
+1. **Literature audit:** Title/abstract bibliographic audit performed 2026-10-23; full-method verification, data/code release details, and precise figure/equation checks still pending. No arXiv claim is presented as a replicated result.
+2. **Finish existing recovery gates first:** B/T identifiability and fit-quality, real-z matched controls, n/B/T two-branch validity; do not treat historical 806 outputs as final.
+3. **Bias calibration inspired by Xu + IMFIT-MW:** Frozen test grid in magnitude, input n/B/T, size/PSF, S/N, neighbor context and band; compare recovered bias, scatter, coverage, failure, and both directions of classification confusion. Include negative controls and avoid tuning on evaluation set.
+4. **Secondary feature visibility inspired by Puskás + Virgo:** Optional real-image spiral/bar residual survival with visual truth labels. Never use spiral-arm recovery as a surrogate for passive-disk recovery.
+5. **Science comparisons inspired by Euclid + Zhang:** Build mass/redshift-matched controls; test passive-disk fractions versus environment and Σ1 only after observational calibration and parent denominator are valid.
+6. **Physical interpretation:** Use DAWN/ALMA/radio references to motivate quenching mechanisms; only attempt cross-matches after checking coverage and selection functions.
+7. **Manuscript plan:** Introduction = passive disks as quenching/morphology timing probes → observational morphology biases → why COSMOS-Web forward modeling is needed. Methods = frozen two-branch transfer and validated recovery/confusion. Results = conditional recovery and calibrated demographics if gates pass. Discussion = quenching/environment/Σ1/AGN/gas and future surveys, with causal limitations.
+
+## Relevance-audit decision log (2026-10-23)
+
+- **Core analysis:** A1 Mao/Euclid, A2 Xu, A3 Zhang, A4 Chugunov/IMFIT-MW, A5 Puskás/JADES, A6 Cavalcante-Coelho/S4G bars. These concern quenching/morphology, quantitative fitting, or completeness directly.
+- **Core introduction/foundation:** Euclid Gentile (2511.02964), Bluck (2201.07814), Margalef-Bentabol (2201.06334), plus B3 Taamoli for environment and B1 Gracia for hidden arms. Important distinctions: disc-like vs visible spiral; light B/T vs mass B/T; selection versus measurement completeness.
+- **Secondary context:** B2 DAWN, B4 COSMOS-Web radio groups, B6 dormant gas, B7 post-starburst AGN and C1/C2 ALMA2040. Useful only where a paper paragraph specifically calls for that context, not automatic citations.
+- **Parked/peripheral:** B5 LOFAR source catalog (radio catalog selection), B8 NGC6946 (one active barred galaxy), B9 HI eXtreme (not quenched), B10 simulated SFHs (no morphologies), B11 FIREboxHR (low-mass z>6 not our sample), B12 RPCA (CSST PSF, not JWST PSFEx); do not include in immediate science/method plan.
+- **Accuracy:** The Xu abstract supports environmental trends; B/T simulation quantitative scatter requires full-text inspection. Zhang's Σ1 predictive association cannot be treated as causal. IMFIT-MW reports a working code release but we have not executed it. No manuscript citation is promoted solely from this log.
+
+## Review tracker
+
+| ID | First reading | Full text verified | Data/code checked | Pilot designed | Implemented |
+|---|---|---|---|---|---|
+| A1 Euclid RQG | pending | no | no | no | no |
+| A2 Xu B/T | pending | no | no | no | no |
+| A3 Zhang Σ1 | pending | no | no | no | no |
+| A4 IMFIT-MW | pending | no | no | no | no |
+| A5 JADES clumps | pending | no | no | no | no |
+| A6 Bars | pending | no | no | no | no |
+
+**Scope note:** Brown-dwarf papers from the same chat (COSMOS-3D, astrometry, UCD atmosphere and completeness) are intentionally excluded from this repository-specific backlog because `astro-forward-modeling` is the passive-disk project. They belong in the brown-dwarf repository.## Priority C — future surveys / introduction only
 
