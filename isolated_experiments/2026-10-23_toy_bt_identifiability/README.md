@@ -8,7 +8,7 @@
 
 Can two sources with disk Sérsic n=1 + bulge Sérsic n=4 become observationally indistinguishable when their characteristic radii are comparable to or smaller than the PSF, even when the fitting program receives the **true geometry**? What happens when the assumed PSF width is wrong?
 
-This is a **simple linear-amplitude, fixed-geometry toy**. It does NOT diagnose the real pipeline's open free-structure, Lenstronomy supersampling, neighbor-fitting or input-versus-fit rendering gates. Consult [real gate protocol](../../docs/GOLD403_GATE_RESOLUTION_PROTOCOL_2026-10-11.md) on the existing science branch and [main roadmap](../../docs/PASSIVE_DISK_END_TO_END_ROADMAP_2026-10-19.md). The real numerical receipts supersede this exploratory result.
+This is a **simple linear-amplitude, fixed-geometry toy**. It does NOT diagnose the real pipeline's open free-structure, Lenstronomy supersampling, neighbor-fitting or input-versus-fit rendering gates. Consult [real gate protocol](https://github.com/physicsbahare/astro-forward-modeling/blob/research/gold403-gates-20261011/docs/GOLD403_GATE_RESOLUTION_PROTOCOL_2026-10-11.md) on the existing science branch and [main roadmap](../../docs/PASSIVE_DISK_END_TO_END_ROADMAP_2026-10-19.md). The real numerical receipts supersede this exploratory result.
 
 ## Inputs and execution
 
