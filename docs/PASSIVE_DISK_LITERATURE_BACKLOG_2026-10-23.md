@@ -154,5 +154,4 @@ These items are real papers but **too indirect** for the present passive-disk re
 | A5 JADES clumps | pending | no | no | no | no |
 | A6 Bars | pending | no | no | no | no |
 
-**Scope note:** Brown-dwarf papers from the same chat (COSMOS-3D, astrometry, UCD atmosphere and completeness) are intentionally excluded from this repository-specific backlog because `astro-forward-modeling` is the passive-disk project. They belong in the brown-dwarf repository.## Priority C — future surveys / introduction only
-
+**Scope note:** Brown-dwarf papers from the same chat (COSMOS-3D, astrometry, UCD atmosphere and completeness) are intentionally excluded from this repository-specific backlog because `astro-forward-modeling` is the passive-disk project. They belong in the brown-dwarf repository.
