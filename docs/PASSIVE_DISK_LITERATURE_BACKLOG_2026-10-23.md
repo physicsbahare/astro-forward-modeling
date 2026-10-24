@@ -74,6 +74,14 @@
 - [Ubertosi et al., *Prevalence of radio Active Galactic Nuclei in galaxy groups since z=3.5 in the COSMOS-Web field*](https://arxiv.org/abs/2610.10719)
 - **Use:** Potential COSMOS-Web group and radio cross-match to test association between AGN incidence and passive-disk morphology; radio association is **not** causal proof of AGN quenching.
 
+### B5. COSMOS-Web DR1 cosmic filament catalog (new: 2026-10-24)
+- **Paper:** [Hao et al., *A cosmic filament catalog for COSMOS-Web Data Release 1 across 0.5 < z < 3.5*](https://arxiv.org/abs/2610.31168)
+- **Type:** Environmental catalog / prospective COSMOS-Web cross-match; not direct evidence for passive-disk survival.
+- **Takeaway (provisional; verify against full paper):** A COSMOS-Web cosmic-filament catalog and associated environmental information offer a way to examine large-scale structure alongside galaxy morphology and quiescence.
+- **Apply:** Check the released footprint, redshift coverage, catalog access, filament-distance definitions and uncertainties against GOLD403. If compatible, compare passive-disk fractions and n/B/T distributions as a function of filament proximity using mass- and redshift-matched quiescent spheroid and star-forming disk controls. Account for photometric-redshift uncertainty, survey selection and environment-dependent completeness.
+- **Next:** Verify catalog release, projection effects, filament-membership probabilities and usable sky overlap before any join or quantitative claim. This is a *future science extension*, not a change to the frozen morphology pipeline.
+- **Status:** Identified from 2026-10-23 arXiv alert; full text and data release not independently audited.
+
 ### B6. Dormant z>3 galaxies and cold gas
 - [Xiao et al., *Sleeping or Dead? Probing the Quenching Mechanism of JWST Dormant Galaxies at z > 3 with ALMA*](https://arxiv.org/abs/2610.19926)
 - **Use:** Gas depletion versus suppression discussion; investigate morphology for overlap if possible. Not a direct disk-survival measurement.
@@ -131,17 +139,19 @@ These items are real papers but **too indirect** for the present passive-disk re
 2. **Finish existing recovery gates first:** B/T identifiability and fit-quality, real-z matched controls, n/B/T two-branch validity; do not treat historical 806 outputs as final.
 3. **Bias calibration inspired by Xu + IMFIT-MW:** Frozen test grid in magnitude, input n/B/T, size/PSF, S/N, neighbor context and band; compare recovered bias, scatter, coverage, failure, and both directions of classification confusion. Include negative controls and avoid tuning on evaluation set.
 4. **Secondary feature visibility inspired by Puskás + Virgo:** Optional real-image spiral/bar residual survival with visual truth labels. Never use spiral-arm recovery as a surrogate for passive-disk recovery.
-5. **Science comparisons inspired by Euclid + Zhang:** Build mass/redshift-matched controls; test passive-disk fractions versus environment and Σ1 only after observational calibration and parent denominator are valid.
+5. **Science comparisons inspired by Euclid + Zhang (with Hao filament catalog as a conditional environmental extension):** Build mass/redshift-matched controls; test passive-disk fractions versus environment and Σ1 only after observational calibration and parent denominator are valid.
 6. **Physical interpretation:** Use DAWN/ALMA/radio references to motivate quenching mechanisms; only attempt cross-matches after checking coverage and selection functions.
 7. **Manuscript plan:** Introduction = passive disks as quenching/morphology timing probes → observational morphology biases → why COSMOS-Web forward modeling is needed. Methods = frozen two-branch transfer and validated recovery/confusion. Results = conditional recovery and calibrated demographics if gates pass. Discussion = quenching/environment/Σ1/AGN/gas and future surveys, with causal limitations.
 
-## Relevance-audit decision log (2026-10-23)
+## Relevance-audit decision log (2026-10-23; updated 2026-10-24)
 
 - **Core analysis:** A1 Mao/Euclid, A2 Xu, A3 Zhang, A4 Chugunov/IMFIT-MW, A5 Puskás/JADES, A6 Cavalcante-Coelho/S4G bars. These concern quenching/morphology, quantitative fitting, or completeness directly.
-- **Core introduction/foundation:** Euclid Gentile (2511.02964), Bluck (2201.07814), Margalef-Bentabol (2201.06334), plus B3 Taamoli for environment and B1 Gracia for hidden arms. Important distinctions: disc-like vs visible spiral; light B/T vs mass B/T; selection versus measurement completeness.
+- **Core introduction/foundation:** Euclid Gentile (2511.02964), Bluck (2201.07814), Margalef-Bentabol (2201.06334), plus B3 Taamoli and B5 Hao for environment and B1 Gracia for hidden arms. Important distinctions: disc-like vs visible spiral; light B/T vs mass B/T; selection versus measurement completeness.
 - **Secondary context:** B2 DAWN, B4 COSMOS-Web radio groups, B6 dormant gas, B7 post-starburst AGN and C1/C2 ALMA2040. Useful only where a paper paragraph specifically calls for that context, not automatic citations.
 - **Parked/peripheral:** B5 LOFAR source catalog (radio catalog selection), B8 NGC6946 (one active barred galaxy), B9 HI eXtreme (not quenched), B10 simulated SFHs (no morphologies), B11 FIREboxHR (low-mass z>6 not our sample), B12 RPCA (CSST PSF, not JWST PSFEx); do not include in immediate science/method plan.
 - **Accuracy:** The Xu abstract supports environmental trends; B/T simulation quantitative scatter requires full-text inspection. Zhang's Σ1 predictive association cannot be treated as causal. IMFIT-MW reports a working code release but we have not executed it. No manuscript citation is promoted solely from this log.
+
+- **2026-10-24 addition:** Hao et al. (2610.31168) is provisionally placed in Priority B for possible COSMOS-Web filament-environment cross-matching; catalog availability, matching and full-text details remain unverified. No pipeline changes or scientific claims are implied.
 
 ## Review tracker
 
