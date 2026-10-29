@@ -56,6 +56,14 @@
 - **Next:** Verify bibliographic record, code, multi-band GALFITM assumptions and whether mass versus light B/T is used.
 - **Status:** Title/arXiv abstract checked; full-text methodological transfer remains to audit.
 
+### A7. HSC multi-band B/T posteriors and wavelength-dependent morphology (backfill: 2026-10-29)
+- **Paper:** [Sarkar et al., *Complete Multi-Band Structural Characterization for 10 Million Galaxies in the Hyper Suprime-Cam Wide Survey using Deep Learning*](https://arxiv.org/abs/2610.32913)
+- **Type:** Direct structural-measurement validation and future-survey methods.
+- **Takeaway:** Bayesian deep-learning posteriors for bulge-to-total **light** ratio, effective radius and flux in multiple HSC bands; reported g-band performance deteriorates at z >= 0.5 as the observed band moves toward rest-frame UV. This is not a JWST B/T recovery calibration.
+- **Apply:** Design a controlled, wavelength-aware GOLD403 injection/recovery comparison across NIRCam bands, separating true structural changes from PSF/depth/rest-frame wavelength effects. Evaluate bias, coverage and calibrated uncertainties for B/T and n, including class confusion, without adopting HSC performance numbers.
+- **Next:** Inspect posterior-calibration tests, truth-label construction, training domain and redshift/band exclusions; assess which diagnostics transfer to JWST.
+- **Status:** Title and abstract checked 2026-10-29; full methods and catalog not audited.
+
 ## Priority B — targeted science, validation and contextual comparisons
 
 ### B1. Hidden spiral structure in Virgo early-type dwarfs
@@ -89,6 +97,30 @@
 ### B7. Post-starburst radio AGN
 - [D'Onofrio et al., *SQuIGGLE: Radio AGN Found Predominantly in Young, Gas-rich Post-starburst Galaxies at z ~ 0.7*](https://arxiv.org/abs/2610.19146)
 - **Use:** AGN timing and quenching literature; avoid equating AGN presence with disk preservation.
+
+### B13. FRESCO proto-cluster quiescent fractions at z~4–6 (new: 2026-10-29)
+- **Paper:** [Lin et al., *A Large Diversity in the Quiescent Fractions of Massive Galaxies in Proto-clusters at z~4–6 in the FRESCO GOODS fields*](https://arxiv.org/abs/2610.37357)
+- **Type:** JWST quiescence-selection and environmental science context, **not** a disk-morphology measurement.
+- **Takeaway:** Uses multi-filter JWST/HST SED modeling and color diagnostics to select 12 quiescent candidates in four GOODS proto-clusters; reports strong variation in quiescent fractions between structures and with stellar mass, with small high-mass denominators.
+- **Apply:** Inform the passive-disk paper's discussion of mass/environment confounding and the need for explicitly defined quiescent parent denominators. Compare SED/UVJ diagnostics and contamination safeguards, but do **not** transfer the z~4–6 proto-cluster fractions to COSMOS-Web GOLD403 or infer disk survival.
+- **Next:** Inspect completeness, candidate probabilities, photo-z and quiescence robustness, field-to-field variance and control samples; check whether any methods apply at the GOLD403 redshifts.
+- **Status:** Title/abstract verified 2026-10-29; full text and code/data not audited.
+
+### B14. Void environment versus stellar mass (backfill: 2026-10-29)
+- **Paper:** [Zhang, *Radial dependence of galaxy and halo properties in cosmic voids: SDSS DR7 and the ELUCID constrained simulation*](https://arxiv.org/abs/2610.35057)
+- **Type:** Environmental-confounding comparison, local-universe context.
+- **Takeaway:** Void-centric trends in galaxy color and specific SFR are generally weaker than stellar-mass trends; spiral fraction shows little radial dependence at fixed stellar mass.
+- **Apply:** Require stellar-mass and redshift matching, survey completeness checks and environment-definition sensitivity before interpreting passive-disk fractions by filament/group/void location.
+- **Next:** Review sample mass limits and environment metrics; avoid extrapolating SDSS z~0 spiral fractions directly to high-z quiescent disks.
+- **Status:** Title/abstract checked 2026-10-29; full text not audited.
+
+### B15. AGN outflow in a z=2.6 quiescent galaxy (backfill: 2026-10-29)
+- **Paper:** [Bugiani et al., *Recently launched AGN-driven outflow in a lensed quiescent galaxy at Cosmic Noon*](https://arxiv.org/abs/2610.33176)
+- **Type:** Physical-quenching context, not a morphology or B/T method.
+- **Takeaway:** Spatially resolved JWST/NIRSpec IFU observations reveal a high-velocity ionized wind in a lensed quiescent galaxy, consistent with AGN-driven maintenance of quiescence.
+- **Apply:** Cite cautiously when distinguishing mechanisms that maintain suppressed star formation from those that dynamically destroy or preserve disks. This single case does **not** demonstrate disk survival.
+- **Next:** Inspect gas/stellar kinematics, outflow energetics, morphology and alternative interpretations before using in Discussion.
+- **Status:** Title/abstract checked 2026-10-29; full text not audited.
 
 ## Peripheral references — kept for traceability, NOT active GOLD403 tests
 
@@ -128,6 +160,14 @@ These items are real papers but **too indirect** for the present passive-disk re
 - [Kaasinen et al., *Resolving the Assembly of Disk Galaxies from the Epoch of Reionisation to Cosmic Noon*](https://arxiv.org/abs/2610.21441)
 - **Use:** Future resolved kinematic checks of photometrically identified disks. White paper, not a direct test of passive disks.
 
+### C3. SIRMOS future near-IR spectroscopy across Euclid (new: 2026-10-29)
+- **Paper:** [Wirth et al., *The SIRMOS mission concept: a space-based near-IR spectroscopic survey of 100 million galaxies in the Euclid Wide Survey footprint*](https://arxiv.org/abs/2610.35945)
+- **Type:** Future-survey prospect / environment context; **mission concept, not observed data**.
+- **Takeaway:** Proposes slit spectroscopy of ~100 million galaxies at 1<z<4 over the Euclid footprint, with environment at cosmic noon as a secondary science objective.
+- **Apply:** Potential future combination of imaging-derived morphology (Euclid/JWST) with spectroscopic redshifts and environmental mapping to test quiescent-disk demographics and redshift trends. Do not assume SIRMOS will fly or that it will supply resolved morphologies.
+- **Next:** Check target selection, spectral sensitivity, quiescence indicators and survey timeline before citing in future-work plans.
+- **Status:** Title/abstract checked 2026-10-29; full proposal not audited.
+
 ## Additional directly relevant foundational literature (not from the October alerts)
 - [Euclid Q1, *Quenching precedes bulge formation in dense environments but follows it in the field*](https://arxiv.org/abs/2511.02964): **Very high introduction priority**: explicitly compares quiescent disky and star-forming bulge-dominated populations, and the sequence of quenching versus morphological transformation across environment. Abstract independently checked 2026-10-23.
 - [Bluck et al., *The quenching of galaxies, bulges, and disks since cosmic noon*](https://arxiv.org/abs/2201.07814): bulge mass, B/T and quenching context; distinguish predictive correlations from causation. Abstract checked 2026-10-23.
@@ -153,6 +193,13 @@ These items are real papers but **too indirect** for the present passive-disk re
 
 - **2026-10-24 addition:** Hao et al. (2610.31168) is provisionally placed in Priority B for possible COSMOS-Web filament-environment cross-matching; catalog availability, matching and full-text details remain unverified. No pipeline changes or scientific claims are implied.
 
+## Daily scan follow-up (2026-10-29)
+
+- **New listing:** Lin et al. (2610.37357) added as environmental/quiescence-selection context. The GOODS proto-cluster redshift range and lack of disk classification limit direct GOLD403 transfer.
+- **New listing:** Wirth et al. (2610.35945) added as future-survey concept only, not an operational source of data.
+- **Backfilled from October 27–28 alerts:** Sarkar et al. (2610.32913) for multi-band B/T methods, Zhang (2610.35057) for mass/environment confounding, and Bugiani et al. (2610.33176) for AGN-maintenance context.
+- **Scope:** No scientific pipeline, cuts, production tests or model settings changed. Entries are literature notes, not replicated numerical claims.
+
 ## Review tracker
 
 | ID | First reading | Full text verified | Data/code checked | Pilot designed | Implemented |
@@ -162,6 +209,6 @@ These items are real papers but **too indirect** for the present passive-disk re
 | A3 Zhang Σ1 | pending | no | no | no | no |
 | A4 IMFIT-MW | pending | no | no | no | no |
 | A5 JADES clumps | pending | no | no | no | no |
-| A6 Bars | pending | no | no | no | no |
+| A6 Bars | pending | no | no | no | no |\n| A7 Sarkar multi-band B/T | abstract checked | no | no | no | no |\n| B13 Lin proto-cluster QGs | abstract checked | no | no | no | no |\n| C3 SIRMOS concept | abstract checked | no | no | no | no |
 
 **Scope note:** Brown-dwarf papers from the same chat (COSMOS-3D, astrometry, UCD atmosphere and completeness) are intentionally excluded from this repository-specific backlog because `astro-forward-modeling` is the passive-disk project. They belong in the brown-dwarf repository.
