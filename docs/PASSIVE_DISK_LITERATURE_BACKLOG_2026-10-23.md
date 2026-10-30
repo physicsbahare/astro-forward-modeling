@@ -122,6 +122,24 @@
 - **Next:** Inspect gas/stellar kinematics, outflow energetics, morphology and alternative interpretations before using in Discussion.
 - **Status:** Title/abstract checked 2026-10-29; full text not audited.
 
+### B16. Chemical clocks for massive quiescent-galaxy formation (late catch: 2026-10-30)
+- **Paper:** [O'Connor et al., *How Quickly Did the Giants Form? Constraining the Formation Timescales of Massive Quiescent Galaxies at Cosmic Noon Using Chemical Evolution Modelling*](https://arxiv.org/abs/2610.34883)
+- **Type:** Quenching-timescale / stellar-population interpretation, **not** passive-disk morphology validation.
+- **Takeaway:** One-zone chemical evolution modeling of alpha-enhanced massive quiescent galaxies at z~2 supports rapid star-formation episodes of roughly 0.1–0.4 Gyr; chemical abundances provide constraints that SED-derived SFHs alone may miss.
+- **Apply:** Use as a cautious comparison when discussing the possible range of formation and quenching timescales for mass-matched passive disks versus spheroids. If chemical or spectroscopic measurements become available, test SFH consistency rather than assigning these model-derived timescales to GOLD403.
+- **Limitation:** Massive quiescent sample and simplified chemical evolution models; no disk selection, no measured B/T recovery, and no demonstrated disk-survival mechanism.
+- **Next:** Read abundance compilation, priors/yields, selection and SFH-model comparisons; assess whether any matched GOLD403 control has comparable stellar mass and spectroscopy.
+- **Status:** arXiv title and abstract verified 2026-10-30; submitted 2026-10-26; full text not audited.
+
+### B17. JWST cosmic-noon morphology and gas-phase metallicity (late catch: 2026-10-30)
+- **Paper:** [Hasan et al., *The Role of Star Formation and Morphology in the Mass-Metallicity Relation of Galaxies at Cosmic Noon*](https://arxiv.org/abs/2610.37612)
+- **Type:** Evolutionary/morphology science context, **not** quiescent-disk survival or B/T fitting calibration.
+- **Takeaway:** JWST/NIRISS slitless spectroscopy of >1,000 galaxies at 1.7<z<3.5 finds that at fixed stellar mass in the lower-mass regime, galaxies with larger sizes, lower SFR surface densities, bulges and/or spiral features tend to be more metal-rich than less structurally developed counterparts.
+- **Apply:** Motivate an explicitly conditional discussion of whether structurally mature disks could have different gas-accretion histories before quenching. If overlapping ancillary spectroscopy exists, compare mass/redshift-matched star-forming disks, passive disks and spheroids without equating gas metallicity with stellar metallicity or structural survival.
+- **Limitation:** Mainly emission-line, star-forming systems; morphology–metallicity correlation is not evidence that a bulge, spiral structure or metal enrichment causes quenching or preserves a stellar disk.
+- **Next:** Inspect morphology definitions, selection limits, mass/SFR matching, metallicity calibration and rest-frame imaging bands before any quantitative comparison.
+- **Status:** arXiv title and abstract verified 2026-10-30; submitted 2026-10-27; full text not audited.
+
 ## Peripheral references — kept for traceability, NOT active GOLD403 tests
 
 These items are real papers but **too indirect** for the present passive-disk recovery experiments. Keep for optional discussion, future cross-matches, or narrow technical comparison only. They must not drive the core Methods or be represented as evidence for passive-disk survival or the current JWST pipeline.
@@ -199,6 +217,12 @@ These items are real papers but **too indirect** for the present passive-disk re
 - **New listing:** Wirth et al. (2610.35945) added as future-survey concept only, not an operational source of data.
 - **Backfilled from October 27–28 alerts:** Sarkar et al. (2610.32913) for multi-band B/T methods, Zhang (2610.35057) for mass/environment confounding, and Bugiani et al. (2610.33176) for AGN-maintenance context.
 - **Scope:** No scientific pipeline, cuts, production tests or model settings changed. Entries are literature notes, not replicated numerical claims.
+
+## Daily scan follow-up (2026-10-30)
+
+- **Late-caught from October 26–27 submissions:** O'Connor et al. (2610.34883) on chemical constraints for quiescent-galaxy formation timescales, and Hasan et al. (2610.37612) on cosmic-noon morphology and gas metallicity. Both are Priority B science context, not morphology validation or disk-survival evidence.
+- **Freshness limitation:** At the time of this check, the accessible arXiv astro-ph listing still showed 2026-10-28 as its newest announcement. Do not represent this as an exhaustive check of 2026-10-29 announcements; recheck that announcement day when accessible.
+- **Scope:** Documentation-only addition; no code, selection cuts, pipeline settings, or numerical science outputs changed.
 
 ## Review tracker
 
