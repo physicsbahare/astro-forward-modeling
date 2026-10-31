@@ -64,6 +64,15 @@
 - **Next:** Inspect posterior-calibration tests, truth-label construction, training domain and redshift/band exclusions; assess which diagnostics transfer to JWST.
 - **Status:** Title and abstract checked 2026-10-29; full methods and catalog not audited.
 
+### A8. COSMOS-Web size-mass relations separated by sSFR and morphology (revision noticed: 2026-10-30)
+- **Paper:** [Tudorache et al., *pop-cosmos: Galaxy size evolution across structural and star-formation classifications in COSMOS-Web*](https://arxiv.org/abs/2606.28489)
+- **Type:** **High direct science/analysis relevance**, COSMOS-Web comparison; an October revision of a paper first submitted in June 2026, **not** a new October submission.
+- **Takeaway:** Combines pop-cosmos stellar mass/sSFR estimates with COSMOS-Web sizes and structural classifications for 99,369 galaxies. The abstract finds that separating galaxies by quiescence versus by B/T or Sérsic index changes inferred size–mass trends; the quiescent and bulge-dominated populations show different characteristic mass scales. This supports treating quenching and structural transformation as separate observables, not proof of their causal order.
+- **Apply:** Compare GOLD403 passive-disk and matched quiescent-spheroid/star-forming-disk controls against published size–mass–redshift relations, **only after** checking sample overlap, bandpass, size definitions, mass completeness and n/B/T selection. In the manuscript, explicitly distinguish sSFR-based quiescence from structural disk classification and account for their different denominators.
+- **Limitations:** Population scaling relations do not establish that individual disks survive quenching. Its morphological measurements and selection functions are not interchangeable with GOLD403 forward-model recovery or B/T confusion calibration.
+- **Next:** Inspect revised paper's catalog, COSMOS-Web structural input, sSFR posterior/selection, completeness, redshift bins and size estimator; test whether a matched external comparison is possible. The 2026-10-30 arXiv listing marks v2 as accepted in MNRAS, but the cached abstract page still showed v1; verify version metadata before citing the revision.
+- **Status:** Title and abstract checked 2026-10-31; original submission 2026-06-26, revised in 2026-10-30 listings. Full text and released data not audited.
+
 ## Priority B — targeted science, validation and contextual comparisons
 
 ### B1. Hidden spiral structure in Virgo early-type dwarfs
@@ -139,6 +148,15 @@
 - **Limitation:** Mainly emission-line, star-forming systems; morphology–metallicity correlation is not evidence that a bulge, spiral structure or metal enrichment causes quenching or preserves a stellar disk.
 - **Next:** Inspect morphology definitions, selection limits, mass/SFR matching, metallicity calibration and rest-frame imaging bands before any quantitative comparison.
 - **Status:** arXiv title and abstract verified 2026-10-30; submitted 2026-10-27; full text not audited.
+
+### B18. Satellite environmental quenching and morphology in GAMA/DEVILS (new listing: 2026-10-30)
+- **Paper:** [Oxland et al., *Environmental Quenching of Satellite Galaxies out to z~0.4 with GAMA and DEVILS*](https://arxiv.org/abs/2610.38836)
+- **Type:** Environmental-quenching science and matched-survey methodology; not direct high-z disk-survival evidence.
+- **Takeaway:** Compares satellite populations across GAMA and DEVILS with consistent property and environment definitions, using projected phase space as an infall-time proxy. The abstract reports a decline in SFR relative to the star-forming main sequence of about 0.14 dex/Gyr after infall, including similar trends for visually early- and late-type galaxies, with no significant evolution between the two survey redshift ranges.
+- **Apply:** For any future GOLD403 environment test, distinguish quenching from structural transformation, define central/satellite status where possible, use consistent mass/redshift-matched controls, and assess whether environment-dependent selection biases mimic morphology trends. The low-z satellite result is a conceptual comparator, **not** a correction or timescale to transfer to COSMOS-Web.
+- **Limitations:** z~0.4 or lower, visually classified early/late types rather than JWST B/T-recovered passive disks; projected phase space is a proxy, not a direct infall clock. No demonstration that disks survive quenching at GOLD403 redshifts.
+- **Next:** Read group/satellite selection, mass limits, morphology bins, phase-space treatment, and completeness; check which environmental definitions are reproducible with COSMOS-Web ancillary catalogs.
+- **Status:** arXiv title and abstract checked 2026-10-31; submitted 2026-10-28, appeared in the 2026-10-30 new listings. Full text and data not audited.
 
 ## Peripheral references — kept for traceability, NOT active GOLD403 tests
 
@@ -223,6 +241,13 @@ These items are real papers but **too indirect** for the present passive-disk re
 - **Late-caught from October 26–27 submissions:** O'Connor et al. (2610.34883) on chemical constraints for quiescent-galaxy formation timescales, and Hasan et al. (2610.37612) on cosmic-noon morphology and gas metallicity. Both are Priority B science context, not morphology validation or disk-survival evidence.
 - **Freshness limitation:** At the time of this check, the accessible arXiv astro-ph listing still showed 2026-10-28 as its newest announcement. Do not represent this as an exhaustive check of 2026-10-29 announcements; recheck that announcement day when accessible.
 - **Scope:** Documentation-only addition; no code, selection cuts, pipeline settings, or numerical science outputs changed.
+
+## Daily scan follow-up (2026-10-31)
+
+- **Newly announced paper:** Oxland et al. (2610.38836), submitted 2026-10-28 and listed 2026-10-30, added as Priority B environmental-quenching/morphology context. The low-z satellite result does not measure high-z passive-disk survival.
+- **Relevant revision noticed:** Tudorache et al. (2606.28489), first submitted June 2026 and newly revised in the 2026-10-30 listings, added as Priority A COSMOS-Web science comparison. Treat this as a revision, not a new submission; check revised version metadata before manuscript use.
+- **Backfill check:** All seven passive-disk references from the October 27–30 alerts were already in this backlog, so none was duplicated.
+- **Scope:** No changes to fitting code, scientific outputs, frozen cuts or production settings. No direct new brown-dwarf paper met the present selection threshold.
 
 ## Review tracker
 
