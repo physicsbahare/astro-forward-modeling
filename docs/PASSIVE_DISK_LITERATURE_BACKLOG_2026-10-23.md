@@ -73,6 +73,15 @@
 - **Next:** Inspect revised paper's catalog, COSMOS-Web structural input, sSFR posterior/selection, completeness, redshift bins and size estimator; test whether a matched external comparison is possible. The 2026-10-30 arXiv listing marks v2 as accepted in MNRAS, but the cached abstract page still showed v1; verify version metadata before citing the revision.
 - **Status:** Title and abstract checked 2026-10-31; original submission 2026-06-26, revised in 2026-10-30 listings. Full text and released data not audited.
 
+### A9. JWST PRIMER/MINERVA quiescent-galaxy bulge–disk decomposition and inside-out quenching (2026-11-02 listing)
+- **Paper:** [Prasal, Wadadekar & Biswas, *The Size-Mass Relation and Inside-Out Quenching of Massive Quiescent Galaxies at 2<z<3 with JWST PRIMER and MINERVA*](https://arxiv.org/abs/2610.40937)
+- **Type:** **High-priority direct science and methodology comparison** (multi-band Sérsic/B+D, spatially resolved SFH); not a validated GOLD403 recovery calibration.
+- **Takeaway:** For 26 massive quiescent galaxies at z=2–3, the authors fit single-Sérsic and bulge+disk models with pysersic in six NIRCam filters and derive resolved SFHs. They report one-third with light B/T<0.5, a ~22% decrease in measured size from F115W to F444W, and older/faster-quenched central regions than outskirts. Proposed AGN/compaction/dynamical-stabilization mechanisms are interpretations, not directly established causal pathways.
+- **Apply:** Compare the *definitions and reliability* of wavelength-dependent B/T, sizes, PSF matching and rest-frame bands against GOLD403's separate n<2.5 and B/T<0.5 branches. Consider a small, frozen matched-control comparison at z=2–3 and test whether radial age/colour gradients could alter apparent disk dominance without changing intrinsic structure. **Do not transfer the reported one-third fraction to GOLD403 or substitute these fits for our injection/recovery calibration.**
+- **Limitations:** Small, massive, quiescent sample in UDS rather than COSMOS-Web; B/T is light-based and sensitive to wavelength, model choice, resolution and selection. A resolved SFH gradient is not a direct measurement of an individual galaxy's morphological survival after quenching.
+- **Next:** Audit sample selection, PSF construction, pysersic priors/model comparison, B/T errors, filter-dependent fitting and piXedfit assumptions; assess whether released data or a matched pilot can be used after the current identifiability gates.
+- **Status:** arXiv title and abstract checked 2026-11-03; first submitted 2026-10-29 and announced 2026-11-02. Full text, code and catalog not yet audited.
+
 ## Priority B — targeted science, validation and contextual comparisons
 
 ### B1. Hidden spiral structure in Virgo early-type dwarfs
@@ -157,6 +166,24 @@
 - **Limitations:** z~0.4 or lower, visually classified early/late types rather than JWST B/T-recovered passive disks; projected phase space is a proxy, not a direct infall clock. No demonstration that disks survive quenching at GOLD403 redshifts.
 - **Next:** Read group/satellite selection, mass limits, morphology bins, phase-space treatment, and completeness; check which environmental definitions are reproducible with COSMOS-Web ancillary catalogs.
 - **Status:** arXiv title and abstract checked 2026-10-31; submitted 2026-10-28, appeared in the 2026-10-30 new listings. Full text and data not audited.
+
+### B19. OASIS I: spectroscopic validation of photometric quiescence at z>4 (2026-11-02 listing)
+- **Paper:** [Looser et al., *OASIS I: Spectroscopy of Mini-Quenched and Lulling Galaxies Constrains the Quiet Side of Bursty Star Formation at z > 4*](https://arxiv.org/abs/2610.41489)
+- **Type:** Quiescence-selection **validation methodology** and SFH context, not disk-survival or morphology calibration.
+- **Takeaway:** Deep JWST/NIRSpec/PRISM data distinguish mini-quenched from temporarily low-SFR galaxies. Seven of ten photometrically selected suppressed-SFR candidates were actually near/above the star-forming main sequence, showing that photometric SFHs alone can misclassify short-term suppression.
+- **Apply:** Motivate explicit purity/contamination checks for the *quiescent parent sample* used in GOLD403, using available spectroscopic cross-checks and SED-posterior sensitivity where feasible. Keep quiescence-selection errors distinct from n/B/T morphological classification and recovery errors.
+- **Limitations:** Low-mass z>4 galaxies undergoing bursty star formation, unlike the typical GOLD403 massive cosmic-noon targets; their 7/10 photometric misclassification rate is **not** transferable.
+- **Next:** Read the photometric selection, SFH timescales and spectroscopic confirmation definitions; determine whether any analogous quiescence validation can be done for matched COSMOS-Web controls.
+- **Status:** arXiv title and abstract checked 2026-11-03; submitted 2026-10-30, announced 2026-11-02. Full methods not audited.
+
+### B20. OASIS III: star-formation variability and observed galaxy size (2026-11-02 listing)
+- **Paper:** [Baker et al., *OASIS III: Bursty star formation drives observed galaxy sizes at z≥4*](https://arxiv.org/abs/2610.41491)
+- **Type:** **Secondary observational morphology/size-systematics context**, not a direct B/T or passive-disk survival result.
+- **Takeaway:** JWST NIRCam+NIRSpec analysis of 51 galaxies at z≥4 finds that more strongly rising star formation correlates with smaller UV/optical half-light radii even after controlling for mass and redshift. The authors interpret this as centrally concentrated starbursts changing the observed light profile.
+- **Apply:** In GOLD403 forward-model discussions, distinguish stellar-mass morphology from light-weighted morphology and consider whether central young populations or wavelength-dependent M/L gradients can bias single-Sérsic n, half-light radius and B/T. Use as a motivation for a *conditional* colour-gradient/SED-aware stress test, not as a correction to apply.
+- **Limitations:** Mostly low-mass, very-high-redshift galaxies; ForcePho half-light radii and burstiness are not B/T recovery measurements and the reported trend does not demonstrate disk survival.
+- **Next:** Examine size measurement bands, PSF treatment, selection and partial-correlation controls; assess whether analogous light-profile effects matter for matched GOLD403 galaxies.
+- **Status:** arXiv title and abstract checked 2026-11-03; submitted 2026-10-30, announced 2026-11-02. Full methods not audited.
 
 ## Peripheral references — kept for traceability, NOT active GOLD403 tests
 
@@ -248,6 +275,12 @@ These items are real papers but **too indirect** for the present passive-disk re
 - **Relevant revision noticed:** Tudorache et al. (2606.28489), first submitted June 2026 and newly revised in the 2026-10-30 listings, added as Priority A COSMOS-Web science comparison. Treat this as a revision, not a new submission; check revised version metadata before manuscript use.
 - **Backfill check:** All seven passive-disk references from the October 27–30 alerts were already in this backlog, so none was duplicated.
 - **Scope:** No changes to fitting code, scientific outputs, frozen cuts or production settings. No direct new brown-dwarf paper met the present selection threshold.
+
+## Daily scan follow-up (2026-11-03)
+
+- **2026-11-02 announcement:** Prasal et al. (2610.40937) added as Priority A, a direct multi-band JWST bulge/disk and quiescence comparison for z=2–3.
+- **2026-11-02 announcement:** Looser et al. OASIS I (2610.41489) and Baker et al. OASIS III (2610.41491) added as Priority B methodological context for photometric quiescence misclassification and light-weighted size biases; both involve much higher-redshift/lower-mass galaxies, and their numerical results must not be transferred.
+- **Scope:** Abstract-level checks only. No frozen cuts, pipeline settings, code, or quantitative outputs changed.
 
 ## Review tracker
 
