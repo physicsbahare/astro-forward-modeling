@@ -185,6 +185,15 @@
 - **Next:** Examine size measurement bands, PSF treatment, selection and partial-correlation controls; assess whether analogous light-profile effects matter for matched GOLD403 galaxies.
 - **Status:** arXiv title and abstract checked 2026-11-03; submitted 2026-10-30, announced 2026-11-02. Full methods not audited.
 
+### B21. Khoram et al. (2026): gas and galaxy environment at cosmic noon
+- **Paper:** [Khoram et al., *Developing Environments: Formation and Quenching at Cosmic Noon Traced by the Large-scale Distribution of Gas and Galaxies*](https://arxiv.org/abs/2611.00190).
+- **Type / priority:** Priority B, directly relevant COSMOS-Web environmental science; not a B/T recovery method or disk-survival measurement.
+- **Abstract-level takeaway:** At 1.7 < z < 3.5 the study combines COSMOS-Web galaxy overdensity and LATIS Ly-alpha neutral-hydrogen tomography with 139 Blue Jay and 57 DAWN JWST spectra. Quiescent-galaxy formation-to-quenching intervals vary with environment; galaxy-rich/gas-poor and galaxy-poor/gas-rich regions differ in AGN/outflow incidence. Galaxy number density alone misses important gas-environment structure.
+- **Application to GOLD403:** For a *future* environment/quenching comparison, test footprint and redshift overlap, then compare passive disks against mass- and redshift-matched quiescent spheroids and star-forming disks using both galaxy-density and (where available) gas-environment measures. Explore whether disk-dominated quiescent systems occupy the gas-rich developing regions, only after selection/recovery and B/T reliability are calibrated.
+- **Limitations:** The spectroscopic sample is not a morphology-selected passive-disk sample; associations do not establish causal quenching mechanisms or stellar disk survival. LATIS coverage, environment definitions, cross-match quality, completeness and uncertainties need validation. Do not import numerical rates into GOLD403.
+- **Next:** Read methods/figures for environment estimator and selection; locate any public COSMOS-Web/LATIS density products and verify overlap before proposing a cross-match.
+- **Status:** Title and abstract checked in the 2026-11-03 astro-ph announcement; full paper/data not audited.
+
 ## Peripheral references — kept for traceability, NOT active GOLD403 tests
 
 These items are real papers but **too indirect** for the present passive-disk recovery experiments. Keep for optional discussion, future cross-matches, or narrow technical comparison only. They must not drive the core Methods or be represented as evidence for passive-disk survival or the current JWST pipeline.
@@ -281,6 +290,10 @@ These items are real papers but **too indirect** for the present passive-disk re
 - **2026-11-02 announcement:** Prasal et al. (2610.40937) added as Priority A, a direct multi-band JWST bulge/disk and quiescence comparison for z=2–3.
 - **2026-11-02 announcement:** Looser et al. OASIS I (2610.41489) and Baker et al. OASIS III (2610.41491) added as Priority B methodological context for photometric quiescence misclassification and light-weighted size biases; both involve much higher-redshift/lower-mass galaxies, and their numerical results must not be transferred.
 - **Scope:** Abstract-level checks only. No frozen cuts, pipeline settings, code, or quantitative outputs changed.
+
+## Daily scan follow-up (2026-11-04)
+
+- **New 2026-11-03 listing:** Khoram et al. (2611.00190) added as Priority B COSMOS-Web environment/quenching context. Not a direct morphology-recovery or disk-survival result. No code or frozen selection changes.
 
 ## Review tracker
 
