@@ -307,3 +307,21 @@ These items are real papers but **too indirect** for the present passive-disk re
 | A6 Bars | pending | no | no | no | no |\n| A7 Sarkar multi-band B/T | abstract checked | no | no | no | no |\n| B13 Lin proto-cluster QGs | abstract checked | no | no | no | no |\n| C3 SIRMOS concept | abstract checked | no | no | no | no |
 
 **Scope note:** Brown-dwarf papers from the same chat (COSMOS-3D, astrometry, UCD atmosphere and completeness) are intentionally excluded from this repository-specific backlog because `astro-forward-modeling` is the passive-disk project. They belong in the brown-dwarf repository.
+
+### B22. JWST stacked faint disk outskirts and observational surface-brightness effects (2026-11-04 listing)
+- **Paper:** [Jia et al., *Probing the Faint Outskirts of Star-Forming Galaxies with 1<z<9 Using Stacked Images*](https://arxiv.org/abs/2611.04605)
+- **Type / priority:** Priority B, **direct observational-methods comparison** for disk-profile detectability and forward modeling; not passive-galaxy quenching or B/T recovery.
+- **Plain-language takeaway:** JWST/NIRCam stacks of 14,812 face-on star-forming disks in CEERS, JADES and PRIMER at 1<z<9 recover faint outer exponential light. The authors account for surface-brightness dimming, angular-size scaling, PSF convolution and residual backgrounds using blank-sky stacks, finding broadly bluer outskirts and outer scale-length trends with mass/redshift.
+- **Apply to GOLD403:** Compare their control of dimming, PSF and blank-sky backgrounds with our COSMOS-Web artificial-redshifting/injection-recovery E0 design; assess whether extended disks become undetectable while the central Sérsic/B+D fit remains measurable. Consider a separate *outer-disk detectability* diagnostic, without conflating it with the frozen n<2.5 and B/T<0.5 selection gates.
+- **Limitations:** Stacked star-forming face-on disks, not individually recovered quiescent disks; stacking cannot directly calibrate individual-galaxy B/T confusion, disk-survival fraction or GOLD403 completeness.
+- **Next:** Read stack normalization, background subtraction, PSF-wing handling, rest-frame band matching and profile error propagation; decide whether a small held-out outer-disk surface-brightness test is warranted.
+- **Status:** Title and abstract checked on arXiv 2026-11-05; submitted 2026-11-03; full methods/data not audited.
+
+### B23. COSMOS-Web three-dimensional dark-matter map as future environmental context (2026-11-04 listing)
+- **Paper:** [Scognamiglio et al., *3D dark matter map of the JWST COSMOS-Web field using diffusion-based generative priors*](https://arxiv.org/abs/2611.03786)
+- **Type / priority:** Priority B, **future COSMOS-Web environment cross-match**; not morphology fitting, quenching classification or disk-survival evidence.
+- **Plain-language takeaway:** Weak-lensing imaging in 0.54 deg² of COSMOS-Web is combined with a forward model and simulation-trained diffusion prior to infer probabilistic 3D matter maps in 20 lens planes to z≈2. Simulation/null tests support recovered structures and uncertainty estimates.
+- **Apply to GOLD403:** If usable map/posterior products become available, compare mass/redshift-matched passive disks, passive spheroids and star-forming disks against matter overdensity or halo environment within the map's actual z/sky coverage; propagate map uncertainties and match completeness before interpreting any trends.
+- **Limitations:** Lensing-derived matter density is model-dependent and not equivalent to individual halo mass or galaxy group membership; the reconstruction stops around z≈2, so not all GOLD403 redshifts are covered. No B/T recovery or disk-quenching causal result.
+- **Next:** Check public map/posterior release, masks, redshift kernels and spatial resolution; test GOLD403 coordinate/redshift overlap before proposing an environmental statistic.
+- **Status:** Title and abstract checked on arXiv 2026-11-05; submitted 2026-11-02; full methods/data not audited.
