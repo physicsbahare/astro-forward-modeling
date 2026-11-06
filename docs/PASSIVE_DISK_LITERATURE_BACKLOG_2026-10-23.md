@@ -325,3 +325,17 @@ These items are real papers but **too indirect** for the present passive-disk re
 - **Limitations:** Lensing-derived matter density is model-dependent and not equivalent to individual halo mass or galaxy group membership; the reconstruction stops around z≈2, so not all GOLD403 redshifts are covered. No B/T recovery or disk-quenching causal result.
 - **Next:** Check public map/posterior release, masks, redshift kernels and spatial resolution; test GOLD403 coordinate/redshift overlap before proposing an environmental statistic.
 - **Status:** Title and abstract checked on arXiv 2026-11-05; submitted 2026-11-02; full methods/data not audited.
+
+### B24. COSMOS-Web AGN hosts: quenching before structural compaction (2026-11-05 listing)
+- **Paper:** [Han et al., *AGN Host Galaxies in COSMOS-Web: Linking Structural Evolution and Star Formation Quenching up to z=5*](https://arxiv.org/abs/2611.06443)
+- **Type / priority:** Priority B, **direct COSMOS-Web science comparison** on quenching versus structural evolution; not a B/T recovery or artificial-redshifting calibration.
+- **Plain-language takeaway:** JWST COSMOS-Web imaging and multiwavelength data for 3,955 AGNs at 0<z<5 are compared with star-forming and quiescent galaxies in rest-optical size–mass space. At z≳2 some massive AGN hosts have suppressed star formation while remaining as extended as star-forming galaxies; lower-z hosts increasingly resemble compact quiescent systems with larger Sérsic indices. This is consistent with, but does not prove, suppression preceding compaction in some objects.
+- **Apply to GOLD403:** Use as a same-field comparison and discussion reference for possible decoupling of quenching and morphological transformation. Consider mass/redshift-matched comparisons of GOLD403 passive disks versus AGN hosts and passive spheroids, with consistent rest-frame bands, AGN point-source contamination controls, size/n quality flags and selection functions. Do not equate extended AGN hosts with disk-dominated galaxies.
+- **Limitations:** AGN-selected rather than passive-disk-selected sample; size and Sérsic index are not direct B/T or spiral-arm measurements; unresolved AGN light may bias structural fits; observational cross-sectional trends cannot establish evolutionary trajectories or causal AGN quenching.
+- **Next:** Inspect structural-fitting and AGN-light decomposition methods, mass/redshift cuts and available catalog/sky overlap; only then assess feasibility of a matched comparison. No production pipeline changes.
+- **Status:** arXiv title/abstract verified 2026-11-06 (v1 submitted 2026-11-04); full text, catalog release and structural systematics not audited.
+
+## Daily scan follow-up (2026-11-06)
+
+- **2026-11-05 astro-ph listing:** Han et al. (2611.06443) added as B24, COSMOS-Web AGN/quenching/structure comparison. Not direct disk-survival or observational-bias validation.
+- **Scope:** Documentation-only update. No scientific code, frozen cuts, fitting settings or numerical outputs changed.
