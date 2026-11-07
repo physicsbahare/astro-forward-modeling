@@ -339,3 +339,26 @@ These items are real papers but **too indirect** for the present passive-disk re
 
 - **2026-11-05 astro-ph listing:** Han et al. (2611.06443) added as B24, COSMOS-Web AGN/quenching/structure comparison. Not direct disk-survival or observational-bias validation.
 - **Scope:** Documentation-only update. No scientific code, frozen cuts, fitting settings or numerical outputs changed.
+
+### B25. Dust retention and quenching mode in lensed quiescent galaxies (2026-11-06 listing)
+- **Paper:** [Bodansky et al., *Dust Survival in Lensed Quiescent Galaxies at z>1 Depends on How They Quench*](https://arxiv.org/abs/2611.07237)
+- **Type / priority:** Priority B, physical-quenching and dust/SED interpretation; **not** direct passive-disk morphology or observational-recovery methodology.
+- **Plain-language takeaway:** ALMA Band 6 continuum observations of eight strongly lensed spectroscopically quiescent galaxies at z~1–2.5, plus five archival systems, show widely varying dust-to-stellar-mass ratios. Rapidly quenched objects are more consistent with strong dust destruction, whereas more slowly quenched systems may retain or replenish dust. Two objects have resolved extended dust.
+- **Apply to GOLD403:** Use cautiously in the Discussion to distinguish star-formation shutdown, dust evolution, and structural disk survival. When interpreting quiescent SED selection, consider whether obscured residual star formation could affect classification, but do not derive a dust-based morphology correction.
+- **Limitations:** Small, lens-selected sample; single-band dust masses depend on unknown dust temperature (~0.3 dex systematic), and obscured star formation remains possible in the dustiest cases. Extended dust is not evidence for a surviving stellar disk or a calibrated B/T.
+- **Next:** Inspect spectroscopic quiescence criteria, dust-temperature assumptions and resolved dust maps before citing physical quenching-mode interpretations; no pipeline change.
+- **Status:** arXiv abstract verified 2026-11-07; submitted 2026-11-04, in 2026-11-06 listing; full text/data not audited.
+
+### B26. Morphology-informed SED inference and historical star formation (2026-11-06 listing)
+- **Paper:** [Alfonzo et al., *Is Morphology All You Need? Quantifying Imprints of Past Star Formation in the Present-Day Morphologies of Galaxies*](https://arxiv.org/abs/2611.07373)
+- **Type / priority:** Priority B, prospective morphology–SFH **method** and future-survey context; not an established COSMOS-Web B/T recovery calibration.
+- **Plain-language takeaway:** Katachi-PRIME combines gri image morphology and broadband SED information with implicit-likelihood inference to estimate mass, sSFR, redshift, age, dust attenuation and gas metallicity. The abstract reports improved constraints over photometry alone and that stable quiescent-galaxy morphologies can retain information about star formation over several Gyr.
+- **Apply to GOLD403:** Potentially motivate an optional post-validation morphology+SED consistency comparison between passive disks, passive spheroids and star-forming disks; treat inferred SFHs as model-dependent, and first finish the independent E0 injection/recovery and n/B/T identifiability gates. Useful for discussing future survey applications.
+- **Limitations:** Optical gri training/priors and model-dependent SFH inference do not transfer automatically to high-z JWST/NIRCam images. Morphological information about past SFH is not proof that a particular stellar disk survived quenching, nor a measurement of B/T classification bias.
+- **Next:** Read training labels, simulation/empirical priors, uncertainty calibration, domain shift and quiescent-selection definitions; consider only a small held-out pilot after frozen recovery tests.
+- **Status:** arXiv abstract verified 2026-11-07; submitted 2026-11-05, in 2026-11-06 listing; full methods/code not audited.
+
+## Daily scan follow-up (2026-11-07)
+
+- **2026-11-06 arXiv listing:** Bodansky et al. (2611.07237) and Alfonzo et al. (2611.07373) added as B25/B26, respectively. First is dust/quenching context; second is prospective morphology+SED method. Neither establishes stellar-disk survival or B/T recovery completeness.
+- **Scope:** Literature documentation only; no frozen selection, code, fitting settings or scientific results changed.
