@@ -362,3 +362,26 @@ These items are real papers but **too indirect** for the present passive-disk re
 
 - **2026-11-06 arXiv listing:** Bodansky et al. (2611.07237) and Alfonzo et al. (2611.07373) added as B25/B26, respectively. First is dust/quenching context; second is prospective morphology+SED method. Neither establishes stellar-disk survival or B/T recovery completeness.
 - **Scope:** Literature documentation only; no frozen selection, code, fitting settings or scientific results changed.
+
+
+### B27. COSMOS/CANDELS stellar kinematics and slow-rotator evolution (2026-11-11 listing)
+- **Paper:** [Muñoz López et al., *Intermediate-redshift slow rotators as the progenitors of the most massive galaxies at z ~ 0*](https://arxiv.org/abs/2611.13225)
+- **Type / priority:** Priority B, **kinematic and evolutionary science context**, not direct disk-survival or B/T-recovery evidence.
+- **Plain-language takeaway:** VLT/MUSE stellar kinematics and star-formation histories for 218 CANDELS/COSMOS galaxies at 0.1<z<1 identify 17 slow rotators (~8%). The authors explore environmental and redshift trends and links to massive present-day slow rotators; they explicitly cannot establish whether angular-momentum loss coincided with the last star-formation episode.
+- **Apply to GOLD403:** In Discussion, distinguish photometric disk dominance (n or light B/T) from kinematic rotation and from quenching chronology. If future resolved kinematics become available, compare matched quiescent disk/spheroid controls; do not infer rotational support from GOLD403 B/T alone.
+- **Limitations:** Lower-redshift, flux-limited and kinematically heterogeneous sample, with only 17 slow rotators; no high-z JWST B/T confusion calibration, no measured survival of individual stellar disks.
+- **Next:** Check the MUSE kinematic classifications, mass/redshift matching, environmental selection and spin-parameter uncertainties before using any population comparison.
+- **Status:** Title and abstract verified in 2026-11-11 arXiv new listings; full paper/data not audited.
+
+### B28. Realistic galaxy morphology in generative forward modeling (2026-11-11 listing)
+- **Paper:** [Centofanti et al., *SHINE: Shear inference environment - Generative forward modelling for radio weak gravitational lensing*](https://arxiv.org/abs/2611.14301)
+- **Type / priority:** Priority B, **transferable forward-model validation lesson**, not a direct passive-disk, JWST or B/T method.
+- **Plain-language takeaway:** A radio-interferometric shear-inference forward model performs well on parametric mock galaxies but shows >10-sigma shear bias on realistic COSMOS morphologies; adding a galaxy-image generative model reduces the reported bias below 2 sigma. This highlights how simplified morphology assumptions can fail under realistic galaxy structure.
+- **Apply to GOLD403:** Use as methodological motivation for testing the E0 artificial-redshifting/injection-recovery pipeline with realistic COSMOS-Web morphologies and real backgrounds, in addition to idealized Sérsic/B+D mocks. Compare n and B/T recovery, class-confusion matrices, non-identifiable fits and sensitivity to model mismatch on a frozen held-out sample; do not adopt the radio shear model or alter frozen cuts.
+- **Limitations:** Different instrument, Fourier-domain radio visibilities and target statistic (cosmic shear rather than bulge/disk photometry); numerical bias improvements cannot be transferred to JWST or interpreted as disk-survival evidence.
+- **Next:** Read mock-vs-real comparison and generative-training validation, then assess whether a simple empirical-morphology held-out test is justified after the existing E0 recovery baseline.
+- **Status:** Title and abstract verified in 2026-11-11 arXiv new listings; full text/code not audited.
+
+## Daily scan follow-up (2026-11-12)
+- **New 2026-11-11 listing:** Muñoz López et al. (2611.13225) added as kinematic science context; Centofanti et al. (2611.14301) added as a model-mismatch/forward-modeling methodology analogy. Neither is direct evidence of quiescent disk survival or a JWST B/T recovery calibration.
+- **Scope:** Documentation only; no scientific code, frozen cuts, fitting settings or pipeline configurations changed.
