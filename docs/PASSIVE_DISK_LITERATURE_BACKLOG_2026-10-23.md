@@ -385,3 +385,26 @@ These items are real papers but **too indirect** for the present passive-disk re
 ## Daily scan follow-up (2026-11-12)
 - **New 2026-11-11 listing:** Muñoz López et al. (2611.13225) added as kinematic science context; Centofanti et al. (2611.14301) added as a model-mismatch/forward-modeling methodology analogy. Neither is direct evidence of quiescent disk survival or a JWST B/T recovery calibration.
 - **Scope:** Documentation only; no scientific code, frozen cuts, fitting settings or pipeline configurations changed.
+
+
+### B29. Three-dimensional dust attenuation biases Sérsic morphology (2026-11-13 listing)
+- **Paper:** [Duarte et al., *3D dust attenuation effects in galaxies: structural biases and induced negative color gradients*](https://arxiv.org/abs/2611.15355)
+- **Type / priority:** Priority B, **direct structural-bias methodology**, but not a calibrated JWST B/T recovery study.
+- **Plain-language takeaway:** SKIRT radiative-transfer experiments with idealized spherical Sérsic stellar/dust distributions show that internal dust can reshape observed surface-brightness profiles, shift fitted Sérsic indices by up to roughly 25% in the tested models, and create apparent negative color gradients without stellar-population gradients.
+- **Apply to GOLD403:** Consider dust as a separate model-mismatch/systematic axis when interpreting single-Sérsic n, B/T and color/SED quiescence classifications. After the frozen E0 baseline, test a small matched set of dust-attenuated and dust-free synthetic images with the same PSF, depth and redshifting; measure changes in n, B/T, identifiability and class-confusion, without changing frozen selection cuts.
+- **Limitations:** Simplified spherical, constant-SED models are not realistic inclined bulge+disk galaxies; the quoted 25% is model-specific and not a correction for COSMOS-Web. Dust-driven structure does not establish disk survival after quenching.
+- **Next:** Inspect SKIRT geometry, optical-depth/wavelength dependence, fitted-profile procedure and released inputs; determine whether a minimal dust stress test is feasible after existing E0 recovery gates.
+- **Status:** Exact title and arXiv abstract verified in 2026-11-13 new listings; full text/code not audited.
+
+### B30. Euclid DR1 Bayesian intrinsic galaxy-shape inference (2026-11-13 listing)
+- **Paper:** [Dunn et al., *Euclid: Data Release 1 (DR1) -- Bayesian 3D shape inference of star-forming galaxy populations*](https://arxiv.org/abs/2611.16109)
+- **Type / priority:** Priority B, **future-survey population-shape methodology/context**, not direct passive-disk or B/T evidence.
+- **Plain-language takeaway:** Hierarchical Bayesian inference on observed Sérsic axis ratios and effective radii estimates intrinsic 3D shape distributions for over 40 million Euclid star-forming galaxies at z<1.2, demonstrating population-level shape constraints and redshift trends.
+- **Apply to GOLD403:** Use as a reference for distinguishing projected axis ratio from intrinsic disk shape and for future Euclid/COSMOS-Web population comparisons. After morphology recovery is calibrated, consider whether an inclination/axis-ratio selection-function test or a separate hierarchical shape analysis of passive disks and matched star-forming controls is justified.
+- **Limitations:** Star-forming rather than quiescent population, lower redshifts and different imaging/PSF; inferred flattening is not an individual galaxy B/T measurement, proof of rotational support, or disk-survival evidence. No JWST artificial-redshifting calibration.
+- **Next:** Read selection, mass/redshift bins, Sérsic measurement uncertainties, projection priors and HMC validation; assess overlap with GOLD403 before any cross-survey interpretation.
+- **Status:** Exact title and arXiv abstract verified in 2026-11-13 new listings; full paper/implementation not audited.
+
+## Daily scan follow-up (2026-11-14)
+- **New 2026-11-13 listing:** Duarte et al. (2611.15355) added for structural dust bias; Dunn et al. (2611.16109) added as Euclid population-shape methodology/context. Neither proves quiescent stellar-disk survival.
+- **Scope:** Documentation only. Frozen cuts, code, and pipeline settings unchanged.
