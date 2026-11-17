@@ -408,3 +408,25 @@ These items are real papers but **too indirect** for the present passive-disk re
 ## Daily scan follow-up (2026-11-14)
 - **New 2026-11-13 listing:** Duarte et al. (2611.15355) added for structural dust bias; Dunn et al. (2611.16109) added as Euclid population-shape methodology/context. Neither proves quiescent stellar-disk survival.
 - **Scope:** Documentation only. Frozen cuts, code, and pipeline settings unchanged.
+
+### B31. Dynamical disk–spheroid decomposition in TNG100 (2026-11-16 listing)
+- **Paper:** [Cristiani, Navarro & Abadi, *Properties of stellar disks and spheroids in simulated galaxies*](https://arxiv.org/abs/2611.17415)
+- **Type / priority:** Priority B, **science context and dynamical decomposition comparison**; not an observational JWST B/T recovery method or direct disk-survival test.
+- **Plain-language takeaway:** Dynamically decomposes 3,452 TNG100 galaxies into rotating stellar disks and non-rotating spheroids using stellar orbital angular momentum and energy. At fixed disk mass, disk size, rotation and stellar formation epoch depend on spheroid mass; spheroid properties depend less strongly on the coexisting disk.
+- **Apply to GOLD403:** Use in Discussion to distinguish photometric light B/T and Sérsic n from dynamical disk fraction. After E0 identifiability and selection validation, consider a controlled comparison with mock-observed TNG galaxies, checking whether photometric B/T tracks dynamical fractions as a function of mass, size and inclination. Do not infer disk survival or rotation from low observed B/T.
+- **Limitations:** Simulation-specific definitions, mass range log(M*/Msun)=10–12, no explicit quiescent-disk survival experiment, and no JWST noise/PSF/selection calibration; dynamical and photometric decompositions are not interchangeable.
+- **Next:** Read orbital decomposition and population selection, examine star-formation state and redshift coverage, and assess feasibility of mock-observing a small matched subset after existing E0 gates.
+- **Status:** Exact title and abstract independently verified on arXiv 2026-11-17; submitted 2026-11-12 and listed 2026-11-16; full paper/code not audited.
+
+### B32. Euclid DR1 multi-band catalog measurement and morphology quality flags (2026-11-16 listing)
+- **Paper:** [Euclid Collaboration (Kümmel et al.), *Euclid Data Release 1 (DR1): The MERge processing*](https://arxiv.org/abs/2611.17832)
+- **Type / priority:** Priority B, **future-survey measurement pipeline and quality-control methodology**; not direct passive-disk evidence.
+- **Plain-language takeaway:** Describes Euclid DR1 source detection and multiwavelength catalog merging, including PSF-matched aperture, template-fitting and Sérsic photometry, morphology measurements, quality flags, and validation of photometric homogeneity.
+- **Apply to GOLD403:** Compare survey-quality/flag and PSF-matching strategies with COSMOS-Web morphology catalog provenance. Inform future Euclid transfer tests and held-out E0 recovery diagnostics for reliable n/B/T, without substituting Euclid Sérsic photometry for validated bulge+disk decomposition.
+- **Limitations:** Pipeline/data-release paper, not a quiescent-disk sample, artificial-redshifting experiment, B/T confusion matrix or demonstration of stellar-disk survival. Euclid resolution/depth differs from JWST.
+- **Next:** Inspect catalog flag definitions, PSF/template/Sérsic validation and released columns; note any comparable quality diagnostics for a future cross-survey comparison only.
+- **Status:** Exact title and abstract independently verified in 2026-11-16 arXiv listing; full technical validation and catalog products not audited.
+
+## Daily scan follow-up (2026-11-17)
+- **2026-11-16 listing:** Cristiani et al. (2611.17415) added as dynamical decomposition context; Euclid MERge (2611.17832) added as future-survey catalog/morphology quality methodology. Neither demonstrates quiescent disk survival or calibrates JWST B/T recovery.
+- **Scope:** Documentation only; frozen cuts, scientific code and pipeline settings unchanged.
