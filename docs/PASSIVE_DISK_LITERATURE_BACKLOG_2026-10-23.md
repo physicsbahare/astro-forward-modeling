@@ -430,3 +430,25 @@ These items are real papers but **too indirect** for the present passive-disk re
 ## Daily scan follow-up (2026-11-17)
 - **2026-11-16 listing:** Cristiani et al. (2611.17415) added as dynamical decomposition context; Euclid MERge (2611.17832) added as future-survey catalog/morphology quality methodology. Neither demonstrates quiescent disk survival or calibrates JWST B/T recovery.
 - **Scope:** Documentation only; frozen cuts, scientific code and pipeline settings unchanged.
+
+### B33. Conditional generative models for realistic galaxy morphology (2026-11-17 listing)
+- **Paper:** [Xu et al., *From Non-parametric Statistics to Images: Generating Galaxy Morphologies*](https://arxiv.org/abs/2611.19211)
+- **Type / priority:** Priority B, **transferable image-generation / forward-model validation method**, not direct quiescent-disk science or JWST B/T calibration.
+- **Plain-language takeaway:** Flow-VAE generates galaxy images conditioned on CAS, Gini and M20 descriptors, trained on 240,000 DESI Legacy Survey r-band images. Re-measured morphology generally tracks requested descriptors but regresses toward common training morphologies and becomes biased in poorly supported descriptor combinations.
+- **Apply to GOLD403:** After the frozen E0/Sérsic+B+D recovery gates, consider an explicitly separate held-out realism test comparing parametric truth images with non-parametric or empirical galaxy images, checking n/B/T recovery, class confusion, failures and coverage. Use this as a model-mismatch stress test, not as ground-truth disk labels or a replacement for the established renderer.
+- **Limitations:** Ground-based optical r-band training, not JWST NIRCam; CAS/Gini/M20 do not determine intrinsic B/T, stellar dynamics or quiescence. No passive-disk survival measurement and no calibrated JWST injection recovery.
+- **Next:** Inspect image resolution, PSF, training support, conditioning fidelity and released model/code; determine whether a small controlled comparison adds value after current gates.
+- **Status:** Exact arXiv title and abstract checked 2026-11-18; full paper/code not audited.
+
+### B34. Orbital survival and quiescence in simulated LEGA-C-like galaxies (2026-11-17 listing)
+- **Paper:** [Kumar et al., *Orbital decomposition and evolution of LEGA-C-like galaxies in IllustrisTNG from z = 1 to z = 0*](https://arxiv.org/abs/2611.20884)
+- **Type / priority:** Priority B, **directly relevant dynamical-evolution science context**, not an observational JWST B/T recovery method.
+- **Plain-language takeaway:** Follows TNG100 galaxies from z=1 to 0, decomposing stellar orbits into cold, warm, hot and counter-rotating populations. Lower-mass galaxies tend to have more rotational support; cold-orbit retention differs by star-formation state at z=1, with star-forming progenitors retaining more cold structure than quiescent ones.
+- **Apply to GOLD403:** Discuss the distinction between photometric disk-like structure (n/B/T) and dynamically cold stellar orbits; frame future comparisons with mass/redshift-matched mock-observed TNG galaxies and examine how quiescent selection relates to orbital fractions. The paper can motivate a separate disk-survival interpretation, but its simulated evolutionary result is not evidence that an individual GOLD403 disk survived quenching.
+- **Limitations:** Simulated LEGA-C-like selection and z=1-to-0 evolution, not COSMOS-Web high-z JWST forward modeling. Orbital circularity cannot be inferred from light B/T alone; quiescence-related differences may be confounded by mass and assembly history.
+- **Next:** Audit sample matching, orbital definitions, merger histories, quiescence cuts and available mock observables; consider only a controlled comparison after E0 recovery/identifiability calibration.
+- **Status:** Exact arXiv title and abstract checked 2026-11-18; full text and mock products not audited.
+
+## Daily scan follow-up (2026-11-18)
+- **2026-11-17 arXiv listing:** Xu et al. (2611.19211) added as transferable generative-morphology methodology; Kumar et al. (2611.20884) added as simulated orbital-evolution context. Neither calibrates JWST B/T completeness or proves disk survival in GOLD403.
+- **Scope:** Documentation only; frozen cuts, science code and pipeline settings unchanged.
