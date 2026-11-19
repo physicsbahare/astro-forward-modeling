@@ -452,3 +452,16 @@ These items are real papers but **too indirect** for the present passive-disk re
 ## Daily scan follow-up (2026-11-18)
 - **2026-11-17 arXiv listing:** Xu et al. (2611.19211) added as transferable generative-morphology methodology; Kumar et al. (2611.20884) added as simulated orbital-evolution context. Neither calibrates JWST B/T completeness or proves disk survival in GOLD403.
 - **Scope:** Documentation only; frozen cuts, science code and pipeline settings unchanged.
+
+### B35. Joint imaging–spectroscopy spatial forward modeling in COSMOS (2026-11-18 listing)
+- **Paper:** [Vassilakis, Cranmer & Belokurov, *Spectro-Spatial Survey Fusion*](https://arxiv.org/abs/2611.21798)
+- **Type / priority:** Priority B, **future-survey and transferable forward-modeling methodology**, not direct passive-disk science, quenching evidence, or a JWST B/T recovery calibration.
+- **Plain-language takeaway:** Fits a continuous spectral surface-brightness field with spatial Gaussian components and learned spectral templates jointly to SDSS images and fiber spectra over an 84-arcmin COSMOS region. It predicts held-out HSC images and DESI spectra, including broad spiral patterns in two examples, without refitting those observations.
+- **Apply to GOLD403:** A future methodological reference for jointly modeling wavelength-dependent morphology and multi-survey data. After completing the frozen E0 and two-branch n/B/T identifiability gates, compare its instrument-forward-model and held-out-band validation principles with the existing NIRCam rest-band transfer; consider whether spatially varying SEDs could be tested on a small held-out sample. Do **not** substitute Gaussian components for bulge/disk truth or change the frozen pipeline.
+- **Limitations:** Demonstrated on SDSS optical imaging/fiber spectra, not JWST or passive-disk-selected galaxies; reproducing broad spiral features does not establish stellar disk survival, physical B/T, quiescence, or classification completeness. A flexible model may still miss faint structure and has not been calibrated for GOLD403.
+- **Next:** Read instrument-response formulation, Gaussian/spectral regularization, train/held-out split, source masking and error analysis; check code/data release and whether a limited JWST-compatible benchmark is realistic.
+- **Status:** Exact title and abstract checked in the 2026-11-18 arXiv new-submission listing; full text, implementation and applicability to JWST not audited.
+
+## Daily scan follow-up (2026-11-19)
+- **2026-11-18 listing:** Vassilakis et al. (2611.21798) added as a prospective multi-survey spatial/spectral forward-modeling reference, not as disk-survival evidence. Brown-dwarf companion demographics and late-M activity papers were screened but not entered in this passive-disk backlog.
+- **Scope:** Documentation only; no change to scientific code, selection cuts or pipeline settings.
