@@ -465,3 +465,34 @@ These items are real papers but **too indirect** for the present passive-disk re
 ## Daily scan follow-up (2026-11-19)
 - **2026-11-18 listing:** Vassilakis et al. (2611.21798) added as a prospective multi-survey spatial/spectral forward-modeling reference, not as disk-survival evidence. Brown-dwarf companion demographics and late-M activity papers were screened but not entered in this passive-disk backlog.
 - **Scope:** Documentation only; no change to scientific code, selection cuts or pipeline settings.
+
+### B36. GECKOS edge-on bar geometry from molecular-gas kinematics (2026-11-19 listing)
+- **Paper:** [Fraser-McKelvie et al., *The GECKOS Survey: deriving bar properties in edge-on galaxies from molecular gas kinematics*](https://arxiv.org/abs/2611.24770)
+- **Type / priority:** Priority B, **targeted inclination/bar-method context**; not a direct passive-disk or JWST B/T recovery method.
+- **Plain-language takeaway:** Uses ALMA molecular-gas nuclear-ring velocities and stellar circular-velocity models to infer bar orientation in edge-on galaxies; tests on a toy model and hydrodynamical snapshot and applies to six GECKOS systems with boxy-peanut bulges.
+- **Apply to GOLD403:** Motivates treating bar orientation, inclination and boxy-peanut light as possible sources of bulge/disk misclassification. After frozen E0 gates, consider a small separate inclination/bar stress test for n/B/T recovery, using imaging-compatible truth models; do not adopt the gas-kinematic estimator in the photometric pipeline.
+- **Limitations:** Requires resolved ALMA CO and nuclear rings, generally unavailable for GOLD403; local edge-on systems are not quiescent high-z disk-survival evidence. The inferred bar angle is not a B/T calibration.
+- **Next:** Inspect the six-object selection, nuclear-ring assumption and validation failure modes; decide whether orientation-sensitive mock images would add value to a held-out test.
+- **Status:** Exact title and arXiv abstract verified 2026-11-20; full text, data and transfer not audited.
+
+### B37. Bar and boxy-peanut growth as a function of disk and bulge structure (2026-11-19 listing)
+- **Paper:** [Durán-Camacho et al., *Bar formation and secular evolution in live Milky Way-like galaxies*](https://arxiv.org/abs/2611.24884)
+- **Type / priority:** Priority B, **simulation-based disk-structure science context and potential model-mismatch test**, not a quenching or JWST recovery measurement.
+- **Plain-language takeaway:** Fifteen isolated AREPO Milky-Way-like simulations vary stellar mass and initial bulge fraction. Bars grow and slow; boxy-peanut structures form on mass- and structure-dependent timescales, often without a sharp buckling event.
+- **Apply to GOLD403:** Motivates caution that bar/boxy-peanut structure can be absorbed into simplistic bulge+disk components and alter apparent light B/T. A future held-out comparison could fit B+D-only versus bar-aware mock images at matched JWST PSF, redshift, S/N and inclination, measuring B/T confusion without changing the frozen cuts.
+- **Limitations:** Isolated nearby-galaxy analogues over 3 Gyr, not quiescent COSMOS-Web galaxies; simulated bar formation is not proof of disk survival after quenching, and no JWST B/T error rates are provided.
+- **Next:** Examine the model parameter range, projection examples and available simulated images; assess whether a limited bar-mismatch test is justified after E0 validation.
+- **Status:** Exact title and arXiv abstract verified 2026-11-20; full simulation products not audited.
+
+### B38. Simulation-to-simulation domain transfer for galaxy environment inference (2026-11-19 listing)
+- **Paper:** [Chen et al., *Cross-Dataset Inference of Central-Satellite Classification and Host Halo Masses from Galaxy neighbours with Machine Learning*](https://arxiv.org/abs/2611.24803)
+- **Type / priority:** Priority B, **future environment/selection methodology**, not direct morphology, quenching, or disk-survival evidence.
+- **Plain-language takeaway:** XGBoost predicts central/satellite class and central halo mass from nearby-galaxy positions and stellar masses in TNG100; tests transfer to EAGLE after stellar-mass-distribution alignment and reports performance degradation and satellite misclassification failure modes.
+- **Apply to GOLD403:** Future mass/redshift-matched environmental comparisons of passive disks versus quiescent spheroids could use neighbor-based environmental inference, with explicit survey completeness, photo-z projection and domain-shift checks. Do not transfer simulation purity/completeness numbers to COSMOS-Web or alter frozen sample membership.
+- **Limitations:** Simulation-to-simulation validation is not observational calibration; host-halo prediction depends on neighbor detection thresholds, 3D/projection errors and simulation assumptions. No stellar-disk survival or JWST B/T recovery measurement.
+- **Next:** Inspect the projected-redshift feature definition, survey-depth sensitivity, domain alignment and available code before considering a COSMOS-Web matched-control pilot.
+- **Status:** Exact title and arXiv abstract verified 2026-11-20; full text/code and observational transfer not audited.
+
+## Daily scan follow-up (2026-11-20)
+- **2026-11-19 new-submission listing:** Fraser-McKelvie et al. (2611.24770), Durán-Camacho et al. (2611.24884) and Chen et al. (2611.24803) added as targeted bar/orientation and future environmental methods/context, not direct passive-disk survival evidence.
+- **Scope:** Documentation only; no change to scientific code, frozen cuts or pipeline settings.
