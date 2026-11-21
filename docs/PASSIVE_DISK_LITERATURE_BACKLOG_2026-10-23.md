@@ -496,3 +496,26 @@ These items are real papers but **too indirect** for the present passive-disk re
 ## Daily scan follow-up (2026-11-20)
 - **2026-11-19 new-submission listing:** Fraser-McKelvie et al. (2611.24770), Durán-Camacho et al. (2611.24884) and Chen et al. (2611.24803) added as targeted bar/orientation and future environmental methods/context, not direct passive-disk survival evidence.
 - **Scope:** Documentation only; no change to scientific code, frozen cuts or pipeline settings.
+
+### B39. Dense-cloud stripping physics in cluster-infalling spirals (2026-11-20 listing)
+- **Paper:** [Tenorio-Tagle & Martínez-González, *Ram Pressure Is Unable to Strip All Phases of the Interstellar Medium out of Spirals Falling into Galaxy Clusters*](https://arxiv.org/abs/2611.25049)
+- **Type / priority:** Priority B, **environmental quenching-mechanism science context**, not a direct passive-disk morphology or disk-survival measurement.
+- **Plain-language takeaway:** Three-dimensional hydrodynamic calculations examine dense molecular clouds exposed to intracluster gas. Transmitted shocks deform/compress clouds but decelerate them only weakly; turbulent viscous stripping removes cloud-surface material and can form filamentary wakes. This complicates simple assumptions that ram pressure promptly removes every gas phase.
+- **Apply to GOLD403:** Use cautiously in Discussion to distinguish environmental gas removal, incomplete molecular-gas stripping and stellar structural transformation. If environment analysis is later enabled, compare mass/redshift-matched passive disks and spheroids by group/cluster association while keeping quiescence and morphological measurements independent. No change to E0, B/T or selection cuts.
+- **Limitations:** Cloud-scale theoretical calculations, not a complete galaxy quenching model, observed passive-disk sample, or evidence that stellar disks survived quenching. Cluster infall and dense-cloud parameters cannot be directly extrapolated to all COSMOS-Web galaxies.
+- **Next:** Read cloud boundary conditions, stripping timescales and comparison to galaxy-scale gas removal; decide whether it adds value to a brief environment/quenching Discussion paragraph.
+- **Status:** Exact title and arXiv abstract checked 2026-11-21 (v1 submitted 2026-11-18, announced in 2026-11-20 listing); full paper not audited.
+
+### B40. Euclid self-supervised photometry representation for future survey classification (2026-11-20 listing)
+- **Paper:** [Vojoudi Salmani et al., *EuclidFM: Foundation Model for Compact Photometric Survey Representation*](https://arxiv.org/abs/2611.25080)
+- **Type / priority:** Priority B, **future-survey photometric representation and quality/classification methodology**, not direct quiescent-disk B/T recovery or disk-survival evidence.
+- **Plain-language takeaway:** A masked-autoencoder Transformer trained on 90,258 Euclid deep-field sources learns compact embeddings from heterogeneous catalog fluxes and uncertainties. These embeddings capture some point-like/photometric information, but a demonstrated quasar-classification example has uncertain transfer and uncalibrated purity/completeness.
+- **Apply to GOLD403:** As a future exploratory control, compare simple catalog photometric/quality baselines against learned representations for missing-band handling or selection-quality diagnostics on independent fields; test class balance, per-redshift recovery, and domain shift. Do not use embeddings as a substitute for image-based single-Sérsic n, B+D B/T, identifiability flags or the frozen E0 injection/recovery.
+- **Limitations:** Euclid Q1 catalog rather than COSMOS-Web JWST imaging, no direct structural decomposition, passive-disk labels or morphology confusion matrix. The reported quasar results cannot calibrate passive-disk selection or prove disk survival.
+- **Next:** Review released code/data, training splits, flux/uncertainty normalization, missing-band mechanism and external-field tests; only consider a held-out pilot after the current GOLD403 gates.
+- **Status:** Exact title and arXiv abstract checked 2026-11-21 (v1 submitted 2026-11-18, announced in 2026-11-20 listing); full code/implementation not audited.
+
+## Daily scan follow-up (2026-11-21)
+- **2026-11-20 new-submission listing:** Tenorio-Tagle & Martínez-González (2611.25049) added as environmental gas-stripping context; Vojoudi Salmani et al. (2611.25080) added as future-survey photometric-representation methodology. Neither measures disk survival or calibrates JWST B/T.
+- **Brown-dwarf/methods screening:** Sadeghi & Karami (2611.26310) identified as a transferable star/galaxy classification-validation reference but deliberately excluded from the passive-disk backlog.
+- **Scope:** Literature documentation only; frozen cuts, scientific code and pipeline settings unchanged.
