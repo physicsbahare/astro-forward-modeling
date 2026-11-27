@@ -519,3 +519,42 @@ These items are real papers but **too indirect** for the present passive-disk re
 - **2026-11-20 new-submission listing:** Tenorio-Tagle & Martínez-González (2611.25049) added as environmental gas-stripping context; Vojoudi Salmani et al. (2611.25080) added as future-survey photometric-representation methodology. Neither measures disk survival or calibrates JWST B/T.
 - **Brown-dwarf/methods screening:** Sadeghi & Karami (2611.26310) identified as a transferable star/galaxy classification-validation reference but deliberately excluded from the passive-disk backlog.
 - **Scope:** Literature documentation only; frozen cuts, scientific code and pipeline settings unchanged.
+
+### B41. Dust-energy-balance systematics in cosmic-noon SED selection (2026-11-26 listing)
+- **Paper:** [Collins et al., *Tipping the scales in Blue Jay: Dust energy balance overpredicts IR luminosity in galaxies at $z\sim2$*](https://arxiv.org/abs/2611.34802)
+- **Type / priority:** Priority B, Selection methodology/context.
+- **Plain-language takeaway:** MIRI measurements in 111 Blue Jay galaxies test optical/NIR SED predictions; among 89 star-forming systems, predicted mid-IR fluxes are systematically high, and adding NIRSpec reduces the discrepancy.
+- **Apply to GOLD403:** Check dusty star-forming contamination of GOLD403 quiescence selection using available MIRI/NIRSpec cross-matches and matched controls, without altering frozen membership.
+- **Limitations:** Main test concerns star-forming galaxies; no disk survival or B/T calibration.
+- **Next:** Inspect MIRI coverage, upper limits and sSFR sensitivity before a separate selection audit.
+- **Status:** Exact title and arXiv v1 abstract verified 2026-11-27; full text/data not audited.
+
+### B42. Radial SFH reconstruction and stellar migration (2026-11-26 listing)
+- **Paper:** [Olsen et al., *Beyond the blur: Radial binning trumps stellar migration in resolved star formation histories*](https://arxiv.org/abs/2611.33326)
+- **Type / priority:** Priority B, Resolved quenching methodology/context.
+- **Plain-language takeaway:** A Milky-Way-mass zoom simulation compares reconstructed radial sSFR to particle histories; adaptive radial bins mitigate migration effects over tested lookback intervals, except major-merger cases.
+- **Apply to GOLD403:** Motivate a future matched passive-disk/spheroid radial SFH test with resolution and merger controls after E0 validation.
+- **Limitations:** Single simulation and limited lookback intervals; no JWST B/T recovery or disk-survival measurement.
+- **Next:** Inspect binning, merger exceptions and mock-observation assumptions.
+- **Status:** Exact title and arXiv v1 abstract verified 2026-11-27; full text/data not audited.
+
+### B43. Bar kinematics and galaxy pairing (2026-11-26 listing)
+- **Paper:** [Aziz et al., *Bar Kinematics in Paired and Isolated Galaxies: Slow Bars Are More Likely Found in Paired Galaxies*](https://arxiv.org/abs/2611.34198)
+- **Type / priority:** Priority B, Environmental disk-structure context.
+- **Plain-language takeaway:** MaNGA kinematics and Galaxy Zoo DESI pairing labels for 314 bars suggest an association between normalized bar rotation rate and pairing, but not absolute pattern speed.
+- **Apply to GOLD403:** Motivate matched environment and bar-aware model-mismatch tests for GOLD403 after frozen E0 gates.
+- **Limitations:** Local sample, modest statistical evidence, no quiescence or B/T recovery calibration and no proof of disk survival.
+- **Next:** Inspect pairing labels, selection and bar measurement uncertainties.
+- **Status:** Exact title and arXiv v1 abstract verified 2026-11-27; full text/data not audited.
+
+### B44. Cross-survey point-source versus galaxy selection calibration (2026-11-26 listing)
+- **Paper:** [Thomas et al., *UNIONS and Euclid: Calibrating point source-galaxy separation for ground-based surveys*](https://arxiv.org/abs/2611.34047)
+- **Type / priority:** Priority B, Future-survey selection methodology.
+- **Plain-language takeaway:** Euclid reference labels calibrate aperture-growth and neural-network classifiers in UNIONS; purity and completeness trade off at faint magnitudes and depend on seeing.
+- **Apply to GOLD403:** Test whether compact GOLD403 galaxies are lost at the unresolved-source selection stage in future survey transfer; use independent labels and magnitude/size/PSF-dependent confusion matrices.
+- **Limitations:** Optical ground-based classification, not disk/spheroid separation or JWST B/T calibration; no disk-survival evidence.
+- **Next:** Inspect reference labels, held-out splits and image-quality dependence.
+- **Status:** Exact title and arXiv v1 abstract verified 2026-11-27; full text/data not audited.
+
+## Daily scan follow-up (2026-11-27)
+- Documentation only; frozen cuts, scientific code and pipeline settings unchanged.
